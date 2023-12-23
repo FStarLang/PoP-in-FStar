@@ -22,6 +22,7 @@ from sphinx.highlighting import lexers
 
 lexers['fstar'] = fstar_pygments.CustomLexer()
 lexers['smt2'] = smt2_pygments.CustomLexer()
+lexers['pulse'] = fstar_pygments.PulseLexer()
 
 def setup(app):
     app.add_css_file('custom.css')

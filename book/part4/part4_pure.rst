@@ -59,6 +59,7 @@ calculi. If the reader is familiar with these, they may safely skip
 the next subsections, though even if you are an expert, if may be of
 interest to see how such program logics can be formalized in F*.
 
+.. _Part4_Floyd_Hoare:
 
 A Primer on Floyd-Hoare Logic and Weakest Preconditions
 -------------------------------------------------------

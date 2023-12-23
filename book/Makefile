@@ -13,7 +13,10 @@ SOURCEDIR     = .
 BUILDDIR      = _build
 
 prep:
-	cp -R $(FSTAR_HOME)/doc/book/code .
+	mkdir -p code/pulse
+	# cp -R $(FSTAR_HOME)/doc/book/code/* code
+	cp -R $(STEEL_HOME)/share/steel/examples/pulse/by-example/* code/pulse
+
 
 html: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
