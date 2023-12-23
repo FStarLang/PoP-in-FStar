@@ -58,6 +58,17 @@ logic to start programming and proving in Pulse. Additionally, Pulse
 is an extension of F*, so all you've learned about F*, lemmas,
 dependent types, refinement types, etc. will be of use again. 
 
+
+.. note::
+
+   Why is it called Pulse? Because it's based on a logic called Steel,
+   and one of the authors and his daughter are big fans of a classic
+   reggae band called `Steel Pulse <https://steelpulse.com/>`_. We
+   wanted a name that was softer than Steel, more human, and, well, a
+   bit playful. So, Pulse!
+   
+
+   
 ..   .. image:: pulse_arch.png
 
   
