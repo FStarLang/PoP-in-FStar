@@ -70,7 +70,7 @@ the leaf containing that item ``d``, and one can easily check by
 comparing hashes that the claimed path is accurate. In fact, we can
 prove that if a claimed path through the tree attests to the presence
 of some other item ``d' <> d``, then we can construct a collision on
-the underlying hash algorithm---this property wil be our main proof of
+the underlying hash algorithm---this property will be our main proof of
 security.
 
 
@@ -197,7 +197,7 @@ other child node to the list of hashes.
    :start-after: //SNIPPET_START: prover
    :end-before: //SNIPPET_END: prover
 
-In the cryptographic literature, this function is sometimes calles
+In the cryptographic literature, this function is sometimes called
 *the prover*. A ``RES r ri hs`` is a claimed proof of the membership
 of ``r`` in the tree at the location specified by ``ri``.
 

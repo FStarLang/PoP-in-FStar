@@ -49,12 +49,11 @@ begin with an uppercase letter.
         | Two_of_three
         | Three_of_three
 
-   However, in general, as we start to use indexed types, each
-   constructor can build a different instance of the defined type, so
-   it will be important to have a way to specify the result type of
-   each constructor. For uniformity, throughout this book, we'll
-   always annotate the types of constructors, even when not strictly
-   necessary.
+   As we start to use indexed types, each constructor can build a
+   different instance of the defined type, so it will be important to
+   have a way to specify the result type of each constructor. For
+   uniformity, throughout this book, we'll always annotate the types
+   of constructors, even when not strictly necessary.
 
 F* can prove that they are distinct and that these are the only terms
 of type ``three``.

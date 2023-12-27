@@ -42,7 +42,7 @@ interpreted modulo ``2^32``. However, for many applications, one wants
 to program in a discipline that ensures that there is no unintentional
 arithmetic overflow, i.e., we'd like to use bounded integers for
 efficiency, and by proving that their operations don't overflow we can
-reason bounded integer terms without using modular arithmetic.
+reason about bounded integer terms without using modular arithmetic.
 
 .. note::
 

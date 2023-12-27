@@ -290,6 +290,7 @@ while the remaining fields extend it with:
   * ``sub``: a bounded subtraction operation
   * ``lt`` : a comparison function
   * ``properties``, which show that
+
       - ``add`` is related to integer addition ``+``
       - ``sub`` is related to integer subtraction ``-``
       - ``lt`` is related to ``<``
@@ -434,7 +435,7 @@ inheriting from a base class.
    :start-after: //SNIPPET_START: subtractable$
    :end-before: //SNIPPET_END: subtractable$
 
-And here's another typeclass that, say, provides only the comparison
+And here's another typeclass that provides only the comparison
 operation, also inheriting from the base class.
 
 .. literalinclude:: ../code/TypeclassesAlt2.fst
@@ -659,14 +660,17 @@ F* infers the typeclass instantiations and the type of ``test`` to be
 In ``test2``, F* infers the type ``count_st s (op #monoid_nat_plus 0
 (op #monoid_nat_plus 1 1)) unit``, and then automatically proves that
 this type is equivalent to the user annotation ``count_st s 2 unit``,
-using the definition of ``monoid_nat_plus``.
+using the definition of ``monoid_nat_plus``. Note, when one defines
+``let+``, one can also use ``e1 ;+ e2`` to sequence computations when
+the result type of ``e1`` is ``unit``.
+
 
 Summary
 -------
 
 Typeclasses are a flexible way to structure programs in an abstract
 and generic style. Not only can this make program construction more
-modular, in can also make proofs and reasoning more abstract,
+modular, it can also make proofs and reasoning more abstract,
 particularly when typeclasses contain not just methods but also
 properties characterizing how those methods ought to behave. Reasoning
 abstractly can make proofs simpler: for example, if the monoid-ness of

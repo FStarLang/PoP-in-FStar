@@ -86,7 +86,7 @@ For example, the terms :math:`\lambda x. (\lambda x. x)` and
 :math:`x` is associated with the inner :math:`\lambda`; while
 :math:`\lambda x. (\lambda y. (\lambda z. x))` is represented as
 :math:`\lambda _. (\lambda _. (\lambda _. 2)`, since from the inner
-occurrence of :math:`x` one must skip past :math:`2` :math:`\lambda`s
+occurrence of :math:`x` one must skip past :math:`2` :math:`\lambda`'s
 to reach the :math:`\lambda` associated with :math:`x`. Note, the
 variable names are no longer significant in de Bruijn's notation.
 

@@ -512,7 +512,7 @@ perilously close to the unsound ``project`` axiom which enables
 paradoxes.
 
 This restriction is similar to Coq's restriction on its ``Prop`` type,
-forbidding functions match on ``Prop`` to return results outside
+forbidding functions that match on ``Prop`` to return results outside
 ``Prop``.
 
 The F* type ``prop`` (which we saw first :ref:`here <Part1_prop>`) is
@@ -690,7 +690,7 @@ detect and fix such problems.
      Type u#(max uu___43588 uu___43589) is not a subtype of the expected type Type u#uu___43590
      
   Meaning that the inferred type for the definition of ``tup2 a b`` is
-  ``Type u#(max a b)``, which is of course not the same a ``Type
+  ``Type u#(max a b)``, which is of course not the same as ``Type
   u#c``, and, sadly, the auto-generated fresh names in the error
   message don't make your life any easier.
 

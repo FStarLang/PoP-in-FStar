@@ -420,7 +420,7 @@ constructor of :math:`D` with arguments :math:`\overline{v:t_v}`,
 
 2. Assume, for recursive types, for all :math:`\overline{q}`, :math:`\mathsf{hasEq}~(T~\overline{p}~\overline{q})`.
 
-3. Prove, for all arguments :math:`\overline{v:t_v}`, prove :math:`\mathsf{hasEq}~t_v`.
+3. For all arguments :math:`\overline{v:t_v}`, prove :math:`\mathsf{hasEq}~t_v`.
 
 If the proof in step 3 suceeds for all constructors, then F*
 introduces an axiom

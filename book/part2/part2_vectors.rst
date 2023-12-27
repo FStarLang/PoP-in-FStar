@@ -288,7 +288,7 @@ suffix starting at ``i``.
 --------------------------------------------------------------------------------
 
 Write a tail-recursive version of ``split_at``. You will need a
-``reverse`` function as a helper
+``reverse`` function as a helper.
 
 .. container:: toggle
 
@@ -317,8 +317,9 @@ Many texts about dependent types showcase length-indexed vectors, much
 as we've done here. Although useful as a simple illustrative example,
 the ``vec`` type we've seen is probably not what you want to use in
 practice. Especially in F*, where regular lists can easily be used
-with refinement types, length-indexed vectors are redundant. The code
-below shows how:
+with refinement types, length-indexed vectors are redundant because we
+simply refine our types using a ``length`` function. The code below
+shows how:
 
     .. literalinclude:: ../code/LList.fst
        :language: fstar
