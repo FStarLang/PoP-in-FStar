@@ -670,7 +670,7 @@ Summary
 
 Typeclasses are a flexible way to structure programs in an abstract
 and generic style. Not only can this make program construction more
-modular, in can also make proofs and reasoning more abstract,
+modular, it can also make proofs and reasoning more abstract,
 particularly when typeclasses contain not just methods but also
 properties characterizing how those methods ought to behave. Reasoning
 abstractly can make proofs simpler: for example, if the monoid-ness of
