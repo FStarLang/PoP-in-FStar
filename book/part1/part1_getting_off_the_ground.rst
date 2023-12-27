@@ -150,7 +150,7 @@ precedence.
 .. note::
    
     F* follows the OCaml style of no negative integer literals,
-    instead negate a positive integer like ```(- 1)```.
+    instead negate a positive integer like ``(- 1)``.
     
 .. _Part1_ch1_boolean_refinements:
 

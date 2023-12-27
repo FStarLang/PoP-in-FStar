@@ -9,7 +9,7 @@ following general structure.
 .. math::
 
    \mathsf{type}~T_1~\overline{(x_1:p_1)} : \overline{y_1:q_1} \rightarrow \mathsf{Type} = \overline{| D_1 : t_1} \\
-   \mathsf{and}~\ldots \\
+   \ldots\qquad\qquad\qquad\qquad\\   
    \mathsf{and}~T_n~\overline{(x_n:p_n)} : \overline{y_n:q_n} \rightarrow \mathsf{Type} =  \overline{| D_n : t_n} \\
 
 This defines :math:`n` mutually inductive types, named :math:`T_1 \ldots
@@ -75,7 +75,7 @@ Consider again the general shape of an inductive type definition:
 .. math::
 
    \mathsf{type}~T_1~\overline{(x_1:p_1)} : \overline{y_1:q_1} \rightarrow \mathsf{Type} = \overline{| D_1 : t_1} \\
-   \mathsf{and}~\ldots \\   
+   \ldots\qquad\qquad\qquad\qquad\\   
    \mathsf{and}~T_n~\overline{(x_n:p_n)} : \overline{y_n:q_n} \rightarrow \mathsf{Type} =  \overline{| D_n : t_n} \\
 
 This definition is strictly positive when
