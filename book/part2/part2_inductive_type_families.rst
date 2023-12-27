@@ -9,6 +9,7 @@ following general structure.
 .. math::
 
    \mathsf{type}~T_1~\overline{(x_1:p_1)} : \overline{y_1:q_1} \rightarrow \mathsf{Type} = \overline{| D_1 : t_1} \\
+   \mathsf{and}~\ldots \\
    \mathsf{and}~T_n~\overline{(x_n:p_n)} : \overline{y_n:q_n} \rightarrow \mathsf{Type} =  \overline{| D_n : t_n} \\
 
 This defines :math:`n` mutually inductive types, named :math:`T_1 \ldots
@@ -74,6 +75,7 @@ Consider again the general shape of an inductive type definition:
 .. math::
 
    \mathsf{type}~T_1~\overline{(x_1:p_1)} : \overline{y_1:q_1} \rightarrow \mathsf{Type} = \overline{| D_1 : t_1} \\
+   \mathsf{and}~\ldots \\   
    \mathsf{and}~T_n~\overline{(x_n:p_n)} : \overline{y_n:q_n} \rightarrow \mathsf{Type} =  \overline{| D_n : t_n} \\
 
 This definition is strictly positive when
@@ -130,8 +132,8 @@ reducing it produces an infinite chain of calls to ``loop'
 (Function loop')``. Admitting a non-positive definition like ``dyn``
 has allowed us to build a non-terminating loop.
 
-Such loops can also allow one to prove ``False``, as the next example
-shows.
+Such loops can also allow one to prove ``False`` (breaking soundness),
+as the next example shows.
 
 .. literalinclude:: ../code/Part2.Positivity.fst
    :language: fstar

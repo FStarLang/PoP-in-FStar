@@ -66,7 +66,7 @@ y``. Intuitively, this says that in order to build an instance of
 ``acc r x0``, you have to provide a function which can build a proof
 of ``acc r x1`` for all ``x1:a`` smaller than ``x0``. The only way to
 build such a function is one can avoid infinite regress, is if
-thechain ``x0 r x1 r x2 r ...``, eventually terminates in some ``xn``
+the chain ``x0 r x1 r x2 r ...``, eventually terminates in some ``xn``
 such that there are no elements smaller than it according to ``r``.
 
 In other words, if one can prove ``acc r x`` for all ``x:a``, then

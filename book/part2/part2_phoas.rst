@@ -138,7 +138,7 @@ represented by F* variables and binders of the corresponding F* type
 
   * ``App``: To apply ``e1`` to ``e2`` in a well-typed way, we must
     prove that ``e1`` has an arrow type ``TArrow t1 t2``, while ``e2``
-    has type ``t2``, and the resulting term ``App e1 e2`` has type
+    has type ``t1``, and the resulting term ``App e1 e2`` has type
     ``t2``. Notice how the indexing structure of the ``App``
     constructor precisely captures this typing rule.
 

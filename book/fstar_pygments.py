@@ -12,6 +12,7 @@ class CustomLexer(RegexLexer):
         'unopteq'    ,
         'and'        ,
         'assert'     ,
+        'assert_norm' ,        
         'assume'     ,
         'begin'      ,
         'by'         ,
@@ -87,9 +88,7 @@ class CustomLexer(RegexLexer):
             (r'//.*\n', Comment),
             (r'\([*]([^*]|[*]+[^)])*[*]+\)', Comment),
             (words(keywords, suffix=r'\b'), Keyword),
-            (r'0x[0-9a-fA-F_]+', Literal.Number),
-            (r'[0-9_]+', Literal.Number),
-            (r'[a-zA-Z_]+', Text),
+            (r'[a-zA-Z_0-9]+', Text),
             (r'.', Text),
         ]
     }

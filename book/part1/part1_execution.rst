@@ -41,7 +41,7 @@ it describes the reduction strategy that F* used to interpret the term:
   * :math:`\zeta` means that recursive functions were unrolled
 
 We'll revisit what these reduction steps mean in a later chapter,
-including how to customize it for your needs.
+including how to customize them for your needs.
 
 Compiling to OCaml
 ^^^^^^^^^^^^^^^^^^
@@ -157,7 +157,7 @@ to write functions that actually have some effects.
 
 We'll learn a lot more about F*'s support for effectful program in a
 later section, but for now we'll just provide a glimpse of it by
-showing (below) a ```main`` program that calls into our Quicksort
+showing (below) a ``main`` program that calls into our Quicksort
 library.
 
 .. literalinclude:: ../code/Part1.Quicksort.Main.fst
@@ -173,7 +173,10 @@ There are few things to note here:
     
   * ``FStar.IO.print_string`` is a library function that prints a
     string to ``stdout``. Its type is ``string -> ML unit``, a type
-    that we'll look at in detail when we learn more about effects.
+    that we'll look at in detail when we learn more about effects. For
+    now, keep in mind that functions with the ``ML`` label in their
+    type may have observable side effects, like IO, raising
+    exceptions, etc.
 
   * The end of the file contains ``let _ = main ()``, a top-level term
     that has a side-effect (printing to ``stdout``) when executed. In

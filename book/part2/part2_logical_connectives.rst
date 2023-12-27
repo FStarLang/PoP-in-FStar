@@ -128,7 +128,7 @@ proofs of ``p`` and ``q``, respectively.
 
 .. code-block::
 
-   type pair (p q:Type) = | Pair : _1:p -> _1:q -> pair p q
+   type pair (p q:Type) = | Pair : _1:p -> _2:q -> pair p q
 
 .. note::
 
@@ -507,21 +507,10 @@ insantiation (as shown below), where the terms provided on the
 
 Its desugaring may be illuminating:
 
-.. code-block:: fstar
-
-   let forall_elim_2 (f: squash (forall (x0: t0) (x1: t1 x0). q x0 x1))
-                     (v0: t0)
-                     (v1: t1 v0)
-     : squash (q v0 v1)
-     = FStar.Classical.Sugar.forall_elim
-           #(t1 v0)
-           #(fun x1 -> q v0 x1)
-           v1
-           (FStar.Classical.Sugar.forall_elim
-              #t0
-              #(fun x0 -> forall (x1: t1 x0). q x0 x1)
-              v0
-              ())
+.. literalinclude:: ../code/Connectives.fst
+   :language: fstar
+   :start-after: //SNIPPET_START: forall_elim_2_desugar$
+   :end-before: //SNIPPET_END: forall_elim_2_desugar$
 
 .. _Part2_connectives_exists:
 

@@ -20,8 +20,8 @@ beyond casual use, most users of F* rely on one of the follwing IDE
 plugins.
 
   * `fstar-mode.el <https://github.com/FStarLang/fstar-mode.el>`_,
-     which provides several utilities for interactively editing and
-     checking F* files in emacs.
+    which provides several utilities for interactively editing and
+    checking F* files in emacs.
 
   * `fstar-vscode-assistant
     <https://github.com/FStarLang/fstar-vscode-assistant>`_, which
@@ -49,7 +49,8 @@ from a client module.
 
 A module begins with the module's name (which must match the name of
 its file, i.e., ``module A`` is in ``A.fst``) and contains a sequence
-of top-level signatures and definitions.
+of top-level signatures and definitions. Module names always begin
+with a capital letter.
 
 * Signatures ascribe a type to a definition, e.g., ``val f : t``.
 
@@ -146,6 +147,11 @@ precedence.
 * ``>`` : Greater than (infix)
 * ``>=``: Greater than or equal (infix)
 
+.. note::
+   
+    F* follows the OCaml style of no negative integer literals,
+    instead negate a positive integer like ```(- 1)```.
+    
 .. _Part1_ch1_boolean_refinements:
 
 Boolean refinement types
@@ -285,8 +291,8 @@ term like ``x + 1 : odd``.
 Functions
 ^^^^^^^^^
 
-To start writing interesting programs, we need a way to define
-functions. In the core of F*, functions behave like functions in
+We need a way to define functions to start writing interesting
+programs. In the core of F*, functions behave like functions in
 maths. In other words, they are defined on their entire domain (i.e.,
 they are total functions and always return a result) and their only
 observable behavior is the result they return (i.e., they don't have

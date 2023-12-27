@@ -208,7 +208,7 @@ equivalence relation on ``m a``
 
   * Left identity: ``bind (return x) f ~ f``
   * Right identity: ``bind f return ~ f``
-  * Associativity: ``bind f1 (fun x -> bind (f2 x) f3) ~ bind (bind f1 f2) g``
+  * Associativity: ``bind f1 (fun x -> bind (f2 x) f3) ~ bind (bind f1 f2) f3``
 
 Its easy to prove that ``st``, ``return``, and ``bind`` satisfy these
 laws in F*, where we pick the equivalence relation to equate functions
@@ -285,7 +285,7 @@ Computation Trees, or Monads Generically
 Each time one defines a monad to model a computational effect, one
 usually thinks first of the effectful *actions* involved (e.g.,
 reading and writing the state, or raising an error), and then finds a
-way to pakage those actions into the interface of monad with
+way to package those actions into the interface of monad with
 ``return`` and ``bind``, and then, to keep things honest, proves that
 the implementation satisfies the monad laws.
 
