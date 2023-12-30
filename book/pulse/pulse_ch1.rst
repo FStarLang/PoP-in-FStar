@@ -1,4 +1,4 @@
-.. _Pulse_ByExample:
+.. _Pulse_Basics:
 
 Pulse Basics
 ============
@@ -41,85 +41,102 @@ including time and space, messages sent over communication channels,
 etc.
 
 Much like other Hoare Logics, which we reviewed in :ref:`an earlier
-section <Part4_Floyd_Hoare>`, separation logic has two parts to
-it.
+section <Part4_Floyd_Hoare>`, separation logic comes in two parts.
 
-First, there is a language of propositions that describe properties
-about program resources, e.g., the heap. These propositions have the
-type ``vprop`` in Pulse, and under the covers in the SteelCore
-semantics of Pulse, ``vprop = heap -> prop``. It is useful (at least
-at first) to think of a ``vprop`` as a heap property, though we will
-eventually treat it more abstractly and use it to model many other
-kinds of resources.
+**Separation Logic Propositions** First, we have a language of
+propositions that describe properties about program resources, e.g.,
+the heap. These propositions have the type ``vprop`` in Pulse, [#]_
+and, under the covers in the SteelCore semantics of Pulse, a ``vprop =
+state -> prop``, where ``state`` represents the state of a program,
+e.g., the conents of memory. It is useful (at least at first) to think
+of a ``vprop`` as a memory property, though we will eventually treat
+it more abstractly and use it to model many other kinds of resources.
 
-To connect ``vprop``'s to programs, separation logics also provide a
-system of Hoare triples to describe the action of a program on the
-heap. For example, the Hoare triple ``{ p } c { n. q }`` describes a
-program ``c`` which when run in an initial heap ``h0`` satisfying ``p
-h0`` (i.e., ``p`` is a precondition); ``c`` returns a value ``n``
-while transforming the heap to ``h1`` satisfying ``q n h1`` (i.e.,
-``q`` is a postcondition). Pulse's program logic is a
-partial-correctness logic, meaning that ``c`` may also loop forever,
-deadlock with other threads, etc.
+.. I'm calling it a hmem to not confuse things with heap vs stack
+   later.
 
-Here are some common ``vprops`` (defined in ``Pulse.Lib.Pervasives``):
+**Separation Logic Hoare Triples** To connect ``vprop``'s to programs,
+separation logics use Hoare triples to describe the action of a
+program on its state. For example, the Hoare triple ``{ p } c { n. q
+}`` describes a program ``c`` which when run in an initial state
+``s0`` satisfying ``p s0`` (i.e., ``p`` is a precondition); ``c``
+returns a value ``n`` while transforming the state to ``s1``
+satisfying ``q n s1`` (i.e., ``q`` is a postcondition). Pulse's
+program logic is a partial-correctness logic, meaning that ``c`` may
+also loop forever, deadlock with other threads, etc.
 
-  * ``emp``, the trivial proposition (equivalent to ``fun h -> True``).
+**Some simple vprops and triples**: Here are two of the simplest
+ ``vprops`` (defined in ``Pulse.Lib.Pervasives``):
 
-  * ``pure p``, heap-independent predicate ``fun h -> p``.
+  * ``emp``, the trivial proposition (equivalent to ``fun s -> True``).
 
-Let's go back to the program ``five``:
+  * ``pure p``, heap-independent predicate ``fun s -> p``. ``emp`` is
+    equivalent to ``pure True``.
+
+The type of the program ``five`` illustrates how these ``vprop``'s are
+used in program specifications:
 
   * It is a function with a single unit argument---Pulse functions use
     the keyword ``fn``.
 
   * The precondition is just ``emp``, the trivial assertion in
     separation logic, i.e., ``five`` can be called in any initial
-    heap.
+    state.
 
   * The return value is an integer ``n:int``
 
   * The postcondition may refer to the name of the return value (``n``
-    in this case) and here claims that the final heap satisfies the
+    in this case) and here claims that the final state satisfies the
     ``pure`` proposition, ``n == 5``.
 
 In other words, the type signature in Pulse is a convenient way to
 write the Hoare triple ``{ emp } five () { n:int. pure (n == 5) }``.
 
-At this point you may wonder if the postcondition of ``five`` is
-actually strong enough. We've only said that the return value ``n ==
-5`` but have not said anything about the heap that results from
-calling ``five ()``. Perhaps this specification allows ``five`` to
-arbitrarily change any reference in the heap, since ``pure (5 == 5)``
-is true of any heap. [#]_ If you're familiar with Low*, Dafny, or
-other languages based on Hoare logic for heaps, you may be wondering
-about how come we haven't specified a ``modifies``-clause, describing
-exactly which part of the heap a function may have changed. The nice
-thing in separation logic is that there is no need to describe what
-parts of the heap you may have modified. This is because a central
-idea in logic is the concept of *ownership*. To a first approximation,
-a computation can only access those resources that it is explicitly
-granted access to in its precondition or those that it creates
-itself. [#]_ In this case, with a precondition of ``emp``, the
-function ``five`` does not have permission to access *any* resources,
-and so ``five`` simply cannot modify the heap in any observable way.
+**Ownership** At this point you may wonder if the postcondition of
+``five`` is actually strong enough. We've only said that the return
+value ``n == 5`` but have not said anything about the state that
+results from calling ``five ()``. Perhaps this specification allows
+``five`` to arbitrarily change any memory location in the state, since ``pure
+(5 == 5)`` is true of any state. [#]_ If you're familiar with Low*,
+Dafny, or other languages based on Hoare logic for heaps, you may be
+wondering about how come we haven't specified a ``modifies``-clause,
+describing exactly which part of the state a function may have
+changed. The nice thing in separation logic is that there is no need
+to describe what parts of the state you may have modified. This is
+because a central idea in logic is the concept of *ownership*. To a
+first approximation, a computation can only access those resources
+that it is explicitly granted access to in its precondition or those
+that it creates itself. [#]_ In this case, with a precondition of
+``emp``, the function ``five`` does not have permission to access
+*any* resources, and so ``five`` simply cannot modify the state in any
+observable way.
 
-Let's go back to ``incr`` and ``par_incr`` that we saw in the previous
-section and look at their types closely. We'll need to introduce two
-more common ``vprop``'s, starting with the "points-to" predicate:
+
+**Separating Conjunction and the Frame Rule** Let's go back to
+``incr`` and ``par_incr`` that we saw in the previous section and look
+at their types closely. We'll need to introduce two more common
+``vprop``'s, starting with the "points-to" predicate:
 
   * ``pts_to x v`` asserts that the reference ``x`` points to a cell
-    in the current heap that holds the value ``v``.
+    in the current state that holds the value ``v``.
 
 ``vprop``'s can also be combined in various ways, the most common one
-being the "separating conjunction" or ``**``.
+being the "separating conjunction", written ``**`` in Pulse. [#]_
     
-  * ``p ** q``, means that the heap can be split into two *disjoint*
+  * ``p ** q``, means that the state can be split into two *disjoint*
     fragments satisfying ``p`` and ``q``, respectively. Alternatively,
     one could read ``p ** q`` as meaning that one holds the
     permissions associated with both ``p`` and ``q`` separately in a
-    given heap.
+    given state. The ``**`` operator satisfies the following laws:
 
+    - Commutativity: ``p ** q`` is equivalent to ``q * p``
+
+    - Associativity: ``p ** (q ** r)`` is equivalent to ``(p ** q) ** r``
+
+    - Left and right unit: ``p ** emp`` is equivalent to ``p``. Since
+      ``**`` is commutative, this also means that ``emp ** p`` is
+      equivalent to ``p``
+       
 Now, perhaps the defining characteristic of separation logic is how
 the ``**`` operator works in the program logic, via a key rule known
 as the *frame* rule. The rule says that if you can prove the Hoare
@@ -128,8 +145,8 @@ can also prove ``{ p ** f } c { n. q ** f }``---``f`` is often called
 the "frame". It might take some time to appreciate, but the frame rule
 captures the essence of local, modular reasoning. Roughly, it states
 that if a program is correct when it only has permission ``p`` on the
-input heap, then it remains correct when run in a larger heap and is
-guaranteed to preserve any property (``f``) on the part of the heap
+input state, then it remains correct when run in a larger state and is
+guaranteed to preserve any property (``f``) on the part of the state
 that it doesn't touch.
 
 With this in mind, let's look again at the type of ``incr``, which
@@ -138,6 +155,23 @@ requires permission only to ``x`` and increments it:
 .. literalinclude:: ../code/pulse/PulseTutorial.Intro.fst
    :language: pulse
    :start-after: ```pulse //incr
+   :end-before: ```
+
+Because of the frame rule, we can also call ``incr`` in a context like
+``incr_frame`` below, and we can prove without any additional work
+that ``y`` is unchanged.
+                                                          
+.. literalinclude:: ../code/pulse/PulseTutorial.Intro.fst
+   :language: pulse
+   :start-after: ```pulse //incr_frame
+   :end-before: ```
+
+In fact, Pulse lets use the frame rule with any ``f:vprop``, and we
+get, for free, that ``incr x`` does not disturb ``f``.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.Intro.fst
+   :language: pulse
+   :start-after: ```pulse //incr_frame_any
    :end-before: ```
 
 A point about the notation: The variable ``'i`` is an implicitly bound
@@ -151,25 +185,50 @@ this is equivalent:
    :language: pulse
    :start-after: ```pulse //incr_explicit_i
    :end-before: ```
-                
-Because of the frame rule, we can also call ``incr`` in a context like
-``incr_frame`` below, and we can prove without any additional work
-that ``y`` is unchanged.
-                
-.. literalinclude:: ../code/pulse/PulseTutorial.Intro.fst
-   :language: pulse
-   :start-after: ```pulse //incr_frame
-   :end-before: ```
+   
+**Other vprop connectives** In addition the separating conjunction,
+Pulse, like other separation logics, provides other ways to combine
+``vprops``. We'll look at these in detail in the subsequent chapters,
+but we list the most common other connectives below just to give you a
+taste of the logic.
 
-In fact, Pulse lets use the frame rule with any ``f:vprop``, and we
-get, for free, that ``incr x`` does not disturb ``f``.
-      
-.. literalinclude:: ../code/pulse/PulseTutorial.Intro.fst
-   :language: pulse
-   :start-after: ```pulse //incr_frame_any
-   :end-before: ```
+  * ``exists* (x1:t1) ... (xn:tn). p``: Existential quantification is
+    used extensively in the Pulse libraries, and the language provides
+    many tools to make existentials convenient to use. ``exists x. p``
+    is valid in a state ``s`` if there is a witness ``w`` such that
+    ``p [w/x]`` is valid in ``s``. For experts, existential
+    quantification is impredicate, in the sense that one can quantify
+    over ``vprops`` themselves, i.e., ``exists* (p:vprop). q`` is
+    allowed.
 
-.. [#] For experts, Pulse's separation logic is  *affine*.
-       
+  * ``forall* (x1:t1) ... (xn:tn). p``: Universal quantification is
+    also supported, though less commonly used. ``forall (x:t). p`` is
+    valid in ``s`` if ``p[w/x]`` is valid for all values ``w:t``.
+    Like existential quantification, it is also impredicative.
+    
+  * ``p @==> q`` is a form of separating implication similar to an
+    operator called a *magic wand* or a *view shift* in other
+    separation logics. 
+
+Pulse does not yet provide libraries for conjunction or
+disjunction. However, since Pulse is embedded in F*, new vprops can
+also be defined by the user and it is common to do so, e.g.,
+recursively defined predicates, or variants of the connectives
+described above.
+
+.. [#] They are called ``vprop`` for mostly historical reasons. A
+       version of the Steel separation logic on which Pulse is based
+       allows associating a *value* with a separation logic
+       proposition, so these came to be known as "value"
+       propositions. However, Pulse does not make use of this
+       feature---perhaps a better name in Pulse would be ``slprop``,
+       for separation logic proposition.
+
+.. [#] For experts, Pulse's separation logic is *affine*.
+   
 .. [#] When we get to things like invariants and locks, we'll see how
        permissions can be acquired by other means.
+   
+.. [#] In the separation logic literature, separating conjunction is
+       written ``p * q``, with just a single star. We use two stars
+       ``**`` to avoid a clash with multiplication.

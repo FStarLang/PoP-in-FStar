@@ -77,3 +77,4 @@ dependent types, refinement types, etc. will be of use again.
    :caption: Contents:
 
    pulse_ch1
+   pulse_ch2
