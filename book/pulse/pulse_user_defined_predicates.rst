@@ -9,8 +9,8 @@ show a few simple examples here---subsequent examples will make heavy
 use of user-defined predicates.
 
 
-Diagonal Pairs
-..............
+Fold and Unfold with Diagonal Pairs
+...................................
 
 A simple example of a user-defined abstraction is show below.
 

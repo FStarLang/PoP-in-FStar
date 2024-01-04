@@ -59,9 +59,171 @@ Here's an annotated version of ``max_alt`` that succeeds.
 
 We are working on adding inference for non-tail conditionals.
 
-Pattern matching
-................
+Pattern matching with nullable references
+.........................................
 
+To illustrate the use of pattern matching, consider the following
+representation of a possibly null reference.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ControlFlow.fst
+   :language: fstar
+   :start-after: //SNIPPET_START: nullable_ref$
+   :end-before: //SNIPPET_END: nullable_ref$
+
+Representation predicate
+++++++++++++++++++++++++
+
+We can represent a nullable ref as just an ``option (ref a)`` coupled
+with a representation predicate, ``pts_to_or_null``. A few points to
+note:
+
+  * The notation ``(#[default_arg (\`full_perm)] p:perm)`` is F*
+    syntax for an implicit argument which when omitted defaults to
+    ``full_perm``---this is exactly how predicates like
+    ``Pulse.Lib.Reference.pts_to`` are defined.
+
+  * The definition is by cases: if the reference ``x`` is ``None``,
+    then the logical witness is ``None`` too.
+
+  * Otherwise, the underlying reference points to some value ``w`` and
+    the logical witness ``v == Some w`` agrees with that value.
+
+Note, one might consider defining it this way:
+
+.. code-block:: fstar
+
+   let pts_to_or_null #a
+        (x:nullable_ref a) 
+        (#[default_arg (`full_perm)] p:perm)
+        (v:option a)
+   : vprop
+   = match x with
+     | None -> pure (v == None)
+     | Some x -> pure (Some? v) ** pts_to x #p (Some?.v v)
+
+However, unlike F*'s conjunction ``p /\ q`` where the well-typedness
+of ``q`` can rely on ``p``, the ``**`` operator is not left-biased; so
+``(Some?.v v)`` cannot be proven in this context and the definition is
+rejected.
+                
+Another style might be as follows:
+
+.. code-block:: fstar
+
+   let pts_to_or_null #a
+        (x:nullable_ref a) 
+        (#[default_arg (`full_perm)] p:perm)
+        (v:option a)
+   : vprop
+   = match x, v with
+     | None, None -> emp
+     | Some x, Some w -> pts_to x #p w
+     | _ -> pure False
+
+This could also work, though it would require handling an additional
+(impossible) case.
+
+Reading a nullable ref
+++++++++++++++++++++++
+
+Let's try our first pattern match in Pulse:
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ControlFlow.fst
+   :language: pulse
+   :start-after: ```pulse //read_nullable$
+   :end-before: ```
+
+The syntax of pattern matching in Pulse is more imperative and
+Rust-like than what F* uses.
+
+  * The entire body of match is enclosed within braces
+
+  * Each branch is also enclosed within braces.
+
+  * Pulse only supports simple patterns with a single top-level
+    constructor applied to variables, or variable patterns: e.g., you
+    cannot write ``Some (Some x)`` as a pattern.
+                
+The type of ``read_nullable`` promises to return a value equal to the
+logical witness of its representation predicate.
+
+The code is a little tedious---we'll see how to clean it up a bit
+shortly.
+
+A ``show_proof_state`` in the ``Some x`` branch prints the following:
+
+.. code-block::
+   
+  - Current context:
+      pts_to_or_null r (reveal 'v)
+  - In typing environment:
+      [branch equality#684 : squash (eq2 r (Some x)),
+       ...
+
+The interesting part is the ``branch equality`` hypothesis, meaning
+that in this branch, we can assume that ``(r == Some x)``. So, the
+first thing we do is to rewrite ``r``; then we ``unfold`` the
+representation predicate; read the value ``o`` out of ``x``; fold the
+predicate back; rewrite in the other direction; and return ``Some
+o``. The ``None`` case is similar.
+
+Another difference between Pulse and F* matches is that Pulse does not
+provide any negated path conditions. For example, in the example
+below, the assertion fails, since the pattern is only a wildcard and
+the Pulse checker does not prove ``not (Some? x)`` as the path
+condition hypothesis for the preceding branches not taken.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ControlFlow.fst
+   :language: pulse
+   :start-after: //SNIPPET_START: read_nullable_alt_fail$
+   :end-before: //SNIPPET_END: read_nullable_alt_fail$
+
+We plan to enhance the Pulse checker to also provide these negated
+path conditions.
+
+
+Helpers
++++++++
+
+When a ``vprop`` is defined by cases (like ``pts_to_or_null``) it is
+very common to have to reason according to those cases when pattern
+matching. Instead of rewriting, unfolding, folding, and rewriting
+every time, one can define helper functions to handle these cases.
+
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ControlFlow.fst
+   :language: pulse
+   :start-after: //SNIPPET_START: pts_to_or_null_helpers$
+   :end-before: //SNIPPET_END: pts_to_or_null_helpers$
+
+These functions are all marked ``ghost``, indicating that they are
+purely for proof purposes only.
+
+Writing these helpers is often quite mechanical: One could imagine
+that the Pulse checker could automatically generate them from the
+definition of ``pts_to_or_null``. Using F*'s metaprogramming support,
+a user could also auto-generate them in a custom way. For now, we
+write them by hand.
+
+Using the helpers, case analyzing a nullable reference is somewhat
+easier:
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ControlFlow.fst
+   :language: pulse
+   :start-after: ```pulse //read_nullable_alt$
+   :end-before: ```
+
+
+Writing a nullable reference
+++++++++++++++++++++++++++++
+
+Having defined our helpers, we can use them repeatedly. For example,
+here is a  function to write a nullable reference.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ControlFlow.fst
+   :language: pulse
+   :start-after: ```pulse //write_nullable$
+   :end-before: ```
 
 
 While loops
