@@ -182,7 +182,9 @@ The comments show how the proof state evolves after each command.
     assumptions in the proof state are sufficient to prove the
     precondition of that step, ensuring that all unused permissions
     are retained in the context---using the frame rule, discussed in
-    the previous section
+    the previous section. Given a context that is equivalent to ``p **
+    q``, if ``p`` is sufficient to prove ``goal``, then ``p`` is
+    called *the support* for ``goal``, while ``q`` is the *frame*.
 
   * Like F*, Pulse tries to instantiate implicit arguments
     automatically, e.g., at the second call to ``add``, Pulse
@@ -196,7 +198,7 @@ The comments show how the proof state evolves after each command.
 
   * Pulse also uses the SMT solver to convert ``pts_to r (v2 + v2)``
     to ``pts_to r (4 * 'v)``.
-
+    
 
 Stateful commands are explicitly sequenced
 ..........................................
@@ -340,9 +342,17 @@ are true after each command.
   * After calling ``incr i``, we have ``pts_to i (0 + 1)``
 
   * Finally, we dereference ``i`` using ``!i`` and return ``v:int``
-    the current value of ``i`` at which point the scope of ``i`` ends
-    and the memory it points to is reclaimed. The final assertion
-    corresponds to the postcondition of ``one``.
+    the current value of ``i``.
+
+  * At the point where the scope of a ``let mut x`` ends, the Pulse
+    checker requires that the context contains ``pts_to x #full_perm
+    _v`` for some value ``_v``. This ensures that the code cannot
+    squirrel away a permission to the soon-to-be out-of-scope
+    reference in some other permission. Once the scope ends, and the
+    memory it points to is reclaimed, and the ``pts_to x #full_perm
+    _v`` is consumed.
+
+    
 
 A few additional points to note here:
 

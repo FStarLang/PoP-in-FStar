@@ -127,3 +127,96 @@ This allows  type inference to work better, as shown below.
    :start-after: ```pulse //move_alt$
    :end-before: ```
 
+Rewriting
+.........
+
+In addition to ``fold`` and ``unfold``, one also often uses the
+``rewrite`` command when working with defined predicates. Its general
+form is:
+
+.. code-block::
+
+   with x1 ... xn. rewrite p as q;
+   rest
+
+Its behavior is to find a substitution ``subst`` that instantiates the
+``x1 ... xn`` as ``v1 ... vn``, such that ``subst(p)`` is supported by
+``c`` in the context, Pulse aims to prove that ``subst(p) ==
+subst(q)`` and replaces ``c`` in the context by ``subst(q)`` and
+proceeds to check ``subst(rest)``.
+
+To illustrate this at work, consider the program below:
+
+.. literalinclude:: ../code/pulse/PulseTutorial.UserDefinedPredicates.fst
+   :language: pulse
+   :start-after: ```pulse //create_and_move$
+   :end-before: ```
+
+We allocate two references and put them in the structure ``p``. Now,
+to call ``fold_is_point``, we need ``pts_to p.x _`` and ``pts_to p.y
+_``, but the context only contains ``pts_to x _`` and ``pts_to y
+_``. The ``rewrite`` command transforms the context as needed.
+
+At the end of the function, we need to prove that ``pts_to x _`` and
+``pts_to y _`` as we exit the scope of ``y`` and ``x``, so that they
+can be reclaimed. Using ``rewrite`` in the other direction
+accomplishes this.
+
+This is quite verbose. As with ``fold`` and ``unfold``, fully
+automated ``rewrite`` in the general case is hard, but many common
+cases are easy and we expect to add support for that to the Pulse
+checker.
+
+In the meantime, Pulse provides a shorthand to make some common
+rewrites easier.
+
+The ``rewrite each`` command has the most general form:
+
+.. code-block:: pulse
+
+   with x1 ... xn. rewrite each e1 as e1', ..., en as en' in goal   
+
+This is equivalent to:
+
+.. code-block:: pulse
+
+   with x1 ... xn. assert goal;
+   rewrite each e1 as e1', ..., en as en' in goal
+
+.. code-block:: pulse
+
+   rewrite each e1 as e1', ..., en as en' in goal
+
+is equivalent to
+
+.. code-block:: pulse
+
+   rewrite goal as goal'
+
+where ``goal'`` is computed by rewriting, in parallel, every
+occurrence of ``ei`` as ``ei'`` in ``goal``.
+
+Finally, one can also write:
+
+.. code-block:: pulse
+
+   rewrite each e1 as e1', ..., en as en'
+
+omitting the ``goal`` term. In this case, the ``goal`` is taken to be
+the entire current ``vprop`` context.
+  
+Using ``rewrite each ...`` makes the code somewhat shorter:
+
+.. literalinclude:: ../code/pulse/PulseTutorial.UserDefinedPredicates.fst
+   :language: pulse
+   :start-after: ```pulse //create_and_move_alt$
+   :end-before: ```
+
+
+
+
+
+
+
+
+
