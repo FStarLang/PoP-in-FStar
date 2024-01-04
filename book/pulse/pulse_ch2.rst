@@ -29,10 +29,10 @@ difference is that stack references are allocated in a scope and
 implicitly reclaimed when they go out of scope; whereas heap
 references are explicitly allocated and deallocated.
 
-The type ``ref t`` is the type of mutable reference that may reside on
-either the stack or the heap. We have already seen ``ref t`` used in
-the ``incr`` function of the previous section. We show below another
-common function to swap the contents of two references:
+The type ``Pulse.Lib.Reference.ref t`` is the basic type of a mutable
+reference. We have already seen ``ref t`` used in the ``incr``
+function of the previous section. We show below another common
+function to swap the contents of two references:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
