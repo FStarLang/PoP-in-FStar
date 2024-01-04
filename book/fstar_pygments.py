@@ -96,6 +96,12 @@ class CustomLexer(RegexLexer):
 
 pulse_keywords = (
     "fn",
+    "fold",
+    "rewrite",
+    "each",
+    "mut",
+    "ghost",
+    "atomic"
 )
 
 class PulseLexer(RegexLexer):

@@ -122,8 +122,61 @@ the value stored in ``r`` each time.
    :start-after: ```pulse //quadruple$
    :end-before: ```
 
-The comments show how the proof state evolves after each command. A
-few points to note about the Pulse checker:
+Inspecting the proof state
+..........................
+
+A Pulse program is checked one stateful operation at a time, "pushing
+through" the ``vprop`` assertions starting with the precondition,
+until the end of function's body. The inferred ``vprop`` at the exit
+of a function must match the annotated postcondition. Along the way,
+the Pulse checker will make several calls to the SMT solver to prove
+that, say, ``pts_to x (v + v)`` is equal to ``pts_to x (2 * v)``.
+
+At each point in the program, the Pulse checker maintains a proof
+state, which has two components:
+
+  * A typing environment, binding variables in scope to their types,
+    including some refinement types that reflect properties about
+    those variables in scope, e.g., ``x:int; y:erased int; _:squash (x == reveal y)``.
+
+  * A separation logic context, called just "the context", or
+    sometimes "the ``vprop`` context". The context contains all known
+    facts about the current state of the program.
+
+Pulse provides a command called ``show_proof_state`` that allows the
+user to inspect the proof state at a particular program point,
+aborting the Pulse checker at that point. It's quite common when
+developing a Pulse program to repeatedly inspect the proof state and
+to advance it by a single or just a few steps at a time. This makes
+the experience of developing a Pulse program quite interactive,
+similar perhaps to writing tactics in F* or other languages. Except,
+in Pulse, one incrementally writes an imperative program together with
+its proof of correctness.
+
+Here below is the ``quadruple`` program again, with the proof states
+annotated at each point, and a ``show_proof_state`` command in the
+middle.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
+   :language: pulse
+   :start-after: ```pulse //quadruple_show_proof_state$
+   :end-before: ```
+
+The output from ``show_proof_state`` is shown below:
+
+.. code-block:: pulse
+                
+  - Current context:
+      pts_to r (reveal (hide v1) + v1) ** 
+      emp
+  - In typing environment:
+      [_#5 : unit,
+      _#4 : squash (reveal 'v == v1),
+      v1#3 : int,
+      'v#2 : erased int,
+      r#1 : ref int]    
+                
+The comments show how the proof state evolves after each command.
 
   * Pulse typechecks each step of a program by checking the current
     assumptions in the proof state are sufficient to prove the
@@ -135,20 +188,21 @@ few points to note about the Pulse checker:
     automatically, e.g., at the second call to ``add``, Pulse
     automatically instantiates ``'v`` to ``v2``.
 
-  * Pulse proves ``pure`` properties automatically, by sending queries
-    to the SMT solver.
+  * Pulse automatically moves any ``pure p`` property in the ``vprop``
+    context to a ``squash p`` hypothesis in the typing
+    environment. Pulse also proves ``pure`` properties automatically,
+    by sending queries to the SMT solver, which can make use of the
+    hypothesis in the typing environment only.
 
   * Pulse also uses the SMT solver to convert ``pts_to r (v2 + v2)``
     to ``pts_to r (4 * 'v)``.
 
-  * Pulse simplifies ``vprops`` implicitly, e.g., Pulse will
-    automatically rewrite ``emp ** p`` to ``p``.
 
 Stateful commands are explicitly sequenced
 ..........................................
 
 Pulse expects the results of all stateful operations to be explicitly
-``let``-bound. For example, the following code fails to type checked:
+``let``-bound. For example, the following code fails to type check:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
@@ -251,6 +305,12 @@ permissions on references, as shown below.
    :language: pulse
    :start-after: ```pulse //gather_ref$
    :end-before: ```
+
+The type of ``gather_ref`` has an additional interesting element: its
+postcondition proves that ``'v0 == 'v1``. That is, since ``x`` can
+point to at most one value, given two separate points-to assertions
+about ``x``, allows one to conclude that the pointed-to witnesses are
+identical.
 
     
 Stack references
