@@ -80,4 +80,6 @@ dependent types, refinement types, etc. will be of use again.
    pulse_ch2
    pulse_existentials
    pulse_user_defined_predicates
-   pulse_controlflow
+   pulse_conditionals
+   pulse_loops
+  

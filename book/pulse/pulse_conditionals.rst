@@ -1,20 +1,20 @@
-.. _Pulse_ControlFlow:
-
-Conditionals, Loops, and Recursion
-==================================
-
-To start writing interesting programs, we need a few control
-constructs. In this chapter, we'll write our first while loops,
-conditionals, and recursive programs.
-
+.. _Pulse_Conditionals:
 
 Conditionals
-............
+============
+
+To start writing interesting programs, we need a few control
+constructs. In this chapter, we'll write some programs with branches
+of two kinds: ``if/else`` and ``match``.
+
+
+A Simple Branching Program: Max
+...............................
 
 Here's a simple program that returns the maximum value stored in two
 references.
 
-.. literalinclude:: ../code/pulse/PulseTutorial.ControlFlow.fst
+.. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: pulse
    :start-after: //SNIPPET_START: max$
    :end-before: //SNIPPET_END: max$
@@ -40,7 +40,7 @@ Pulse's inference machinery does not yet support conditionals that
 appear in non-tail position. For example, this variant of ``max``
 fails, with the error message shown below.
 
-.. literalinclude:: ../code/pulse/PulseTutorial.ControlFlow.fst
+.. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: pulse
    :start-after: ```pulse //max_alt_fail$
    :end-before: ```
@@ -52,7 +52,7 @@ fails, with the error message shown below.
 
 Here's an annotated version of ``max_alt`` that succeeds.
 
-.. literalinclude:: ../code/pulse/PulseTutorial.ControlFlow.fst
+.. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: pulse
    :start-after: ```pulse //max_alt$
    :end-before: ```
@@ -65,7 +65,7 @@ Pattern matching with nullable references
 To illustrate the use of pattern matching, consider the following
 representation of a possibly null reference.
 
-.. literalinclude:: ../code/pulse/PulseTutorial.ControlFlow.fst
+.. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: fstar
    :start-after: //SNIPPET_START: nullable_ref$
    :end-before: //SNIPPET_END: nullable_ref$
@@ -128,7 +128,7 @@ Reading a nullable ref
 
 Let's try our first pattern match in Pulse:
 
-.. literalinclude:: ../code/pulse/PulseTutorial.ControlFlow.fst
+.. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: pulse
    :start-after: ```pulse //read_nullable$
    :end-before: ```
@@ -173,7 +173,7 @@ below, the assertion fails, since the pattern is only a wildcard and
 the Pulse checker does not prove ``not (Some? x)`` as the path
 condition hypothesis for the preceding branches not taken.
 
-.. literalinclude:: ../code/pulse/PulseTutorial.ControlFlow.fst
+.. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: pulse
    :start-after: //SNIPPET_START: read_nullable_alt_fail$
    :end-before: //SNIPPET_END: read_nullable_alt_fail$
@@ -191,7 +191,7 @@ matching. Instead of rewriting, unfolding, folding, and rewriting
 every time, one can define helper functions to handle these cases.
 
 
-.. literalinclude:: ../code/pulse/PulseTutorial.ControlFlow.fst
+.. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: pulse
    :start-after: //SNIPPET_START: pts_to_or_null_helpers$
    :end-before: //SNIPPET_END: pts_to_or_null_helpers$
@@ -208,7 +208,7 @@ write them by hand.
 Using the helpers, case analyzing a nullable reference is somewhat
 easier:
 
-.. literalinclude:: ../code/pulse/PulseTutorial.ControlFlow.fst
+.. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: pulse
    :start-after: ```pulse //read_nullable_alt$
    :end-before: ```
@@ -220,16 +220,10 @@ Writing a nullable reference
 Having defined our helpers, we can use them repeatedly. For example,
 here is a  function to write a nullable reference.
 
-.. literalinclude:: ../code/pulse/PulseTutorial.ControlFlow.fst
+.. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: pulse
    :start-after: ```pulse //write_nullable$
    :end-before: ```
 
 
-While loops
-...........
 
-
-
-Recursion
-.........

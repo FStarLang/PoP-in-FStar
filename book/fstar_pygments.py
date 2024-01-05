@@ -102,7 +102,9 @@ pulse_keywords = (
     "mut",
     "ghost",
     "atomic",
-    "show_proof_state"
+    "show_proof_state",
+    "while",
+    "invariant"
 )
 
 class PulseLexer(RegexLexer):
