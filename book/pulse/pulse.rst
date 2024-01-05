@@ -82,4 +82,4 @@ dependent types, refinement types, etc. will be of use again.
    pulse_user_defined_predicates
    pulse_conditionals
    pulse_loops
-  
+   pulse_arrays

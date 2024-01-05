@@ -14,7 +14,7 @@ BUILDDIR      = _build
 
 prep:
 	mkdir -p code/pulse
-	# cp -R $(FSTAR_HOME)/doc/book/code/* code
+	cp -R $(FSTAR_HOME)/doc/book/code/* code
 	cp -R $(STEEL_HOME)/share/steel/examples/pulse/by-example/* code/pulse
 
 
