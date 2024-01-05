@@ -24,6 +24,8 @@ To see how interfaces work, we'll look at the design of the **bounded
 integer** modules ``FStar.UInt32``, ``FStar.UInt64``, and the like,
 building our own simplified versions by way of illustration.
 
+.. _Machine_integers:
+
 Bounded Integers
 ^^^^^^^^^^^^^^^^
 

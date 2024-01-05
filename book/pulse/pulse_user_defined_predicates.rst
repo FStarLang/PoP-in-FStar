@@ -127,6 +127,8 @@ This allows  type inference to work better, as shown below.
    :start-after: ```pulse //move_alt$
    :end-before: ```
 
+.. _Pulse_rewriting:
+
 Rewriting
 .........
 

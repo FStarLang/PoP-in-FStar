@@ -37,17 +37,6 @@ Where
 
     - the postcondition of the entire loop is ``invariant false``.
 
-Countdown
-.........
-
-Here's our first Pulse program with a loop: ``count_down`` repeatedly
-decrements a reference until it reaches ``0``.
-
-.. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
-   :language: pulse
-   :start-after: ```pulse //count_down$
-   :end-before: ```
-
 One way to understand the invariant is that it describes program
 assertions at three different program points.
 
@@ -59,10 +48,22 @@ assertions at three different program points.
 
   * when ``b`` is undetermined, the invariant describes the property
     of the program state just before the guard is (re)executed, i.e.,
-    at the entry to the loop and at end of loop body.
+    at the entry to the loop and at the end of loop body.
 
 Coming up with an invariant to describe a loop often requires some
-careful thinking. This one is relatively easy, hopefully intuitive.
+careful thinking. We'll see many examples in the remaining chapters,
+starting with some simple loops here.
+
+Countdown
+.........
+
+Here's our first Pulse program with a loop: ``count_down`` repeatedly
+decrements a reference until it reaches ``0``.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
+   :language: pulse
+   :start-after: ```pulse //count_down$
+   :end-before: ```
 
 While loops in Pulse are perhaps a bit more general than in other
 languages. The ``guard`` is an arbitrary Pulse program, not just a

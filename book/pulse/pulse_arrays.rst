@@ -4,11 +4,11 @@ Mutable Arrays
 ===============
 
 In this chapter, we will learn about mutable arrays in Pulse. An array
-is a contiguous collection of values of same type. Similar to ``ref``,
+is a contiguous collection of values of the same type. Similar to ``ref``,
 arrays in Pulse can be allocated in the stack frame of the current function
 or in the heap---while the stack allocated arrays are reclaimed automatically
 (e.g., when the function returns), heap allocated arrays are explicitly managed
-by the program.
+by the programmer.
 
 Pulse provides two array types: ``Pulse.Lib.Array.array t`` as the basic array type
 and ``Pulse.Lib.Vec.vec t`` for heap allocated arrays. To provide code reuse, functions
@@ -27,16 +27,24 @@ that reads an array:
    :start-after: ```pulse //readi$
    :end-before: ```
 
-The library provides a points-to predicate ``pts_to arr s`` with the interpretation that
-in the current memory, the contents of ``arr`` are same as the (functional) sequence ``s``
-(``s:FStar.Seq.seq t``). Arrays can be read and written-to using indexes of type ``FStar.SizeT.t``,
-a model of C ``size_t`` in F*, provided that the index is within the array bounds.
+The library provides a points-to predicate ``pts_to arr #p s`` with
+the interpretation that in the current memory, the contents of ``arr``
+are same as the (functional) sequence ``s:FStar.Seq.seq t``. Like the
+``pts_to`` predicate on reference, it is also indexed by an implicit
+fractional permission ``p``, which distinguished shared, read-only
+access from exclusive read/write access.
 
-Since the representation sequence is specificational, the ``s`` argument to ``read``
-is erased. Further, the refinement ``SZ.v i < Seq.length s`` enforces that the index
-is in bounds. The function returns the ``i``-th element of the array, the
-asserted by the postcondition vprop ``pure (x == Seq.index s (SZ.v i))``. The body
-of the function uses the array read operator ``arr.(i)``.
+In the arguments of ``read_i``, the argument ```s`` is erased, since
+it is for specification only.
+
+Arrays can be read and written-to using indexes of type
+``FStar.SizeT.t``, a model of C ``size_t`` [#]_ in F*, provided that
+the index is within the array bounds---the refinement ``SZ.v i <
+Seq.length s`` enforces that the index is in bounds, where ``module SZ
+= FStar.SizeT``. The function returns the ``i``-th element of the
+array, the asserted by the postcondition vprop ``pure (x == Seq.index
+s (SZ.v i))``. The body of the function uses the array read operator
+``arr.(i)``.
 
 As another example, let's write to the ``i``-th element of an array:
 
@@ -49,23 +57,29 @@ The function uses the array write operator ``arr(i) <- x`` and the postcondition
 asserts that in the state when the function returns, the contents of the array
 are same as the sequence ``s`` updated at the index ``i``.
 
-The ``pts_to`` assertion supports fractional permissions, similar to the points-to
-assertion for references. So far we have been writing ``pts_to arr s``, which is
-a shorthand for ``pts_to #a arr #full_perm s``, i.e. exclusive read/write permission
-on the array. While any permission suffices for reading, writing requires ``full_perm``.
-For example, implementing ``write_i`` without ``full_perm`` will not work:
+While any permission suffices for reading, writing requires
+``full_perm``.  For example, implementing ``write_i`` without
+``full_perm`` is rejected, as shown below.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Array.fst
    :language: pulse
    :start-after: //writeipbegin$
    :end-before: //writeipend$
 
-The library contains ``share`` and ``gather`` functions, similar to those for references,
-to divide and combine permissions on arrays.
+The library contains ``share`` and ``gather`` functions, similar to
+those for references, to divide and combine permissions on arrays.
 
-We now look at a couple of examples that use arrays with conditionals, loops, existentials,
-and invariants, tying up all the Pulse constructs we have seen so far.
+We now look at a couple of examples that use arrays with conditionals,
+loops, existentials, and invariants, using many of the Pulse
+constructs we have seen so far.
 
+.. [#] ``size_t`` in C is an unsigned integer type that is at least
+       ``16`` bits wide. The upper bound of ``size_t`` is platform
+       dependent. ``FStar.SizeT.size_t`` models this type and is
+       extracted to the primitive ``size_t`` type in C, similar to the
+       other :ref:`bounded integer types <Machine_integers>` discussed
+       previously.
+       
 Compare
 ........
 
@@ -131,18 +145,20 @@ after the ``while`` loop to get the postcondition in this exact shape:
    :start-after: //copy2rewriting$
    :end-before: //copy2rewritingend$
 
-A ``rewrite`` explicits rewrites a context vprop; Pulse checker checks that the
-rewriting is sound. We will learn about ``rewrite`` in later chapters.
+We could also rewrite the predicates explicitly, as we saw in a
+:ref:`previous chapter <Pulse_rewriting>`.
 
 
 Stack allocated arrays
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Stack arrays can be allocated using the expression ``[| v; n |]``. It allocates
-an array of size ``n``, with all the array elements initialized to ``v``.
-It provides the postcondition that the newly create array points to a length ``n``
-sequence of ``v``. The following example allocates two arrays on the stack and
-compares them using the ``compare`` function above.
+Stack arrays can be allocated using the expression ``[| v; n |]``. It
+allocates an array of size ``n``, with all the array elements
+initialized to ``v``. The size ``n`` must be compile-time constant.
+It provides the postcondition that the newly create array points to a
+length ``n`` sequence of ``v``. The following example allocates two
+arrays on the stack and compares them using the ``compare`` function
+above.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Array.fst
    :language: pulse
@@ -161,11 +177,15 @@ returning them from the function is not allowed:
 Heap allocated arrays
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Pulse library ``Pulse.Lib.Vec`` provides the heap allocated array type ``vec t``.
-Similar to ``array``, ``vec`` is accompanied with a ``pts_to`` assertion with support
-for fractional permissions, ``share`` and ``gather`` for dividing and combining permissions,
-and read and write functions. However, unlike ``array``, the ``Vec`` library provides allocation
-and free functions.
+The library ``Pulse.Lib.Vec`` provides the type ``vec t``, for
+heap-allocated arrays: ``vec`` is to ``array`` as ``box`` is to
+``ref``.
+
+Similar to ``array``, ``vec`` is accompanied with a ``pts_to``
+assertion with support for fractional permissions, ``share`` and
+``gather`` for dividing and combining permissions, and read and write
+functions. However, unlike ``array``, the ``Vec`` library provides
+allocation and free functions.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Array.fst
    :language: pulse

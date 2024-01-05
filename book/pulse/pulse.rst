@@ -64,8 +64,8 @@ dependent types, refinement types, etc. will be of use again.
    Why is it called Pulse? Because it's based on a logic called Steel,
    and one of the authors and his daughter are big fans of a classic
    reggae band called `Steel Pulse <https://steelpulse.com/>`_. We
-   wanted a name that was softer than Steel, more human, and, well, a
-   bit playful. So, Pulse!
+   wanted a name that was softer than Steel, and, well, a bit
+   playful. So, Pulse!
    
 
    
