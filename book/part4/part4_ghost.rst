@@ -360,6 +360,8 @@ A few comments on these examples:
   type ``erased nat`` when the type ``nat`` was expected.
   
 
+.. _Ghost_in_total_contexts:
+
 Using Ghost Computations in Total Contexts
 ------------------------------------------
 

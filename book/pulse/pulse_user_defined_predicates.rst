@@ -6,7 +6,9 @@ User-defined Predicates
 In addition to the vprop predicates and connectives that the Pulse
 libraries provide, users very commonly define their own ``vprops``. We
 show a few simple examples here---subsequent examples will make heavy
-use of user-defined predicates.
+use of user-defined predicates. For example, see this section for
+:ref:`recursively defined predicates <Pulse_recursive_predicates>`.
+
 
 
 Fold and Unfold with Diagonal Pairs

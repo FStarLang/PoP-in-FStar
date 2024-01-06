@@ -181,6 +181,7 @@ condition hypothesis for the preceding branches not taken.
 We plan to enhance the Pulse checker to also provide these negated
 path conditions.
 
+.. _Pulse_nullable_ref_helpers:
 
 Helpers
 +++++++

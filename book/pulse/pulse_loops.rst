@@ -1,8 +1,17 @@
-Loops
-######
+.. _Pulse_Loops:
+
+Loops & Recursion
+#################
 
 In this chapter, we'll see how various looping constructs work in
-Pulse, starting with ``while``.
+Pulse, starting with ``while`` and also recursive functions.
+
+By default, Pulse's logic is designed for partial correctness. This
+means that programs are allowed to loop forever. When we say that
+program returns ``v:t`` satisfying a postcondition ``p``, this should
+be understood to mean that the program could loop forever, but if it
+does return, it is guaranteed to return a ``v:t`` where the state
+satisfies ``p v``.
 
 
 While loops: General form
@@ -55,7 +64,7 @@ careful thinking. We'll see many examples in the remaining chapters,
 starting with some simple loops here.
 
 Countdown
-.........
++++++++++
 
 Here's our first Pulse program with a loop: ``count_down`` repeatedly
 decrements a reference until it reaches ``0``.
@@ -79,16 +88,9 @@ variable.
                 
 
 Partial correctness
-...................
++++++++++++++++++++
 
-By default, Pulse's logic is designed for partial correctness. This
-means that programs are allowed to loop forever. When we say that
-program returns ``v:t`` satisfying a postcondition ``p``, this should
-be understood to mean that the program could loop forever, but if it
-does return, it is guaranteed to return a ``v:t`` where the state
-satisfies ``p v``.
-
-This partial correctness interpretation means that the following
+The partial correctness interpretation means that the following
 infinitely looping variant of our program is also accepted:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
@@ -106,7 +108,7 @@ general purpose sequential programs (i.e., no concurrency) that is
 also terminating.
 
 Multiply by repeated addition
-.............................
++++++++++++++++++++++++++++++
 
 Our next program with a loop multiplies two natural numbers ``x, y``
 by repeatedly adding ``y`` to an accumulator ``x`` times.  This
@@ -135,7 +137,7 @@ A few noteworthy points:
     loop continues so long as the counter is strictly less than ``x``.
 
 Summing the first ``N`` numbers
-...............................
++++++++++++++++++++++++++++++++
 
 This next example shows a Pulse program that sums the first ``n``
 natural numbers. It illustrates how Pulse programs can developed along
@@ -173,7 +175,52 @@ but with a couple of differences:
     the proof is concluded.
 
 The program is a bit artificial, but hopefully it illustrates how
-Pulse programs can be shown to first F* specificational program, and
-then to rely on mathematical reasoning on those specificational
-programs to conclude properties about the Pulse program itself.
+Pulse programs can be shown to first refine a pure F* function, and
+then to rely on mathematical reasoning on those pure functions to
+conclude properties about the Pulse program itself.
     
+Recursion
+.........
+
+Pulse also supports general recursion, i.e., recursive functions that
+may not terminate. Here is a simple example---we'll see more examples
+later.
+
+Let's start with a standard F* (doubly) recursive definition that
+computes the nth fibonacci number.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
+   :language: fstar
+   :start-after: //fib$
+   :end-before: //fib$
+
+One can also implement it in Pulse, as ``fib_rec`` while using an
+out-parameter to hold that values of the last two fibonacci numbers in
+the sequence.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
+   :language: pulse
+   :start-after: //fib_rec$
+   :end-before: ```
+
+Some points to note here:
+
+  * Recursive definitions in Pulse are introduced with ``fn rec``.
+
+  * So that we can easily memoize the last two values of ``fib``, we
+    expect the argument ``n`` to be a positive number, rather than
+    also allowing ``0``.
+
+  * A quirk shown in the comments: We need an additional type
+    annotation to properly type ``(1, 1)`` as a pair of nats.
+    
+Of course, one can also define fiboncacci iteratively, with a while
+loop, as shown below.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
+   :language: pulse
+   :start-after: //fib_loop$
+   :end-before: ```
+
+
+
