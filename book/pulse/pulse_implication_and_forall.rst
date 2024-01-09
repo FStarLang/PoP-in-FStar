@@ -4,169 +4,254 @@ Implication and Universal Quantification
 ========================================
 
 In this chapter, we'll learn about two more separation logic
-connectives, ``@==>`` and ``forall*``. We'll explain how they work in
-the context of a linked list library.
+connectives, ``@==>`` and ``forall*``. We show a few very simple
+examples using them, though these will be almost trivial. In the next
+chapter, on linked lists, we'll see more significant uses of these
+connectives.
 
-Representing a Linked List
-..........................
-
-Let's start by defining the type of a singly linked list:
-
-.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
-   :language: fstar
-   :start-after: //llist$
-   :end-before: //llist$
-
-A ``node t`` contains a ``head:t`` and a ``tail:llist t``, a nullable
-reference pointing to the rest of the list. Nullable references are
-represented by an option, as :ref:`we saw before
-<Pulse_nullable_ref_helpers>`.
-
-Next, we need a predicate to relate a linked list to a logical
-representation of the list, for use in specifications. 
-
-.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
-   :language: fstar
-   :start-after: //is_list$
-   :end-before: //is_list$
-
-The predicate ``is_list x l`` is a recursive predicate:
-
-  * When ``l == []``, the reference ``x`` must be null.
-
-  * Otherwise, ``l == head :: tl``, ``x`` must contains a valid
-    reference ``p``, where ``p`` points to ``{ head; tail }`` and,
-    recursively , we have ``is_list tail tl``.
-
-
-Boilerplate: Introducing and Eliminating ``is_list``
-++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-We've seen :ref:`recursive predicates in a previous chapter
-<Pulse_recursive_predicates>`, and just as we did there, we need some
-helper ghost functions to work with ``is_list``. We expect the Pulse
-checker will automate these boilerplate ghost lemmas in the future,
-but, for now, we are forced to write them by hand.
-
-.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
-   :language: pulse
-   :start-after: //boilerplate$
-   :end-before: //boilerplate$
-
-
-
-Case analyzing a nullable pointer
-+++++++++++++++++++++++++++++++++
-
-When working with a linked list, the first thing we'll do, typically,
-is to check whether a given ``x:llist t`` is null or not. However, the
-``is_list x l`` predicate is defined by case analysing ``l:list t``
-rather than ``x:llist t``, since that is makes it possible to write
-the predicate by recursing on the tail of ``l``. So, below, we have a
-predicate ``is_list_cases x l`` that inverts ``is_list x l`` predicate
-based on whether or not ``x`` is null.
-
-.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
-   :language: fstar
-   :start-after: //is_list_cases$
-   :end-before: //is_list_cases$
-
-Next, we define a ghost function to invert ``is_list`` into ``is_list_cases``.
-
-.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
-   :language: pulse
-   :start-after: //cases_of_is_list$
-   :end-before: ```
-
-We also define two more ghost functions that package up the call to
-``cases_of_is_list``.
-
-.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
-   :language: pulse
-   :start-after: //is_list_case_none$
-   :end-before: ```
-
-.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
-   :language: pulse
-   :start-after: //is_list_case_some$
-   :end-before: ```
-
-Length, Recursively
-+++++++++++++++++++
-
-With our helper functions in hand, let's get to writing some real
-code, starting with a function to compute the length of an ``llist``.
-
-.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
-   :language: pulse
-   :start-after: //length$
-   :end-before: ```
-
-The ``None`` case is simple.
-
-Some points to note in the ``Some`` case:
-
-  * We use ``with _node _tl. _`` to "get our hands on" the
-    existentially bound witnesses.
-
-  * After reading ``let node = !vl``, we need ``is_list node.tail
-    _tl`` to make the recursive call. But the context contains
-    ``is_list _node.tail _tl`` and ``node == _node``. So, we need a
-    rewrite.
-
-  * We re-introduce the ``is_list`` predicate, and return ``1 +
-    n``. While the ``intro_is_list_cons x vl`` is a ghost step and
-    will be erased before execution, the addition is not---so, this
-    function is not tail recursive.
-
-Exercise 1
-++++++++++
-
-Write a tail-recursive version of ``length``.
-    
-Exercise 2
-++++++++++
-
-Index the ``is_list`` predicate with a fractional permission.  Write
-ghost functions to share and gather fractional ``is_list`` predicates.
-
-Length, Iteratively, with ``@==>``
-++++++++++++++++++++++++++++++++++
-
-What if we wanted to implement ``length`` using a while loop, as is
-more idiomatic in a language like C. It will take us a few steps to
-get there, and we'll use the ``@==>`` operator to structure our proof.
+Separating Ghost Implication
+............................
 
 The library ``module I = Pulse.Lib.Stick.Util`` defines the operator
-``(@==>)`` and utilities for using it. Here's an informal description
-of what it means:
+``(@==>)`` and utilities for using it. In the literature, the operator
+``p --* q`` is pronounces "p magic-wand q"; ``p @==> q`` is similar,
+though there are some important technical differences, as we'll
+see. We'll just pronounce it ``p implies q``, knowing that in this
+context, we are referring to a separation logic implication rather
+than F*'s usual ``p ==> q``.
 
-``p @==> q`` says that if you have ``p`` then you can *trade* it for
-``q``. In other words, from ``p ** (p @==> q)``, you can derive
-``q``. This step of reasoning is performed using a ghost function
-``I.elim`` with the signature below:
+Here's an informal description of what ``p @==> q`` means:
 
-.. code-block:: pulse    
+  ``p @==> q`` says that if you have ``p`` then you can *trade* it for
+  ``q``. In other words, from ``p ** (p @==> q)``, you can derive
+  ``q``. This step of reasoning is performed using a ghost function
+  ``I.elim`` with the signature below:
+
+  .. code-block:: pulse    
    
-   ghost
-   fn I.elim (p q:vprop)
-   requires p ** (p @==> q)
-   ensures q
+     ghost
+     fn I.elim (p q:vprop)
+     requires p ** (p @==> q)
+     ensures q
    
 
-For now, think of ``p @==> q`` as a kind of implication in separation
-logic and ``I.elim`` as implication elimination. Importantly, if you
-think of ``p`` as describing permission on a resource, the ``I.elim``
-makes you *give up* the permission ``p`` and get ``q`` as a
-result. Note, during this step, you also lose permission on the
-implication, i.e., ``p @==> q`` lets you trade ``p`` for ``q`` just
-once.
+Importantly, if you think of ``p`` as describing permission on a
+resource, the ``I.elim`` makes you *give up* the permission ``p`` and
+get ``q`` as a result. Note, during this step, you also lose
+permission on the implication, i.e., ``p @==> q`` lets you trade ``p``
+for ``q`` just once.
 
-But, how to you create a ``p @==> q`` in the first place? That's its
-introducion form, shown below:
+But, how do you create a ``p @==> q`` in the first place? That's its
+introduction form, shown below:
 
-.. code-block:: pulse
+  .. code-block:: pulse
 
-   ghost
-   fn I.intro (p q r:vprop) (elim: ()
+     ghost
+     fn I.intro (p q r:vprop)
+                (elim: unit -> stt_ghost unit emp_inames (r ** p) (fun _ -> q))
+     requires r
+     ensures p @==> q
+   
+That is, to introduce ``p @==> q``, one has to show hold permission
+``r``, such that a ghost function can transform ``r ** p`` into
+``q``.
 
+Share and Gather
+++++++++++++++++
+
+Here's a small example to see ``p @==> q`` at work.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
+   :language: fstar
+   :start-after: //regain_half$
+   :end-before: //regain_half$
+
+The predicate ``regain_half`` says that you can trade a
+half-permission ``pts_to x #one_half v`` for a full permission
+``pts_to x v``. At first, this may seem counterintuitive: how can you
+gain a full permission from half-permission. The thing to remember is
+that ``p @==> q`` itself holds permissions internally. In particular,
+``regain_half x v`` holds ``exists* u. pts_to x #one_half u``
+internally, such that if the context presents the other half, the
+eliminator can combine the two to return the full permission.
+
+Let's look at how to introduce ``regain_half``:
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
+   :language: pulse
+   :start-after: //intro_regain_half$
+   :end-before: ```
+
+The specification says that if we start out with ``pts_to x 'v`` then
+we can split it into ``pts_to x #one_half v`` and a ``regain_half x
+'v``. The normal way of splitting a permission a reference would split
+it into two halves---here, we just package the second half in a ghost
+function that allows us to gather the permission back when we need it.
+
+In the implementation, we define an auxiliary ghost function that
+corresponds to the eliminator fo ``pts_to x #one_half 'v @==> pts_to x
+'v``---it's just a ``gather``. Then, we split ``pts_to x 'v`` into
+halves, call ``I.intro`` passing the eliminator, and the fold it into
+a ``regain_half``. All ``regain_half`` has done is to package the
+ghost function ``aux``, together the half permission on ``x``, and put
+it into a ``vprop``.
+
+Later on, if want to use ``regain_half``, we can call its
+eliminator---which, effectively, calls ``aux`` with the needed
+permission, as shown below.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
+   :language: pulse
+   :start-after: //use_regain_half$
+   :end-before: ```
+
+At this point, you may be wondering why we bother to use a
+``regain_half x 'v`` in the first place, since one might as well have
+just used ``pts_to x #one_half 'v`` and ``gather``, and you'd be right
+to wonder that! In this simple usage, the ``(@==>)`` implication
+hasn't bought us much.
+
+Universal Quantification
+........................
+
+Let's look at our ``regain_half`` predicate again:
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
+   :language: fstar
+   :start-after: //regain_half$
+   :end-before: //regain_half$
+
+This predicate is not as general as it could be: to eliminate it, it
+requires the caller to prove that they holds ``pts_to x #one_half v``,
+for the same ``v`` as was used when the implication was introduced. 
+
+One could try to generalize ``regain_half`` a bit by changing it to:
+
+.. code-block:: fstar
+
+   let regain_half #a (x:GR.ref a) (v:a) =
+     (exists* u. pts_to x #one_half u) @==> pts_to x v
+
+This is an improvement, but it still is not general enough, since it
+does not relate ``v`` to the existentially bound ``u``. What we really
+need is a universal quantifier.
+
+Here's the right version of ``regain_half``:
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
+   :language: fstar
+   :start-after: //regain_half_q$
+   :end-before: //regain_half_q$
+
+This says that no matter what ``pts_to x #one_half u`` the context
+has, they can recover full permission to it, *with the same witness*
+``u``.
+
+The ``forall*`` quantifier and utilities to manipulate it are defined
+in ``Pulse.Lib.Forall.Util``. The introduction and elimination forms
+have a similar shape to what we saw earlier for ``@==>``:
+
+
+  .. code-block:: pulse
+
+     ghost
+     fn FA.elim (#a:Type) (#p:a->vprop) (v:a)
+     requires (forall* x. p x)
+     ensures p v
+
+The eliminator allows a *single* instantiation of the universally
+bound ``x`` to ``v``.
+
+  .. code-block:: pulse
+
+     ghost
+     fn FA.intro (#a:Type) (#p:a->vprop)
+          (v:vprop)
+          (f_elim : (x:a -> stt_ghost unit emp_inames v (fun _ -> p x)))
+     requires v
+     ensures (forall* x. p x)
+
+The introduction form requires proving that one holds ``v``, and that
+with ``v`` a ghost function can produce ``p x``, for any ``x``.
+
+Note, it's very common to have universal quantifiers and implications
+together, so the library also provides the following combined forms:
+
+  .. code-block:: pulse
+
+     ghost
+     fn elim_forall_imp (#a:Type0) (p q: a -> vprop) (x:a)
+     requires (forall* x. p x @==> q x) ** p x
+     ensures q x
+     
+and
+
+  .. code-block:: pulse
+                  
+     ghost
+     fn intro_forall_imp (#a:Type0) (p q: a -> vprop) (r:vprop)
+              (elim: (u:a -> stt_ghost unit emp_inames 
+                               (r ** p u)
+                               (fun _ -> q u)))
+     requires r
+     ensures forall* x. p x @==> q x
+
+     
+Share and Gather, Again
++++++++++++++++++++++++
+
+Here's how one introduces ``regain_half_q``:
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
+   :language: pulse
+   :start-after: //intro_regain_half_q$
+   :end-before: ```
+
+Now, when we want to use it, we can trade in any half-permission on
+``pts_to x #one_half u``, for a full permission with the same ``u``.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
+   :language: pulse
+   :start-after: //use_regain_half_q$
+   :end-before: ```
+
+Note using the eliminator for ``FA.elim`` is quite verbose: we need to
+specify the quantifier term again. The way Pulse uses F*'s unifier
+currently does not allow it to properly find solutions to some
+higher-order unification problems. We expect to fix this soon.
+
+
+More than implications: Ghost steps
+...................................
+
+As a final example in this section, we show that one can use package
+any ghost computation into a ``@==>``, including steps that may modify
+the ghost state. In full generality, this makes ``@==>`` behave more
+like a view shift (in Iris terminology) than a wand.
+
+Here's a predicate ``can_update`` which says that one can trade a half
+permission to ``pts_to x #one_half u`` for a full permission to a
+*different value* ``pts_to x v``.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
+   :language: fstar
+   :start-after: //can_update$
+   :end-before: //can_update$
+
+In ``make_can_update``, we package a ghost-state update function into
+a binary quantifier ``forall* u v. ...``.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
+   :language: pulse
+   :start-after: //make_can_update$
+   :end-before: ```
+
+And in ``update``, below, we instantiate it to update the reference
+``x`` from ``'u`` to ``k``, and also return back a ``can_update``
+predicate to the caller, for further use.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
+   :language: pulse
+   :start-after: //update$
+   :end-before: ```
+                

@@ -110,7 +110,7 @@ and specifications are straightforward. The important bit is that they
 capture the reference ``x:box int`` in their closure.
 
 Finally, we package ``next`` and ``destroy`` into a ``c:ctr``,
-instanting ``inv`` to ``Box.pts_to x``, rewrite the context assertion
+instantiating ``inv`` to ``Box.pts_to x``, rewrite the context assertion
 to ``c.inv 0``, and return ``c``.
 
 In a caller's context, such as ``test_counter`` below, the fact that
