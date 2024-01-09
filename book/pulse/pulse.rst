@@ -84,3 +84,5 @@ dependent types, refinement types, etc. will be of use again.
    pulse_loops
    pulse_arrays
    pulse_ghost
+   pulse_higher_order
+   pulse_implication_and_forall
