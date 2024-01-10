@@ -329,8 +329,8 @@ There are few interesting points to note.
 Perhaps the lesson from all this is that recursive programs are much
 easier to write and prove correct that iterative ones? That's one
 takeaway. But, hopefully, you've seen how trades and quantifiers work
-and can be useful in some proofs, and, of course, we'll use them not
-just for rewriting recursive as iterative code.
+and can be useful in some proofs---of course, we'll use them not just
+for rewriting recursive as iterative code.
 
 Exercise 3
 ++++++++++

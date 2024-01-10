@@ -16,8 +16,8 @@ features for building DSLs embedded in F* with customized syntax, type
 checker plugins, extraction support, etc., with *Pulse* as a showcase
 example of such a DSL.
 
-Pulse is a new programming language embedded in F* and inheriting many
-of its features (notably, it is higher order and has dependent types),
+Pulse is a new programming language embedded in F*, inheriting many of
+its features (notably, it is higher order and has dependent types),
 but with built-in support for programming with mutable state and
 concurrency, with specifications and proofs in `Concurrent Separation
 Logic <https://en.wikipedia.org/wiki/Separation_logic>`_.
