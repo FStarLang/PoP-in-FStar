@@ -244,6 +244,102 @@ broadly useful.
 Append, Recursively
 ...................
 
+Here's another recursive function on linked lists: ``append``
+concatenates ``y`` on to the end of ``x``.
+
+It's fairly straightforward: we recurse until we reach the last node
+of ``x`` (i.e., the ``tail`` field is ``None``; and we set that field
+to point to ``y``.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
+   :language: pulse
+   :start-after: //append$
+   :end-before: ```
+
+The code is tail recursive in the ``Some _`` case, but notice that we
+have a ghost function call *after* the recursive call. Like we did for
+``length``, can we implement an iterative version of ``append``,
+factoring this ghost code on the stack into a trade?
 
 Append, Iteratively
 ...................
+
+Let's start by defining a more general version of the ``tail``
+function from before. In comparison, the postcondition of ``tail_alt``
+uses a universal quantifier to say, rougly, that whatever list ``tl'``
+the returns ``y`` points to, it can be traded for a pointer to ``x``
+that cons's on to ``tl``. Our previous function ``tail`` can be easily
+recovered by instantiating ``tl'`` to ``tl``.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
+   :language: pulse
+   :start-after: //tail_alt$
+   :end-before: ```
+
+We'll use these quantified trades in our invariant of ``append_iter``,
+shown below. The main idea of the implementation is to use a while
+loop to traverse to the last element of the first list ``x``; and then
+to set ``y`` as the ``next`` pointer of this last element.
+      
+.. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
+   :language: pulse
+   :start-after: //append_iter$
+   :end-before: ```
+
+There are few interesting points to note.
+
+  * The main part is the quantified trade in the invariant, which, as
+    we traverse the list, encapsulates the ghost code that we need to
+    run at the end to restore permission to the initial list pointer
+    ``x``.
+
+  * The library function, ``FA.trans_compose`` has the following
+    signature:
+
+    .. code-block:: pulse
+
+      ghost
+      fn trans_compose (#a #b #c:Type0)
+                       (p: a -> vprop)
+                       (q: b -> vprop)
+                       (r: c -> vprop)
+                       (f: a -> GTot b)
+                       (g: b -> GTot c)
+      requires
+        (forall* x. p x @==> q (f x)) **
+        (forall* x. q x @==> r (g x))
+      ensures
+        forall* x. p x @==> r (g (f x))
+                  
+
+    We use it in the key induction step as we move one step down the
+    list---similar to what we had in ``length_iter``, but this time
+    with a quantifier.
+
+  * Illustrating again that Pulse is a superset of pure F*, we make
+    use of a :ref:`bit of F* sugar <Part2_connectives>` in the
+    ``introduce forall`` to prove a property needed for a Pulse
+    rewrite.
+
+  * Finally, at the end of the loop, we use ``FA.elim_forall_imp`` to
+    restore permission on ``x``, now pointing to a concatenated list,
+    effectively running all the ghost code we accumulated as we
+    traversed the list.
+
+Perhaps the lesson from all this is that recursive programs are much
+easier to write and prove correct that iterative ones? That's one
+takeaway. But, hopefully, you've seen how trades and quantifiers work
+and can be useful in some proofs, and, of course, we'll use them not
+just for rewriting recursive as iterative code.
+
+Exercise 3
+++++++++++
+
+Write a function to insert an element in a list and a specific
+position.
+
+
+Exercise 4
+++++++++++
+
+Write a function to reverse a list.
