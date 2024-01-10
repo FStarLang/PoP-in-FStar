@@ -9,17 +9,14 @@ examples using them, though these will be almost trivial. In the next
 chapter, on linked lists, we'll see more significant uses of these
 connectives.
 
-Separating Ghost Implication
-............................
+Trades, or Separating Ghost Implication
+........................................
 
 The library ``module I = Pulse.Lib.Stick.Util`` defines the operator
-``(@==>)`` and utilities for using it. In the literature, the operator
-``p --* q`` is pronounces "p magic-wand q"; ``p @==> q`` is similar,
-though there are some important technical differences, as we'll
-see. We'll just pronounce it ``p implies q``, knowing that in this
-context, we are referring to a separation logic implication rather
-than F*'s usual ``p ==> q``.
-
+*trade* ``(@==>)`` and utilities for using it. In the literature, the
+operator ``p --* q`` is pronounced "p magic-wand q"; ``p @==> q`` is
+similar, though there are some important technical differences, as
+we'll see. We'll just pronounce it ``p for q``, or ``p trades for q``.
 Here's an informal description of what ``p @==> q`` means:
 
   ``p @==> q`` says that if you have ``p`` then you can *trade* it for
@@ -108,8 +105,8 @@ permission, as shown below.
 At this point, you may be wondering why we bother to use a
 ``regain_half x 'v`` in the first place, since one might as well have
 just used ``pts_to x #one_half 'v`` and ``gather``, and you'd be right
-to wonder that! In this simple usage, the ``(@==>)`` implication
-hasn't bought us much.
+to wonder that! In this simple usage, the ``(@==>)`` hasn't bought us
+much.
 
 Universal Quantification
 ........................
@@ -123,7 +120,7 @@ Let's look at our ``regain_half`` predicate again:
 
 This predicate is not as general as it could be: to eliminate it, it
 requires the caller to prove that they holds ``pts_to x #one_half v``,
-for the same ``v`` as was used when the implication was introduced. 
+for the same ``v`` as was used when the trade was introduced. 
 
 One could try to generalize ``regain_half`` a bit by changing it to:
 
@@ -174,7 +171,7 @@ bound ``x`` to ``v``.
 The introduction form requires proving that one holds ``v``, and that
 with ``v`` a ghost function can produce ``p x``, for any ``x``.
 
-Note, it's very common to have universal quantifiers and implications
+Note, it's very common to have universal quantifiers and trades
 together, so the library also provides the following combined forms:
 
   .. code-block:: pulse
@@ -221,11 +218,11 @@ currently does not allow it to properly find solutions to some
 higher-order unification problems. We expect to fix this soon.
 
 
-More than implications: Ghost steps
-...................................
+Trades and Ghost Steps
+......................
 
 As a final example in this section, we show that one can use package
-any ghost computation into a ``@==>``, including steps that may modify
+any ghost computation into a trade, including steps that may modify
 the ghost state. In full generality, this makes ``@==>`` behave more
 like a view shift (in Iris terminology) than a wand.
 
