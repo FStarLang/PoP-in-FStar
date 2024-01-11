@@ -104,7 +104,9 @@ pulse_keywords = (
     "atomic",
     "show_proof_state",
     "while",
-    "invariant"
+    "invariant",
+    "with_invariants",
+    "opens"
 )
 
 class PulseLexer(RegexLexer):

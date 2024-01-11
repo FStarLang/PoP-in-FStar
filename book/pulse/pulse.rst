@@ -87,4 +87,7 @@ dependent types, refinement types, etc. will be of use again.
    pulse_higher_order
    pulse_implication_and_forall
    pulse_linked_list
+   pulse_atomics_and_invariants
+   pulse_spin_lock
+   pulse_parallel_increment
    pulse_extraction

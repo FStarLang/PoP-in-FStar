@@ -68,6 +68,33 @@ have:
   * the precondition is ``pre x`` and the postcondition is ``fun y ->
     post x y``.
 
+Universes
++++++++++
+
+For completeness, the signature of ``stt`` and ``stt_ghost`` are shown
+below:
+
+.. code-block:: fstar
+
+   val stt (a:Type u#a) (i:inames) (pre:vprop) (post: a -> vprop)
+     : Type u#0
+   
+   val stt_ghost (a:Type u#a) (i:inames) (pre:vprop) (post: a -> vprop)
+     : Type u#2
+
+A point to note is that ``stt`` computations live in universe
+``u#0``. This is because ``stt`` computations are allowed to
+infinitely loop, and are built upon :ref:`the effect of divergence
+<Part4_Div>`, or ``Div``, which, as we learned earlier, lives in
+universe ``u#0``. The universe of ``stt`` means that one can store an
+``stt`` function in an reference, e.g., ``ref (unit -> stt unit p q)``
+is a legal type in Pulse.
+
+In contrast, ``stt_ghost`` functions are total and live in
+universe 2. You cannot store a ``stt_ghost`` function in the state,
+since that would allow writing non-terminating functions in
+``stt_ghost``.
+
 Counters
 ........
 
