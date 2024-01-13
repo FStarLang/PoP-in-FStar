@@ -61,9 +61,9 @@ is an erased value witnessing the current contents referenced by
    :end-before: ```
 
 Notice how the precondition requires ``pts_to r w`` while the
-postcondition changes to ``pts_to r v``, along with the property that
-``v == reveal w``, i.e., the type proves that if we read the reference
-the value we get is equal to the logical witness provided.
+postcondition retains ``pts_to r w``, along with the property that ``v
+== reveal w``, i.e., the type proves that if we read the reference the
+value we get is equal to the logical witness provided.
 
 
 Erased values are for specification and proof only

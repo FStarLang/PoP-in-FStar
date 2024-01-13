@@ -106,7 +106,8 @@ pulse_keywords = (
     "while",
     "invariant",
     "with_invariants",
-    "opens"
+    "opens",
+    "parallel"
 )
 
 class PulseLexer(RegexLexer):
