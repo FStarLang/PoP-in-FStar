@@ -298,6 +298,153 @@ Exercise
 
 Instead of explicitly passing a ghost function, use a quantified trade.
 
+
 A version with invariants
 .........................
 
+As a final example, in this section, we'll see how to program ``add2``
+using invariants and atomic operations, rather than locks.
+
+Doing this properly will require working with bounded, machine
+integers, e.g., ``U32.t``, since these are the only types that support
+atomic operations. However, to illustrate the main ideas, we'll assume
+two atomic operations on unbounded integers---this will allow us to
+not worry about possible integer overflow. We leave as an exercise the
+problem of adapting this to ``U32.t``.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ParallelIncrement.fst
+   :language: fstar
+   :start-after: //atomic_primitives$
+   :end-before: //atomic_primitives$
+
+Cancellable Invariants
+++++++++++++++++++++++
+
+The main idea of doing the ``add2`` proof is to use an invariant token
+``i:inv p`` instead of a ``l:lock p``. Just as in our previous code,
+``add2`` starts with allocating an invariant, putting
+``exists* v. pts_to x v ** contribution left right i v`` in the
+invariant. Then call incr twice in different threads. However,
+finally, to recover ``pts_to x (v + 2)``, where previously we would
+acquire the lock, with a regular invariant, we're stuck, since the
+``pts_to x v`` permission is inside the invariant and we can't take it
+out to return to the caller.
+
+An invariant token ``i:inv p`` is a witness that the property ``p`` is
+true and remains true for the rest of a program's execution. But, what
+if we wanted to only enforce ``p`` as an invariant for some finite
+duration, and then to cancel it? This is what the library
+``Pulse.Lib.CancellableInvariant`` provides. By allocating a ``i:inv
+(cancellable t p)``, we get an invariant which enforces ``p`` only so
+long as ``active perm t`` is also provable. Here's the relevant part
+of the API:
+
+.. code-block:: pulse
+
+   ghost
+   fn create (v:vprop)
+   requires v
+   returns t:token
+   ensures cancellable t v ** active full_perm t
+   
+   ghost
+   fn take (#p #t:_) (v:vprop)
+   requires cancellable t v ** active p t
+   ensures  v ** active p t ** active full_perm t
+
+   ghost
+   fn restore (#t:_) (v:vprop)
+   requires v ** active full_perm t
+   ensures cancellable t v
+
+   fn cancel_inv (#t #v:_) (i:inv (cancellable t v))
+   requires active full_perm t
+   ensures v
+   
+A ``cancellable t v`` is created from a proof of ``v``, also providing
+a fractional-permission indexed predicate ``active full_perm t``,
+which can be shared and gathered as usual. So long as one can prove
+that the token ``t`` is active, one can call ``take`` to trade a
+``cancellable t v`` for ``v``, and vice-versa. Finally, with full
+permission on the ``active`` predicate, ``cancel_inv`` is a utility to
+stop enforcing ``v`` an invariant and to extract it from a ``i:inv
+(cancellable t v)``.
+
+An increment operation
+++++++++++++++++++++++
+
+Our first step is to build an increment operation from an
+``atomic_read`` and a ``cas``. Here is its specification:
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ParallelIncrement.fst
+   :language: pulse
+   :start-after: //incr_atomic_spec$
+   :end-before: //incr_atomic_body$
+
+The style of specification is similar to the generic style we used
+with ``incr``, except now we use cancellable invariant instead of a
+lock.
+
+For its implementation, the main idea is to repeatedly read the
+current value of ``x``, say ``v``; and then to ``cas`` in ``v+1`` if
+the current value is still ``v``.
+
+The ``read`` function is relatively easy:
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ParallelIncrement.fst
+   :language: pulse
+   :start-after: //incr_atomic_body_read$
+   :end-before: //incr_atomic_body_read$
+
+* We open the invariant ``l``; then, knowing that the invariant is
+  still active, we can ``take`` it; then read the value ``v``;
+  ``restore`` the invariant; and return ``v``.
+
+The main loop of ``incr_atomic`` is next, shown below:
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ParallelIncrement.fst
+   :language: pulse
+   :start-after: //incr_atomic_body_loop$
+   :end-before: //incr_atomic_body_loop$
+
+The loop invariant says:
+
+  * the invariant remains active
+
+  * the local variable ``continue`` determines if the loop iteration
+    continues
+
+  * and, so long as the loop continues, we still have ``aspec 'i``,
+    but when the loop ends we have ``aspec ('i + 1)``
+
+The body of the loop is also interesting and consists of two atomic
+operations. We first ``read`` the value of ``x`` into ``v``. Then we
+open the invariant again try to ``cas`` in ``v+1``. If it succeeds, we
+return ``false`` from the ``with_invariants`` block; otherwise
+``true``. And, finally, outside the ``with_invariants`` block, we set
+the ``continue`` variable accordingly. Recall that ``with_invariants``
+allows at most a single atomic operation, so we having done a ``cas``,
+we are not allowed to also set ``continue`` inside the
+``with_invariants`` block.
+
+``add2_v3``
++++++++++++
+
+Finally, we implement our parallel increment again, ``add2_v3``, this
+time using invariants, though it has the same specification as before.
+
+.. literalinclude:: ../code/pulse/PulseTutorial.ParallelIncrement.fst
+   :language: pulse
+   :start-after: //add2_v3$
+   :end-before: ```
+
+The code too is very similar to ``add2_v2``, except instead of
+allocating a lock, we allocate a cancellable invariant. And, at the
+end, instead of
+
+Exercise
+........
+
+Implement ``add2`` on a ``ref U32.t``. You'll need a precondition that
+``'i + 2 < pow2 32`` and also to strengthen the invariant to prove
+that each increment doesn't overflow.
