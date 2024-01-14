@@ -65,7 +65,7 @@ Here's a small example to see ``p @==> q`` at work.
 
 The predicate ``regain_half`` says that you can trade a
 half-permission ``pts_to x #one_half v`` for a full permission
-``pts_to x v``. At first, this may seem counterintuitive: how can you
+``pts_to x v``. At first, this may seem counter-intuitive: how can you
 gain a full permission from half-permission. The thing to remember is
 that ``p @==> q`` itself holds permissions internally. In particular,
 ``regain_half x v`` holds ``exists* u. pts_to x #one_half u``
@@ -86,7 +86,7 @@ it into two halves---here, we just package the second half in a ghost
 function that allows us to gather the permission back when we need it.
 
 In the implementation, we define an auxiliary ghost function that
-corresponds to the eliminator fo ``pts_to x #one_half 'v @==> pts_to x
+corresponds to the eliminator for ``pts_to x #one_half 'v @==> pts_to x
 'v``---it's just a ``gather``. Then, we split ``pts_to x 'v`` into
 halves, call ``I.intro`` passing the eliminator, and the fold it into
 a ``regain_half``. All ``regain_half`` has done is to package the

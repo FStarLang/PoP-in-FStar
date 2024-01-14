@@ -104,9 +104,9 @@ l-values and r-values and implicitly read the content of references,
 in Pulse (like in OCaml), references are explicitly dereferenced. [#]_
 As the program below illustrates, references themselves can be passed
 to other functions (e.g., as in/out-parameters) while their current
-values must be passed expliclity.
+values must be passed explicitly.
 
-The function ``add`` takes both a refrence ``r:ref int`` and a value
+The function ``add`` takes both a reference ``r:ref int`` and a value
 ``n:int`` as arguments:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
@@ -222,7 +222,7 @@ Pulse expects the results of all stateful operations to be explicitly
 The error points to the first occurrence of ``(!r)``. The message is
 admittedly cryptic and should be improved. As we'll see in a later
 chapter, the type ``stt _ _ _`` is the type of an unevaluated Pulse
-comptuation---this error complains that ``add`` expected an argument
+computation---this error complains that ``add`` expected an argument
 of type ``int`` but instead got an unevaluated computation.
 
 Fractional Permissions
@@ -369,7 +369,7 @@ A few additional points to note here:
 Stack references are scoped and implicitly reclaimed
 ....................................................
 
-To emphasize that stack references allocted with ``let mut`` are
+To emphasize that stack references allocated with ``let mut`` are
 scoped, let's look at the program below that Pulse refuses to check:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst

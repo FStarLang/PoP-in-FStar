@@ -31,7 +31,7 @@ We've learned so far about :ref:`two kinds of Pulse computations
     computation type
 
   * Ghost computations, proven totally correct, and enforced to be
-    computatationally irrelevant with the ``stt_ghost`` computation
+    computationally irrelevant with the ``stt_ghost`` computation
     type.
 
 Pulse offers a third kind of computation, *atomic* computations, with
@@ -219,7 +219,7 @@ Here's the rule for opening a single invariant ``i:inv p`` using
   while also transforming ``r`` to ``s x``, all in at most one atomic
   step. Further, the ``name_of_inv i`` must not be in the set ``j``.
 
-* ``with_invariants i { e }`` has typ ``stt_atomic t (add_inv i j) r
+* ``with_invariants i { e }`` has type ``stt_atomic t (add_inv i j) r
   s``. That is, ``e`` gets to use ``p`` for a step, and from the
   caller's perspective, the context was transformed from ``r`` to
   ``s``, while the use of ``p`` is hidden.

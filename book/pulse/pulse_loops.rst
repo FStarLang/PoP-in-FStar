@@ -102,7 +102,7 @@ This program increments instead of decrement ``x``, but it still
 satisfies the same invariant as before, since it always loops forever.
 
 We do have a fragment of the Pulse logic, notably the logic of
-``ghost`` and ``atomic`` computations that is guranteed to always
+``ghost`` and ``atomic`` computations that is guaranteed to always
 terminate. We plan to also support a version of the Pulse logic for
 general purpose sequential programs (i.e., no concurrency) that is
 also terminating.
@@ -187,7 +187,7 @@ may not terminate. Here is a simple example---we'll see more examples
 later.
 
 Let's start with a standard F* (doubly) recursive definition that
-computes the nth fibonacci number.
+computes the nth Fibonacci number.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
    :language: fstar
@@ -195,7 +195,7 @@ computes the nth fibonacci number.
    :end-before: //fib$
 
 One can also implement it in Pulse, as ``fib_rec`` while using an
-out-parameter to hold that values of the last two fibonacci numbers in
+out-parameter to hold that values of the last two Fibonacci numbers in
 the sequence.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
@@ -214,7 +214,7 @@ Some points to note here:
   * A quirk shown in the comments: We need an additional type
     annotation to properly type ``(1, 1)`` as a pair of nats.
     
-Of course, one can also define fiboncacci iteratively, with a while
+Of course, one can also define fibonacci iteratively, with a while
 loop, as shown below.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst

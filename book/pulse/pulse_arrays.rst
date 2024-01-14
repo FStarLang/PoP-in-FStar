@@ -124,7 +124,7 @@ of the array ``a2`` to ``a1``.
    :end-before: ```
 
 The loop invariant existentially abstracts over the contents of ``a1``, and maintains
-that upto the current loop counter, the contents of the two arrays are equal. Rest of
+that up to the current loop counter, the contents of the two arrays are equal. Rest of
 the code is straightforward, the loop conditional checks that the loop counter is less
 than the array lengths and the loop body copies one element at a time.
 

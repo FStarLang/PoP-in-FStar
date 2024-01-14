@@ -55,7 +55,7 @@ functions.
 The type of ``f`` is similar to what we had before, but this time we
 have:
 
-  * compuation type tag ``stt_ghost``, indication that this function
+  * computation type tag ``stt_ghost``, indication that this function
     reads or writes ghost state only, and always terminates.
 
   * the return type is ``b x``

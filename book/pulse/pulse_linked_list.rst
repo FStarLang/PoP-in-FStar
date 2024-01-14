@@ -1,3 +1,4 @@
+
 .. _Pulse_linked_list:
 
 Linked Lists
@@ -60,7 +61,7 @@ Case analyzing a nullable pointer
 
 When working with a linked list, the first thing we'll do, typically,
 is to check whether a given ``x:llist t`` is null or not. However, the
-``is_list x l`` predicate is defined by case analysing ``l:list t``
+``is_list x l`` predicate is defined by case analyzing ``l:list t``
 rather than ``x:llist t``, since that is makes it possible to write
 the predicate by recursing on the tail of ``l``. So, below, we have a
 predicate ``is_list_cases x l`` that inverts ``is_list x l`` predicate
@@ -199,7 +200,7 @@ can get back the original permission on ``x``.
 +++++++++++++++
 
 The code below shows our iterative implementation of ``length``. The
-basic idea is simple , thorugh the proof takes a bit of doing. We
+basic idea is simple , though the proof takes a bit of doing. We
 initialize a current pointer ``cur`` to the head of the list; and
 ``ctr`` to ``0``. Then, while ``cur`` is not null, we move ``cur`` to
 the tail and increment ``ctr``. Finally, we return the ``!ctr``.
@@ -266,7 +267,7 @@ Append, Iteratively
 
 Let's start by defining a more general version of the ``tail``
 function from before. In comparison, the postcondition of ``tail_alt``
-uses a universal quantifier to say, rougly, that whatever list ``tl'``
+uses a universal quantifier to say, roughly, that whatever list ``tl'``
 the returns ``y`` points to, it can be traded for a pointer to ``x``
 that cons's on to ``tl``. Our previous function ``tail`` can be easily
 recovered by instantiating ``tl'`` to ``tl``.

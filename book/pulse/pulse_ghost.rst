@@ -135,7 +135,7 @@ Pulse ghost functions with ``emp`` or ``pure _`` pre and
 postconditions are not that interesting---such functions can usually
 be written with regular F* ghost functions.
 
-Ghost functions are aften used as proof steps to prove equivalences
+Ghost functions are often used as proof steps to prove equivalences
 among ``vprops``. We saw a few :ref:`examples of ghost functions
 before <Pulse_nullable_ref_helpers>`---they are ghost since their
 implementations are compositions of ``ghost`` functions from the Pulse

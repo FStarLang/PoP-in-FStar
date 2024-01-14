@@ -127,8 +127,8 @@ programs to C is similar to that of extracting Low* to C, described in
 ``.krml`` files from using the F* extraction command line option ``--codegen krml``, and then
 run the Karamel tool on those files.
 
-One catch with extracting our Boyre-Moore implementation to C is that due to the lack
-of support of polymorphism in C, Karamel monomorphicizes polymorphic functions based on
+One catch with extracting our Boyer-Moore implementation to C is that due to the lack
+of support of polymorphism in C, Karamel monomorphizes polymorphic functions based on
 their uses. So, we write a monomorphic version of the ``majority`` function for ``u32``,
 that internally calls the polymorphic ``majority`` function:
 

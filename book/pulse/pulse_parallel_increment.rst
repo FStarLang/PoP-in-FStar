@@ -116,7 +116,7 @@ function a meaningful postcondition, aside from ``emp``.
 A First Take, with Locks
 ........................
 
-Owicki and Gries' idea was to augment the program with axuiliary
+Owicki and Gries' idea was to augment the program with auxiliary
 variables, or ghost state, that are purely for specification
 purposes. Each thread gets its own piece of ghost state, and accounts
 for how much that thread has contributed to the current value of

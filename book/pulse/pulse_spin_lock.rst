@@ -21,7 +21,7 @@ lock. Releasing the lock is simpler: we'll just set it to ``0ul``
 From a specification perspective, a lock is lot like an invariant: the
 type ``lock p`` is a kind of token that states that the lock protects
 some property ``p``. Acquiring the lock provides ``p`` to the caller;
-while releasing the lock requires the caller to give up ownerhip of
+while releasing the lock requires the caller to give up ownership of
 ``p``. The runtime mutual exclusion is enforced by the acquire
 spinning, or looping, until the lock is available. 
 
