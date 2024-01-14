@@ -53,7 +53,7 @@ allocated ``l:lock p``
 
 Some notes on the implementation:
 
-* We heap allocate a reference using ``Box.alloc``, since the clearly,
+* We heap allocate a reference using ``Box.alloc``, since clearly,
   the lock has to live beyond the scope of this function's activation.
 
 * We use ``new_invariant`` to create an ``inv (lock_inv _)``, and
@@ -98,7 +98,7 @@ The specification of ``cas r u v`` says that we can try to atomically
 update ``r`` from ``u`` to ``v``, and if the operation succeeds, we
 learn that the initial value (``i``) of ``r`` was equal to ``u``.
                   
-Using ``cas``, we can implemented ``acquire`` using a tail-recursive
+Using ``cas``, we can implement ``acquire`` using a tail-recursive
 function:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.SpinLock.fst

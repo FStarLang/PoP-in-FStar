@@ -124,7 +124,7 @@ hold full-permission on ``x``.
    :start-after: //owns$
    :end-before: //owns$
 
-Now, if we can currently proves ``pts_to r x`` then we can turn it
+Now, if we can currently prove ``pts_to r x`` then we can turn it
 into an invariant ``i:inv (owns r)``, as shown below.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
@@ -134,7 +134,7 @@ into an invariant ``i:inv (owns r)``, as shown below.
 
 Importantly, when we turn ``pts_to r x`` into ``inv (owns r)``, **we
 lose** ownership of ``pts_to r x``. Remember, once we have ``inv (owns
-r)``, Pulse's logic aims to that ``owns r`` remains true always. If we
+r)``, Pulse's logic aims to prove that ``owns r`` remains true always. If we
 were allowed to retain ``pts_to r x``, while also creating an ``inv
 (owns r)``, we can clearly break the invariant, e.g., by freeing
 ``r``.

@@ -80,7 +80,7 @@ the rules for allowing F* :ref:`ghost computations to be used in total
 contexts is described here <Ghost_in_total_contexts>`, and the same
 rules apply in Pulse.
 
-To use of ``incr_erased`` in non-ghost contexts, we have to erased its
+To use of ``incr_erased`` in non-ghost contexts, we have to erase its
 result. There are a few ways of doing this.
 
 Here's a verbose but explicit way, where we define a nested ghost
@@ -92,7 +92,7 @@ function to wrap the call to ``incr_erased``.
    :end-before: //use_incr_erased$
 
 The library also contains ``Pulse.Lib.Pervasives.call_ghost`` that is
-a higher-order combinator to erased the result of a ghost call.
+a higher-order combinator to erase the result of a ghost call.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: pulse
@@ -301,7 +301,7 @@ similar to ``Pulse.Lib.Reference``, in that it provides:
 A somewhat contrived example
 ++++++++++++++++++++++++++++
 
-Must examples that require ghost state usually involve stating
+Most examples that require ghost state usually involve stating
 interesting invariants between multiple threads, or sometimes in a
 sequential setting to correlate knowledge among different
 components. We'll see examples of that in a later chapter. For now,

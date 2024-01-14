@@ -142,7 +142,7 @@ our proof.
 Trade Tails
 +++++++++++
 
-Our first step is to define ``tail_for_cons``, a lemma that with
+Our first step is to define ``tail_for_cons``, a lemma stating that with
 permission on a node pointer (``pts_to v n``), we can build a trade
 transforming a permission on the tail into a permission for a cons
 cell starting at the given node.
@@ -200,7 +200,7 @@ can get back the original permission on ``x``.
 +++++++++++++++
 
 The code below shows our iterative implementation of ``length``. The
-basic idea is simple , though the proof takes a bit of doing. We
+basic idea is simple, though the proof takes a bit of doing. We
 initialize a current pointer ``cur`` to the head of the list; and
 ``ctr`` to ``0``. Then, while ``cur`` is not null, we move ``cur`` to
 the tail and increment ``ctr``. Finally, we return the ``!ctr``.

@@ -140,7 +140,7 @@ Rust-like than what F* uses.
 
   * Each branch is also enclosed within braces.
 
-  * Pulse only supports simple patterns with a single top-level
+  * Pulse (for now) only supports simple patterns with a single top-level
     constructor applied to variables, or variable patterns: e.g., you
     cannot write ``Some (Some x)`` as a pattern.
                 

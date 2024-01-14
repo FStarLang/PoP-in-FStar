@@ -129,7 +129,7 @@ being the "separating conjunction", written ``**`` in Pulse. [#]_
     permissions associated with both ``p`` and ``q`` separately in a
     given state. The ``**`` operator satisfies the following laws:
 
-    - Commutativity: ``p ** q`` is equivalent to ``q * p``
+    - Commutativity: ``p ** q`` is equivalent to ``q ** p``
 
     - Associativity: ``p ** (q ** r)`` is equivalent to ``(p ** q) ** r``
 
@@ -166,7 +166,7 @@ that ``y`` is unchanged.
    :start-after: ```pulse //incr_frame
    :end-before: ```
 
-In fact, Pulse lets use the frame rule with any ``f:vprop``, and we
+In fact, Pulse lets us use the frame rule with any ``f:vprop``, and we
 get, for free, that ``incr x`` does not disturb ``f``.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Intro.fst

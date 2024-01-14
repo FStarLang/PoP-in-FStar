@@ -38,7 +38,8 @@ never actually used in any other predicate.
    :start-after: ```pulse //assign$
    :end-before: ```
 
-Another way to write the specification of ``assign`` is shown below.
+And indeed, another way to write the specification of ``assign``, without
+the logical variable argument, is shown below.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Existentials.fst
    :language: pulse
