@@ -27,7 +27,7 @@ repository <https://github.com/FStarLang/steel>`_ and click on the
 the Dev Container definition in the `.devcontainer` directory to set up
 container where F* and Pulse can run in a reproducible manner.
 
-![Creating a Codespace](img/create.png)
+.. image:: img/create.png
 
 .. note:
 
@@ -38,16 +38,16 @@ container where F* and Pulse can run in a reproducible manner.
 You should be greeted, after a minute or two, by a VS Code instance
 running in your browser displaying this same README.
 
-![Loading screen](img/starting.png)
+.. image:: img/starting.png
 
-![Opened Codespace](img/vscode.png)
+.. image:: img/vscode.png
 
 All the usual F* navigation commands should work on Pulse files.
 
 If you prefer a local UI instead of a browser tab, you can "open"
 the Codespace from your local VS Code installation like so:
 
-![Local open](img/local-open.png)
+.. image:: img/local-open.png
 
 F* and Pulse are still running on Github's servers, so the usage is
 still computed, but you may find the UI more comfortable.
@@ -70,3 +70,5 @@ This new window should now work as usual.
 
 Using a Pulse release
 ^^^^^^^^^^^^^^^^^^^^^
+
+(TODO)
