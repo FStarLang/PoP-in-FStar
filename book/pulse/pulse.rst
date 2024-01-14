@@ -76,6 +76,7 @@ dependent types, refinement types, etc. will be of use again.
    :maxdepth: 1
    :caption: Contents:
 
+   pulse_getting_started
    pulse_ch1
    pulse_ch2
    pulse_existentials
