@@ -71,4 +71,11 @@ This new window should now work as usual.
 Using a Pulse release
 ^^^^^^^^^^^^^^^^^^^^^
 
-(TODO)
+A release of Pulse, including related F* tools, `is available here
+<https://github.com/FStarLang/steel/releases/tag/v2024.01.13>`_. Uncompress
+the archive and add follow the instructions in the README.md, notably
+setting the recommended environment variables.
+
+We also recommend installing VS Code and the fstar-vscode-assistant,
+from the VS Code marketplace. This should pick up the F* and Pulse
+installation from your path.
