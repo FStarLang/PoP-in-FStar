@@ -165,3 +165,10 @@ Exercise
 Redesign the lock API to prevent double releases. One way to do this
 is when acquiring to lock to give out a permission to release it, and
 for ``release`` to require and consume that permission.
+
+Exercise
+........
+
+Add a liveness predicate, with fractional permissions, to allow a lock
+to be allocated, then shared among several threads, then gathered, and
+eventually free'd.
