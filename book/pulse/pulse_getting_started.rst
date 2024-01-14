@@ -22,7 +22,7 @@ Creating a Github Codespace
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To do so, go to the `Steel
-repository<https://github.com/FStarLang/steel>`_ and click on the
+repository <https://github.com/FStarLang/steel>`_ and click on the
 '<>Code' button, then select 'Create codespace on main'. This will use
 the Dev Container definition in the `.devcontainer` directory to set up
 container where F* and Pulse can run in a reproducible manner.
