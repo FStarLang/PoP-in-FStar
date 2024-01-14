@@ -48,7 +48,7 @@ propositions that describe properties about program resources, e.g.,
 the heap. These propositions have the type ``vprop`` in Pulse, [#]_
 and, under the covers in the SteelCore semantics of Pulse, a ``vprop =
 state -> prop``, where ``state`` represents the state of a program,
-e.g., the conents of memory. It is useful (at least at first) to think
+e.g., the contents of memory. It is useful (at least at first) to think
 of a ``vprop`` as a memory property, though we will eventually treat
 it more abstractly and use it to model many other kinds of resources.
 
@@ -197,7 +197,7 @@ taste of the logic.
     many tools to make existentials convenient to use. ``exists x. p``
     is valid in a state ``s`` if there is a witness ``w`` such that
     ``p [w/x]`` is valid in ``s``. For experts, existential
-    quantification is impredicate, in the sense that one can quantify
+    quantification is impredicative, in the sense that one can quantify
     over ``vprops`` themselves, i.e., ``exists* (p:vprop). q`` is
     allowed.
 

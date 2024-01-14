@@ -120,9 +120,9 @@ First, let's define a regular ``vprop``, ``owns x``, to mean that we
 hold full-permission on ``x``.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
-   :language: pulse
+   :language: fstar
    :start-after: //owns$
-   :end-before: ```
+   :end-before: //owns$
 
 Now, if we can currently proves ``pts_to r x`` then we can turn it
 into an invariant ``i:inv (owns r)``, as shown below.

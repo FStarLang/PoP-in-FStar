@@ -440,7 +440,8 @@ time using invariants, though it has the same specification as before.
 
 The code too is very similar to ``add2_v2``, except instead of
 allocating a lock, we allocate a cancellable invariant. And, at the
-end, instead of
+end, instead of acquiring, and leaking, the lock, we simply cancel the
+invariant and we're done.
 
 Exercise
 ........
