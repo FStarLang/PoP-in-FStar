@@ -18,11 +18,22 @@ the binaries directly in your system.
 
 (Building from source is not well-documented yet.)
 
+.. note::
+
+   Unlike the pure F* parts of this tutorial, Pulse code does not yet
+   work in the online playground. Use one of the methods described
+   below to try the examples in this part of the book.
+
+   You can find all the source files associated with each chapter `in
+   this folder
+   <https://github.com/FStarLang/steel/tree/main/share/steel/examples/pulse/by-example>`_,
+   in files named ``PulseTutorial.*.fst``.
+          
 Creating a Github Codespace
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To do so, go to the `Steel
-repository <https://github.com/FStarLang/steel>`_ and click on the
+repository <https://github.com/FStarLang/pulse-tutorial-24>`_ and click on the
 '<>Code' button, then select 'Create codespace on main'. This will use
 the Dev Container definition in the `.devcontainer` directory to set up
 container where F* and Pulse can run in a reproducible manner.
