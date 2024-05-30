@@ -255,18 +255,17 @@ We have so far been writing ``pts_to r v`` instead of ``pts_to #a r #p
 v``. Usually, one does not need to write the first argument ``#a``
 since it is computed by type inference; the ``#p:perm`` argument is
 more interesting---when omitted, it defaults to the value
-``full_perm``. The type ``perm`` (defined in
-``Steel.FractionalPermission``) is a real number strictly greater than
-``0`` and less than or equal to ``1``, where ``1`` is written
-``full_perm``.
+``1.0R``. The type ``perm`` (defined in
+``PulseCore.FractionalPermission``) is a real number strictly greater than
+``0.0R`` and less than or equal to ``1.0R``.
 
-The ``pts_to r #full_perm v`` represents exclusive, read/write
+The ``pts_to r #1.0R v`` represents exclusive, read/write
 permission on a reference. Revisiting the ``assign`` function from
 previously, we can write down the permissions explicitly.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
-   :start-after: ```pulse //assign_full_perm$
+   :start-after: ```pulse //assign_1.0R$
    :end-before: ```
    
 In contrast, when reading a reference, any permission ``p`` will do,
@@ -288,7 +287,7 @@ it, Pulse rejects the program, as shown below.
 .. code-block:: fstar
 
   - Cannot prove:
-      pts_to #a r #full_perm (reveal #a _)
+      pts_to #a r #1.0R (reveal #a _)
   - In the context:
       pts_to #a r #p (reveal #a w)   
 
@@ -345,11 +344,11 @@ are true after each command.
     the current value of ``i``.
 
   * At the point where the scope of a ``let mut x`` ends, the Pulse
-    checker requires that the context contains ``pts_to x #full_perm
+    checker requires that the context contains ``pts_to x #1.0R
     _v`` for some value ``_v``. This ensures that the code cannot
     squirrel away a permission to the soon-to-be out-of-scope
     reference in some other permission. Once the scope ends, and the
-    memory it points to is reclaimed, and the ``pts_to x #full_perm
+    memory it points to is reclaimed, and the ``pts_to x #1.0R
     _v`` is consumed.
 
     

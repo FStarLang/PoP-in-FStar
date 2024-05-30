@@ -2,6 +2,7 @@
 #
 
 export FSTAR_HOME?=$(realpath ../..)
+export PULSE_HOME?=$(FSTAR_HOME)/../pulse
 
 FSTARLANG_ORG_ROOT?=www
 
@@ -15,7 +16,7 @@ BUILDDIR      = _build
 prep:
 	mkdir -p code/pulse
 	cp -R $(FSTAR_HOME)/doc/book/code/* code
-	cp -R $(STEEL_HOME)/share/steel/examples/pulse/by-example/* code/pulse
+	cp -R $(PULSE_HOME)/share/pulse/examples/by-example/* code/pulse
 
 
 html: Makefile
