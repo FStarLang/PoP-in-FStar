@@ -77,9 +77,9 @@ We can represent a nullable ref as just an ``option (ref a)`` coupled
 with a representation predicate, ``pts_to_or_null``. A few points to
 note:
 
-  * The notation ``(#[default_arg (\`full_perm)] p:perm)`` is F*
+  * The notation ``(#[default_arg (\`1.0R)] p:perm)`` is F*
     syntax for an implicit argument which when omitted defaults to
-    ``full_perm``---this is exactly how predicates like
+    ``1.0R``---this is exactly how predicates like
     ``Pulse.Lib.Reference.pts_to`` are defined.
 
   * The definition is by cases: if the reference ``x`` is ``None``,
@@ -94,7 +94,7 @@ Note, one might consider defining it this way:
 
    let pts_to_or_null #a
         (x:nullable_ref a) 
-        (#[default_arg (`full_perm)] p:perm)
+        (#[default_arg (`1.0R)] p:perm)
         (v:option a)
    : vprop
    = match x with
@@ -112,7 +112,7 @@ Another style might be as follows:
 
    let pts_to_or_null #a
         (x:nullable_ref a) 
-        (#[default_arg (`full_perm)] p:perm)
+        (#[default_arg (`1.0R)] p:perm)
         (v:option a)
    : vprop
    = match x, v with

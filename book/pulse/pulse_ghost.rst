@@ -283,7 +283,7 @@ similar to ``Pulse.Lib.Reference``, in that it provides:
 
   * ``GR.pts_to (#a:Type0) (r:GR.ref a) (#p:perm) (v:a) : vprop`` is
     the main predicate provided by the library. Similar to the regular
-    ``pts_to``, the permission index defaults to ``full_perm``.
+    ``pts_to``, the permission index defaults to ``1.0R``.
 
   * Unlike ``ref a`` (and more like ``box a``), ghost references
     ``GR.ref a`` are not lexically scoped: they are allocated using

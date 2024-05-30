@@ -58,8 +58,8 @@ asserts that in the state when the function returns, the contents of the array
 are same as the sequence ``s`` updated at the index ``i``.
 
 While any permission suffices for reading, writing requires
-``full_perm``.  For example, implementing ``write_i`` without
-``full_perm`` is rejected, as shown below.
+``1.0R``.  For example, implementing ``write_i`` without
+``1.0R`` is rejected, as shown below.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Array.fst
    :language: pulse

@@ -345,24 +345,24 @@ of the API:
    fn create (v:vprop)
    requires v
    returns t:token
-   ensures cancellable t v ** active full_perm t
+   ensures cancellable t v ** active 1.0R t
    
    ghost
    fn take (#p #t:_) (v:vprop)
    requires cancellable t v ** active p t
-   ensures  v ** active p t ** active full_perm t
+   ensures  v ** active p t ** active 1.0R t
 
    ghost
    fn restore (#t:_) (v:vprop)
-   requires v ** active full_perm t
+   requires v ** active 1.0R t
    ensures cancellable t v
 
    fn cancel_inv (#t #v:_) (i:inv (cancellable t v))
-   requires active full_perm t
+   requires active 1.0R t
    ensures v
    
 A ``cancellable t v`` is created from a proof of ``v``, also providing
-a fractional-permission indexed predicate ``active full_perm t``,
+a fractional-permission indexed predicate ``active 1.0R t``,
 which can be shared and gathered as usual. So long as one can prove
 that the token ``t`` is active, one can call ``take`` to trade a
 ``cancellable t v`` for ``v``, and vice-versa. Finally, with full
