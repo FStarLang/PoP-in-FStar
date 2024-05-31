@@ -46,7 +46,7 @@ section <Part4_Floyd_Hoare>`, separation logic comes in two parts.
 **Separation Logic Propositions** First, we have a language of
 propositions that describe properties about program resources, e.g.,
 the heap. These propositions have the type ``vprop`` in Pulse, [#]_
-and, under the covers in the SteelCore semantics of Pulse, a ``vprop =
+and, under the covers in the PulselCore semantics of Pulse, a ``vprop =
 state -> prop``, where ``state`` represents the state of a program,
 e.g., the contents of memory. It is useful (at least at first) to think
 of a ``vprop`` as a memory property, though we will eventually treat
@@ -217,8 +217,8 @@ recursively defined predicates, or variants of the connectives
 described above.
 
 .. [#] They are called ``vprop`` for mostly historical reasons. A
-       version of the Steel separation logic on which Pulse is based
-       allows associating a *value* with a separation logic
+       version of the Steel separation logic from which Pulse grew is
+       based allows associating a *value* with a separation logic
        proposition, so these came to be known as "value"
        propositions. However, Pulse does not make use of this
        feature---perhaps a better name in Pulse would be ``slprop``,

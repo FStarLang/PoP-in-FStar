@@ -46,26 +46,26 @@ combinator.
 
 Concurrent separation logic is an active research area and there are
 many such logics out there, all with different tradeoffs. Pulse's
-logic is based on a logic called `SteelCore
-<https://www.fstar-lang.org/papers/steelcore/>`_ and a prior DSL built
-on top of SteelCore called `Steel
-<https://www.fstar-lang.org/papers/steel/>`_. SteelCore itself builds
-on ideas from `Iris <https://iris-project.org/>`_ and `Hoare Type
-Theory <https://software.imdea.org/~aleks/htt/>`_. But, you should not
-need to know much about any of this research--- we'll start from the
-basics and explain what you need to know about concurrent separation
-logic to start programming and proving in Pulse. Additionally, Pulse
-is an extension of F*, so all you've learned about F*, lemmas,
-dependent types, refinement types, etc. will be of use again. 
+logic is based on a logic called PulseCore, formalized entirely within
+F*---you can find the formalization `here
+<https://github.com/FStarLang/pulse/tree/main/lib/pulse/core>`_. Proofs
+of programs in Pulse's surface language correspond to proofs of
+correctness in the PulseCore program logic. But, you should not need
+to know much about how the logic is formalized to use Pulse
+effectively. We'll start from the basics and explain what you need to
+know about concurrent separation logic to start programming and
+proving in Pulse. Additionally, Pulse is an extension of F*, so all
+you've learned about F*, lemmas, dependent types, refinement types,
+etc. will be of use again.
 
 
 .. note::
 
-   Why is it called Pulse? Because it's based on a logic called Steel,
-   and one of the authors and his daughter are big fans of a classic
-   reggae band called `Steel Pulse <https://steelpulse.com/>`_. We
-   wanted a name that was softer than Steel, and, well, a bit
-   playful. So, Pulse!
+   Why is it called Pulse? Because it grew from a prior logic called
+   `Steel <https://www.fstar-lang.org/papers/steel/>`_, and one of the
+   authors and his daughter are big fans of a classic reggae band
+   called `Steel Pulse <https://steelpulse.com/>`_. We wanted a name
+   that was softer than Steel, and, well, a bit playful. So, Pulse!
    
 
    

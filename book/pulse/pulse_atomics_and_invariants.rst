@@ -74,22 +74,11 @@ computations described by the computation type below:
 .. code-block:: fstar
 
    val stt_atomic (t:Type) (i:inames) (pre:vprop) (post:t -> vprop)
-     : Type u#2
+     : Type u#4
 
 Like ``stt_ghost``, atomic computations are total and live in universe
-``u#2``. As such, you cannot store an atomic function in the state,
+``u#4``. As such, you cannot store an atomic function in the state,
 i.e., ``ref (unit -> stt_atomic t i p q)`` is not a well-formed type.
-
-Sometimes, we will also refer to the following computation type:
-
-.. code-block:: fstar
-
-   val stt_unobservable (t:Type) (i:inames) (pre:vprop) (post:t -> vprop)
-     : Type u#2
-
-Unobservable computations, or ``stt_unobservable``, are very closed
-related to ghost computations, though are slightly different
-technically---we'll learn more about these shortly.
 
 Atomic computations are also indexed by ``i:inames``, where ``inames``
 is a set of invariant names. We'll learn about these next.
@@ -101,20 +90,57 @@ In ``Pulse.Lib.Core``, we have the following types:
 
 .. code-block:: fstar
 
-   val inv (p:vprop) : Type u#0
-   val iname : eqtype
-   val name_of_inv #p (i:inv p) : GTot iname
+   [@@erasable]
+   val iref : Type0
+   val inv (i:iref) (p:vprop) : vprop
 
-The type ``inv p`` is the type of an *invariant*. Think of ``i:inv p``
-as a *token* which guarantees that ``p`` is true in the current state
-and all future states of the program. Every invariant has a name,
-``name_of_inv i``, though, the name is only relevant in
-specifications, i.e., it is ghost.
-   
-Creating an invariant
-+++++++++++++++++++++
+Think of ``inv i p`` as a predicate asserting that ``p`` is true in
+the current state and all future states of the program. Every
+invariant has a name, ``i:iref``, though, the name is only relevant in
+specifications, i.e., it is erasable.
+
+Boxable predicates
+++++++++++++++++++
+
+Pulse's language of predicates, i.e., the type ``vprop``, is
+stratified. The type ``boxable`` is a refinement of ``vprop``, defined
+as shown below in ``Pulse.Lib.Core``
+
+.. code-block:: fstar
+
+   let boxable = v:vprop { is_big v }
+
+That is, certain ``vprops``, i.e., those that satisfy ``is_big``, are
+``boxable`` predicates. All the predicates that we have encountered so
+far are boxable, except for the ``inv i p`` predicate. For example,
+``pts_to x v`` is boxable; ``exists* x. p x`` is boxable if ``p x`` is
+boxable; etc. However ``inv i p`` is not boxable.
+
+Why does this matter? It turns out that PulseCore, the logic on which
+Pulse is built, only allows turning boxable predicates into
+invariants. That is, while one can build an invariant such as ``inv i
+(exists* v. pts_to x v)``, one **cannot** nest invariants, i.e., there
+is no meaningful way to construct an instance of ``inv i (inv j p)``.
+
+This restriction is a fundamental limitation of PulseCore: invariants
+cannot mention other invariants. In more technical terms, *invariants
+are predicative*. One might wonder whether this limitation is
+significant: after all, why might one want to construct an invariant
+that states that some ``p`` is already an invariant? It turns out that
+such predicates, although not very common, are useful and the
+inability to nest invariants in Pulse makes some styles of proofs
+awkward or perhaps even impossible. Nevertheless, forcing invariants
+to be predicative gives Pulse a simple foundational model in PulseCore
+in terms of a standard, predicative, dependently typed logic.
+
+Let's look next at how to turn a boxable predicate into an invariant.
+
+Creating an invariant and boxable predicates
+++++++++++++++++++++++++++++++++++++++++++++
 
 Let's start by looking at how to create an invariant.
+
+
 
 First, let's define a regular ``vprop``, ``owns x``, to mean that we
 hold full-permission on ``x``.

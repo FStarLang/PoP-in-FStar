@@ -26,13 +26,13 @@ the binaries directly in your system.
 
    You can find all the source files associated with each chapter `in
    this folder
-   <https://github.com/FStarLang/steel/tree/main/share/steel/examples/pulse/by-example>`_,
+   <https://github.com/FStarLang/pulse/tree/main/share/pulse/examples/by-example>`_,
    in files named ``PulseTutorial.*.fst``.
           
 Creating a Github Codespace
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To do so, go to the `Steel
+To do so, go to the `this
 repository <https://github.com/FStarLang/pulse-tutorial-24>`_ and click on the
 '<>Code' button, then select 'Create codespace on main'. This will use
 the Dev Container definition in the `.devcontainer` directory to set up
@@ -83,7 +83,7 @@ Using a Pulse release
 ^^^^^^^^^^^^^^^^^^^^^
 
 A release of Pulse, including related F* tools, `is available here
-<https://github.com/FStarLang/steel/releases/tag/v2024.01.13>`_. Uncompress
+<https://github.com/FStarLang/pulse/releases/>`_. Uncompress
 the archive and add follow the instructions in the README.md, notably
 setting the recommended environment variables.
 

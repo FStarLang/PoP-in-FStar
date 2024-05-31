@@ -80,7 +80,7 @@ below:
      : Type u#0
    
    val stt_ghost (a:Type u#a) (i:inames) (pre:vprop) (post: a -> vprop)
-     : Type u#2
+     : Type u#4
 
 A point to note is that ``stt`` computations live in universe
 ``u#0``. This is because ``stt`` computations are allowed to
@@ -91,7 +91,7 @@ universe ``u#0``. The universe of ``stt`` means that one can store an
 is a legal type in Pulse.
 
 In contrast, ``stt_ghost`` functions are total and live in
-universe 2. You cannot store a ``stt_ghost`` function in the state,
+universe 4. You cannot store a ``stt_ghost`` function in the state,
 since that would allow writing non-terminating functions in
 ``stt_ghost``.
 

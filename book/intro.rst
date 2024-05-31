@@ -81,6 +81,11 @@ automation, and compilation backends. Some examples include:
   a core program logic, and proof automation built using a combination
   of Meta-F* tactics, higher-order unification, and SMT.
 
+* Pulse, a successor of Steel, a DSL with custom syntax and
+  typechecking algorithm, providing proofs in a small but highly
+  expressive core logic for mutable state and concurrency called
+  PulseCore, formalized entirely in terms of pure and ghost functions
+  in F*.
 
 .. _Intro_Vec:
 
