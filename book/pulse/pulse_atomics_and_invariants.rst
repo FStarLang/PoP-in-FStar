@@ -80,8 +80,9 @@ Like ``stt_ghost``, atomic computations are total and live in universe
 ``u#4``. As such, you cannot store an atomic function in the state,
 i.e., ``ref (unit -> stt_atomic t i p q)`` is not a well-formed type.
 
-Atomic computations are also indexed by ``i:inames``, where ``inames``
-is a set of invariant names. We'll learn about these next.
+Atomic computations and ghost computations are also indexed by
+``i:inames``, where ``inames`` is a set of invariant names. We'll
+learn about these next.
 
 Invariants
 ..........
@@ -98,6 +99,26 @@ Think of ``inv i p`` as a predicate asserting that ``p`` is true in
 the current state and all future states of the program. Every
 invariant has a name, ``i:iref``, though, the name is only relevant in
 specifications, i.e., it is erasable.
+
+A closely related type is ``iname``:
+
+.. code-block:: fstar
+
+   val iname : eqtype
+   let inames = erased (FStar.Set.set iname)
+
+Every ``iref`` can be turned into an ``iname``, with the function
+``iname_of (i:iref): GTot iname``.
+
+Invariants are duplicable, i.e., from ``inv i p`` one can prove ``inv
+i p ** inv i p``, as shown by type of ``Pulse.Lib.Core.dup_inv``
+below:
+
+.. code-block:: fstar
+		    
+    val dup_inv (i:iref) (p:vprop)
+      : stt_ghost unit emp_inames (inv i p) (fun _ -> inv i p ** inv i p)
+
 
 Boxable predicates
 ++++++++++++++++++
@@ -140,66 +161,74 @@ Creating an invariant and boxable predicates
 
 Let's start by looking at how to create an invariant.
 
-
-
-First, let's define a regular ``vprop``, ``owns x``, to mean that we
-hold full-permission on ``x``.
+First, let's define a predicate ``owns x``, to mean that we hold
+full-permission on ``x``.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
    :language: fstar
    :start-after: //owns$
    :end-before: //owns$
 
-Now, if we can currently prove ``pts_to r x`` then we can turn it
-into an invariant ``i:inv (owns r)``, as shown below.
+Notice the type annotation on ``owns`` claims that it is ``boxable``,
+and indeed F*'s refinement type checker automatically proves that it
+is.
+
+Now, if we can currently prove ``pts_to r x`` then we can turn it into
+an invariant ``inv i (owns r)``, as shown below.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
    :language: pulse
    :start-after: //create_invariant$
    :end-before: ```
 
-Importantly, when we turn ``pts_to r x`` into ``inv (owns r)``, **we
-lose** ownership of ``pts_to r x``. Remember, once we have ``inv (owns
-r)``, Pulse's logic aims to prove that ``owns r`` remains true always. If we
-were allowed to retain ``pts_to r x``, while also creating an ``inv
-(owns r)``, we can clearly break the invariant, e.g., by freeing
-``r``.
+Importantly, when we turn ``pts_to r x`` into ``inv i (owns r)``, **we
+lose** ownership of ``pts_to r x``. Remember, once we have ``inv i
+(owns r)``, Pulse's logic aims to prove that ``owns r`` remains true
+always. If we were allowed to retain ``pts_to r x``, while also
+creating an ``inv i (owns r)``, we can clearly break the invariant,
+e.g., by freeing ``r``.
 
 .. note::
 
-   A tip: When using an ``inv p``, it's a good idea to make sure that
-   ``p`` is a user-defined predicate. For example, one might think to
-   just write ``inv (exists* v. pts_to x v)`` instead of defining an
-   auxiliary predicate for ``inv (owns r)``. However, the some of the
-   proof obligations produced by the Pulse checker are harder for the
-   SMT solver to prove if you don't use the auxiliary predicate and
-   you may start to see odd failures. This is something we're working
-   to improve. In the meantime, use an auxiliary predicate.
+   A tip: When using an ``inv i p``, it's a good idea to make sure
+   that ``p`` is a user-defined predicate. For example, one might
+   think to just write ``inv i (exists* v. pts_to x v)`` instead of
+   defining an auxiliary predicate for ``inv i (owns r)``. However, the
+   some of the proof obligations produced by the Pulse checker are
+   harder for the SMT solver to prove if you don't use the auxiliary
+   predicate and you may start to see odd failures. This is something
+   we're working to improve. In the meantime, use an auxiliary
+   predicate.
 
-``new_invariant`` is unobservable
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Note, if one were to try to allocate an invariant for a non-boxable predicate,
+typechecking fails, as shown in the example below:
 
-The type of ``new_invariant`` is shown below:
+.. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
+   :language: pulse
+   :start-after: //create_non_boxable$
+   :end-before: ```
 
-.. code-block:: fstar
+failing with an error pointing to the source location of the
+refinement precondition, ``is_big``, at the call to ``new_invariant``.
 
-   val new_invariant (p:vprop)
-   : stt_unobservable (inv p) emp_inames p (fun _ -> emp)
+.. code-block::
 
-The ``stt_unobservable`` says that ``new_invariant`` is an atomic step
-of computation from Pulse's perspective, but it doesn't read or change
-any observable state. In that regard, ``stt_unobservable`` is a lot
-like ``stt_ghost``; however, while ``stt_ghost`` computations are
-allowed to use F* ghost operations like ``reveal : erased a -> GTot
-a``, unobservable computations are not.
+   - Assertion failed
+   - The SMT solver could not prove the query. Use --query_stats for more details.
+   - See also ../../../lib/pulse/lib/Pulse.Lib.Core.fsti(536,29-536,37)
 
-A ``stt_ghost`` computation with a non-informative result can be
-lifted to ``stt_unobservable``.
+As you can see, although the language does not prevent you from
+writing ``inv i p`` for any predicate ``p``, the only way to allocate
+an instance of ``inv i p`` is by provable that ``p`` is
+``boxable``. This design is convenient since the onus of proving that
+a predicate is boxable is only placed at the allocation site of the
+invariant---uses of invariants do not need to worry about the
+distinction between ``boxable`` and general ``vprops``.
 
 Opening an invariant
 ++++++++++++++++++++
 
-Now that we've allocated an ``inv (owns r)``, what can we do with it?
+Now that we've allocated an ``inv i (owns r)``, what can we do with it?
 As we said earlier, one can make use of the ``owns r`` in an atomic
 computation, so long as we restore it at the end of the atomic
 step.
@@ -235,39 +264,44 @@ This is syntactic sugar for the following nest:
     ...
    }
 
-Here's the rule for opening a single invariant ``i:inv p`` using
+Here's the rule for opening a single invariant ``inv i p`` using
 ``with_invariant i { e }`` is as follows:
 
-* ``i`` must have type ``inv p``, for some ``p:vprop``   
+* ``i`` must have type ``iref`` and ``inv i p`` must be provable in
+  the current context, for some ``p:vprop``
    
 * ``e`` must have the type ``stt_atomic t j (p ** r) (fun x -> p ** s
   x)``. [#]_ That is, ``e`` requires and restores the invariant ``p``,
   while also transforming ``r`` to ``s x``, all in at most one atomic
   step. Further, the ``name_of_inv i`` must not be in the set ``j``.
 
-* ``with_invariants i { e }`` has type ``stt_atomic t (add_inv i j) r
-  s``. That is, ``e`` gets to use ``p`` for a step, and from the
-  caller's perspective, the context was transformed from ``r`` to
-  ``s``, while the use of ``p`` is hidden.
+* ``with_invariants i { e }`` has type ``stt_atomic t (add_inv i j)
+  (inv i p ** r) (fun x -> inv i p ** s x)``. That is, ``e`` gets to
+  use ``p`` for a step, and from the caller's perspective, the context
+  was transformed from ``r`` to ``s``, while the use of ``p`` is
+  hidden.
 
 * Pay attention to the ``add_inv i j`` index on ``with_invariants``:
-  ``stt_atomic`` (or ``stt_unobservable``) computation is indexed by
+  ``stt_atomic`` (or ``stt_ghost``) computation is indexed by
   the names of all the invariants that it may open.
+
 
 Let's look at a few examples to see how ``with_invariants`` works.
 
 .. [#]
 
-   Note, ``e`` may also have type ``stt_unobservable t j (p ** r) (fun
-   x -> p ** s x)``, in which case ``with_invariant i { e }`` has type
-   ``stt_unobservable t (add_inv i j) r s``.
-
+    Alternatively ``e`` may have type ``stt_ghost t j (p ** r) (fun x
+    -> p ** s x)``, in which case the entire ``with_invariants i { e
+    }`` block has type ``stt_ghost t (add_inv i j) (inv i p ** r) (fun
+    x -> inv i p ** s x)``, i.e., one can open an invariant and use it
+    in either an atomic or ghost context.
+    
     
 Updating a reference
 ~~~~~~~~~~~~~~~~~~~~
 
-In the example below, given ``inv (owns r)``, we can atomically update
-a reference with a pre- and postcondition of ``emp``.
+In the example below, given ``inv i (owns r)``, we can atomically
+update a reference with a pre- and postcondition of ``emp``.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
    :language: pulse
@@ -289,9 +323,9 @@ a reference with a pre- and postcondition of ``emp``.
 * Since we opened the invariant ``i``, the type of
   ``update_ref_atomic`` records this in the ``opens (singleton i)``
   annotation; equivalently, the type is ``stt_atomic unit
-  (singleton i) emp (fun _ -> emp)``. When the ``opens`` annotation is
-  omitted, it defaults to ``emp_inames``, the empty set of invariant
-  names.
+  (singleton i) (inv i (owns r)) (fun _ -> inv i (owns r))``. When the
+  ``opens`` annotation is omitted, it defaults to ``emp_inames``, the
+  empty set of invariant names.
 
 Double opening is unsound
 ~~~~~~~~~~~~~~~~~~~~~~~~~
