@@ -75,13 +75,13 @@ the output is written to ``stdout``, if an ``-o <file>`` option is provided to t
 the output is written to ``file``). For example, the first command produces the ``.ast``
 file from ``PulseTutorial.Algorithms.fst`` (which contains the Boyer-Moore algorithm implementation),
 and then the second command extracts the Rust code to ``voting.rs``. (These commands are run in the
-``steel`` root directory, change the location of main.exe according to your setup.)
+``pulse`` root directory, change the location of main.exe according to your setup.)
 
 .. code-block:: shell
 
-  $ fstar.exe --include lib/steel/ --include lib/steel/pulse --include share/steel/examples/pulse/lib/
-    --include share/steel/examples/pulse/by-example/ --include share/steel/examples/pulse/_output/cache/
-    --load_cmxs steel  --odir . PulseTutorial.Algorithms.fst
+  $ fstar.exe --include lib/pulse/ --include lib/pulse/lib
+    --include share/pulse/examples/by-example/ --include share/pulse/examples/_output/cache/
+    --load_cmxs pulse  --odir . PulseTutorial.Algorithms.fst
     --extract 'PulseTutorial.Algorithms' --codegen Extension
   
   $ ./pulse2rust/main.exe PulseTutorial_Algorithms.ast -o voting.rs
@@ -137,13 +137,13 @@ that internally calls the polymorphic ``majority`` function:
     :start-after: //majoritymono$
     :end-before: //majoritymonoend$
 
-Then we extract it to C as follows (the commands are run in the ``steel`` root directory as before):
+Then we extract it to C as follows (the commands are run in the ``pulse`` root directory as before):
 
 .. code-block:: shell
 
-  $ fstar.exe --include lib/steel/ --include lib/steel/pulse --include share/steel/examples/pulse/lib/
-    --include share/steel/examples/pulse/by-example/ --include share/steel/examples/pulse/_output/cache/
-    --load_cmxs steel  --odir . PulseTutorial.Algorithms.fst
+  $ fstar.exe --include lib/pulse/ --include lib/pulse/lib
+    --include share/pulse/examples/by-example/ --include share/pulse/examples/_output/cache/
+    --load_cmxs pulse  --odir . PulseTutorial.Algorithms.fst
     --extract 'FStar.Pervasives.Native PulseTutorial.Algorithms' --codegen krml
 
   $ ../karamel/krml -skip-compilation out.krml
@@ -185,9 +185,9 @@ For the Boyer-Moore example, we can extract the program to OCaml as follows:
 
 .. code-block:: shell
 
-  $ fstar.exe --include lib/steel/ --include lib/steel/pulse --include share/steel/examples/pulse/lib/
-    --include share/steel/examples/pulse/by-example/ --include share/steel/examples/pulse/_output/cache/
-    --load_cmxs steel  --odir . PulseTutorial.Algorithms.fst
+  $ fstar.exe --include lib/pulse/ --include lib/pulse/lib
+    --include share/pulse/examples/by-example/ --include share/pulse/examples/_output/cache/
+    --load_cmxs pulse  --odir . PulseTutorial.Algorithms.fst
     --extract 'PulseTutorial.Algorithms' --codegen OCaml
 
 and the extracted ``majority`` function looks like:

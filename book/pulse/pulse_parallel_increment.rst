@@ -111,7 +111,22 @@ To enforce synchronization, we could use a lock, e.g., shown below:
 
 This program is type correct and free from data races. But, since the
 lock holds the entire permission on ``x``, there's no way to give this
-function a meaningful postcondition, aside from ``emp``.
+function a precise postcondition.
+
+.. note ::
+
+   In this section, we use an implementation of spin locks from the
+   Pulse library, Pulse.Lib.SpinLock. Unlike the version we developed
+   in the previous chapter, these locks use a fraction-indexed
+   permission, ``lock_alive l #f p``. The also provide a predicate,
+   ``lock_acquired l``, that indicates when the lock has been
+   taken. With full-permission to the lock, and ``lock_acquired l``,
+   the lock can be freed---reclaiming the underlying
+   memory. Additionally, the ``lock_acquired`` predicate ensures that
+   locks cannot be double freed. As such, ``Pulse.Lib.SpinLock`` fixes
+   the problems with the spin locks we introduced in the previous
+   chapter and also provides a solution to the exercises given there.
+   
 
 A First Take, with Locks
 ........................
@@ -216,11 +231,6 @@ Finally, we can implement ``add2`` with the specification we want:
   left right i v`` tells us that ``v == i + 1 + 1``, which is what we
   need to conclude.
 
-This version also has the problem that we allocate lock and then
-acquire it at the end, effectively leaking the memory associated with
-the lock. We'll see how to fix that below.
-
-
 Modularity with higher-order ghost code
 .......................................
 
@@ -232,7 +242,7 @@ idea proposed by Bart Jacobs and Frank Piessens in a paper titled
 <https://dl.acm.org/doi/10.1145/1926385.1926417>`_.
 
 The main idea is to observe that ``incr_left`` and ``incr_right`` only
-deferred by the ghost code that they execute. But, Pulse is higher
+differ by the ghost code that they execute. But, Pulse is higher
 order: so, why not parameterize a single function by ``incr`` and let
 the caller instantiate ``incr`` twice, with different bits of ghost
 code. Also, while we're at it, why not also generalize the
@@ -263,7 +273,7 @@ it is parameterized by:
 
 Having generalized ``incr``, we've now shifted the work to the
 caller. But, ``incr``, now verified once and for all, can be used with
-many different callers just by instantiating it difference. For
+many different callers just by instantiating it differently. For
 example, if we wanted to do a three-way parallel increment, we could
 reuse our ``incr`` as is. Whereas, our first take would have to be
 completely revised, since ``incr_left`` and ``incr_right`` assume that
@@ -290,8 +300,8 @@ This code still has two issues:
   state using Pulse's support for partial commutative monoids---but
   that's for another chapter.
   
-* We still leak the memory associated with the lock at the end---we'll
-  remedy that next.
+* We allocate and free memory for a lock, which is inefficient---could
+  we instead do things with atomic operations? We'll remedy that next.
 
 Exercise
 ++++++++
@@ -320,55 +330,75 @@ problem of adapting this to ``U32.t``.
 Cancellable Invariants
 ++++++++++++++++++++++
 
-The main idea of doing the ``add2`` proof is to use an invariant token
-``i:inv p`` instead of a ``l:lock p``. Just as in our previous code,
-``add2`` starts with allocating an invariant, putting
-``exists* v. pts_to x v ** contribution left right i v`` in the
-invariant. Then call incr twice in different threads. However,
-finally, to recover ``pts_to x (v + 2)``, where previously we would
-acquire the lock, with a regular invariant, we're stuck, since the
-``pts_to x v`` permission is inside the invariant and we can't take it
-out to return to the caller.
+The main idea of doing the ``add2`` proof is to use an invariant
+instead of a lock. Just as in our previous code, ``add2`` starts with
+allocating an invariant, putting ``exists* v. pts_to x v **
+contribution left right i v`` in the invariant. Then call incr twice
+in different threads. However, finally, to recover ``pts_to x (v +
+2)``, where previously we would acquire the lock, with a regular
+invariant, we're stuck, since the ``pts_to x v`` permission is inside
+the invariant and we can't take it out to return to the caller.
 
-An invariant token ``i:inv p`` is a witness that the property ``p`` is
-true and remains true for the rest of a program's execution. But, what
-if we wanted to only enforce ``p`` as an invariant for some finite
+An invariant ``inv i p`` guarantees that the property ``p`` is true
+and remains true for the rest of a program's execution. But, what if
+we wanted to only enforce ``p`` as an invariant for some finite
 duration, and then to cancel it? This is what the library
-``Pulse.Lib.CancellableInvariant`` provides. By allocating a ``i:inv
-(cancellable t p)``, we get an invariant which enforces ``p`` only so
-long as ``active perm t`` is also provable. Here's the relevant part
+``Pulse.Lib.CancellableInvariant`` provides. Here's the relevant part
 of the API:
 
 .. code-block:: pulse
 
+   [@@ erasable]
+   val cinv : Type0
+   val iref_of (c:cinv) : GTot iref
+
+The main type it offers is ``cinv``, the name of a cancellable
+invariant.
+
+
+.. code-block:: pulse
+		
    ghost
-   fn create (v:vprop)
+   fn new_cancellable_invariant (v:boxable)
    requires v
-   returns t:token
-   ensures cancellable t v ** active 1.0R t
-   
+   returns c:cinv
+   ensures inv (iref_of c) (cinv_vp c v) ** active c 1.0R
+
+Allocating a cancellable invariant is similar to allocating a regular
+invariant, except one gets an invariant for an abstract predicate
+``cinv_cp c v``, and a fraction-indexed predicate ``active c 1.0R``
+which allows the cancellable invariant to be shared and gathered
+between threads.
+
+The ``cinv_cp c v`` predicate can be used in conjunction with
+``active`` to recover the underlying predicate ``v``---but only when
+the invariant has not been cancelled yet---this is what
+``unpack_cinv_vp``, and its inverse, ``pack_cinv_vp``, allow one to
+do.
+
+.. code-block:: pulse
+		
    ghost
-   fn take (#p #t:_) (v:vprop)
-   requires cancellable t v ** active p t
-   ensures  v ** active p t ** active 1.0R t
+   fn unpack_cinv_vp (#p:perm) (#v:vprop) (c:cinv)
+   requires cinv_vp c v ** active c p
+   ensures v ** unpacked c ** active c p
 
    ghost
-   fn restore (#t:_) (v:vprop)
-   requires v ** active 1.0R t
-   ensures cancellable t v
+   fn pack_cinv_vp (#v:vprop) (c:cinv)
+   requires v ** unpacked c
+   ensures cinv_vp c v
 
-   fn cancel_inv (#t #v:_) (i:inv (cancellable t v))
-   requires active 1.0R t
+Finally, if one has full permission to the invariant (``active c
+1.0R``) it can be cancelled and the underlying predicate ``v`` can be
+obtained as postcondition.
+
+.. code-block:: pulse
+
+   ghost
+   fn cancel (#v:vprop) (c:cinv)
+   requires inv (iref_of c) (cinv_vp c v) ** active c 1.0R
    ensures v
-   
-A ``cancellable t v`` is created from a proof of ``v``, also providing
-a fractional-permission indexed predicate ``active 1.0R t``,
-which can be shared and gathered as usual. So long as one can prove
-that the token ``t`` is active, one can call ``take`` to trade a
-``cancellable t v`` for ``v``, and vice-versa. Finally, with full
-permission on the ``active`` predicate, ``cancel_inv`` is a utility to
-stop enforcing ``v`` an invariant and to extract it from a ``i:inv
-(cancellable t v)``.
+   opens add_inv emp_inames (iref_of c)
 
 An increment operation
 ++++++++++++++++++++++
@@ -397,8 +427,8 @@ The ``read`` function is relatively easy:
    :end-before: //incr_atomic_body_read$
 
 * We open the invariant ``l``; then, knowing that the invariant is
-  still active, we can ``take`` it; then read the value ``v``;
-  ``restore`` the invariant; and return ``v``.
+  still active, we can unpack` it; then read the value ``v``; pack it
+  back; and return ``v``.
 
 The main loop of ``incr_atomic`` is next, shown below:
 
