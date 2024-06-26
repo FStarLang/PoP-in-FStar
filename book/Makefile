@@ -1,7 +1,7 @@
 # Minimal makefile for Sphinx documentation
 #
 
-export FSTAR_HOME?=$(realpath ../..)
+export FSTAR_HOME?=$(realpath ../../everest/FStar)
 export PULSE_HOME?=$(FSTAR_HOME)/../pulse
 
 FSTARLANG_ORG_ROOT?=www
@@ -51,5 +51,5 @@ deploy:
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
-%: Makefile
+%: Makefil
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)

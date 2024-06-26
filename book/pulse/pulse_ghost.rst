@@ -191,38 +191,6 @@ As we did when working with :ref:`nullable references
 ghost functions to introduce and eliminate this predicate, for each of
 its cases.
 
-The elimination and introduction functions for the ``[]`` case are
-very similar to what had previously with nullable references:
-
-
-.. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
-   :language: pulse
-   :start-after: //intro_all_at_most_nil$
-   :end-before: ```
-
-.. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
-   :language: pulse
-   :start-after: //elim_all_at_most_nil$
-   :end-before:  ```
-
-For the ``hd::tl`` case, we have to be a bit more careful in how we do
-the rewriting: using a regular ``rewrite`` fails, since it involves
-proving an equality between two higher-order terms (the body of
-``exists*`` is represented in F* as a lambda term). Pulse also
-provides a ``rewrite_by`` function in the library that allows
-rewriting terms using a user-provided tactic. In this case, the tactic
-``Pulse.Lib.Pervasives.vprop_equiv_norm`` equates ``vprops`` by
-proving them definitionally equal by normalization.
-
-.. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
-   :language: pulse
-   :start-after: //intro_all_at_most_cons$
-   :end-before: ```
-
-.. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
-   :language: pulse
-   :start-after: //elim_all_at_most_cons$
-   :end-before: ```                
 
 Recursive Ghost Lemmas
 ++++++++++++++++++++++
