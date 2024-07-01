@@ -223,7 +223,7 @@ F* proofs use SMT solving, symbolic computation and tactics
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Stating a theorem or lemma in F* amounts to declaring a type signature
-and a doing a proof corresponds to providing an implementation of that
+and doing a proof corresponds to providing an implementation of that
 signature. Proving theorems can take a fair bit of work by a human and
 F* seeks to reduce that burden, using a variety of techniques.
 
