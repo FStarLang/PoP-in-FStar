@@ -307,7 +307,7 @@ int { same_case z x }``.
 Lists
 ^^^^^
 
-All the types we've see far have been inductive only in a degenerate
+All the types we've seen so far have been inductive only in a degenerate
 sense—the constructors do not refer to the types they construct. Now,
 for our first truly inductive type, a list.
 
