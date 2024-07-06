@@ -71,7 +71,7 @@ of these papers throughout this part of the book.
     inference of weakest preconditions of effectful computations.
     
   + This 2016 paper,
-    `Dependent Types and Multi-Monadic Effects in F* <https://www.fstar-lang.org/papers/mumon/>`_,
+    `Dependent Types and Multi-Monadic Effects in F* <https://fstar-lang.org/papers/mumon/>`_,
     has become the canonical reference for F\*. It shows how to combine
     multiple Dijkstra monads with a DCC-like system.
 
@@ -87,7 +87,7 @@ of these papers throughout this part of the book.
     monad morphism.
     
   + `Programming and Proving with Indexed Effects
-    <https://www.fstar-lang.org/papers/indexedeffects/>`_ describes
+    <https://fstar-lang.org/papers/indexedeffects/>`_ describes
     F*'s user-defined effect system in its most general form, allowing
     it to be applied to any indexed effects, including Dijkstra
     monads, but several other constructions as well.

@@ -62,7 +62,7 @@ etc. will be of use again.
 .. note::
 
    Why is it called Pulse? Because it grew from a prior logic called
-   `Steel <https://www.fstar-lang.org/papers/steel/>`_, and one of the
+   `Steel <https://fstar-lang.org/papers/steel/>`_, and one of the
    authors and his daughter are big fans of a classic reggae band
    called `Steel Pulse <https://steelpulse.com/>`_. We wanted a name
    that was softer than Steel, and, well, a bit playful. So, Pulse!

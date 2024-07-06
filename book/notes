@@ -209,7 +209,7 @@ effect system.
 This tutorial provides a first taste of
 verified programming in F\*. More information about F\*, including
 papers and technical reports, can be found on the `F\* website
-<http://www.fstar-lang.org>`_.
+<http://fstar-lang.org>`_.
 
 It will help if you are already familiar with functional programming
 languages in the ML family (e.g., [OCaml], [F#], [Standard ML]), or
@@ -255,7 +255,7 @@ exercise. Your progress on each exercise will be stored in browser
 local storage, so you can return to your code later (e.g. if your
 browser crashes, etc).
 
-[online F\* editor]: https://www.fstar-lang.org/run.php
+[online F\* editor]: https://fstar-lang.org/run.php
 
 You can also do this tutorial by installing F\* locally on your
 machine.  F\* is open source and cross-platform, and you can get
