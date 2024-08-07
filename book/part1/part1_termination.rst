@@ -106,7 +106,7 @@ fully, it would be as shown below:
      : Tot nat (decreases l)
      = match l with
        | [] -> 0
-       | _ :: tl -> length tl
+       | _ :: tl -> 1 + length tl
 
 The main difference is on the second line. As opposed to just writing
 the result type of ``length``, in full detail, we write
