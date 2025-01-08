@@ -368,8 +368,10 @@ Using Ghost Computations in Total Contexts
 We have already noted that ``Tot < GTot``, enabling ``Tot``
 computations to be re-used in ``GTot`` contexts. For erasure to be
 sound, it is crucial that ``GTot`` terms cannot be used in ``Tot``
-contexts, and indeed, F* forbids this in general. However, there are
-two exceptions.
+contexts, and indeed, F* forbids this in general.
+However, there is one exception where
+we can directly invoke a ``GTot`` computation in a ``Tot`` context
+without wrapping the result in ``Ghost.erased``.
 
 
 Effect Promotion for Non-informative Types
@@ -415,62 +417,6 @@ in the ``Tot`` effect.
    :end-before: //SNIPPET_END: factorial_tail_alt$
 
 
-FStar.Ghost.Pull.pull
-.....................
-
-Consider applying ``map factorial [0;1;2]``, where ``map : (a ->
-Tot b) -> list a -> list b``. F* refuses to typecheck this written,
-since ``factorial : nat -> GTot nat``, which is not a subtype of ``nat
--> Tot nat``.
-
-Using effect promotion, one could write ``map (fun x -> hide
-(factorial x)) [0;1;2]``, but this has type ``list (erased nat)``,
-which is not the same as ``list nat``.
-
-This is unfortunate since it seems that basic libraries designed for
-use with with higher-order total functions cannot be reused with ghost
-functions. [#]_
-
-The library function ``FStar.Ghost.Pull.pull`` can help in such
-situatinos. It has the following signature:
-
-.. code-block:: fstar
-
-   val pull (#a:Type) (#b:a -> Type) (f: (x:a -> GTot (b x)))
-     : GTot (x:a -> b x)
-
-   val pull_equiv (#a:Type) (#b:a -> Type) (f: (x:a -> GTot (b x))) (x:a)
-     : Lemma (ensures pull f x == f x)
-             [SMTPat (pull f x)]
-               
-                
-This type states that for any ghost function ``f``, we can exhibit a
-total function ``g`` with the same type as ``f``, while the lemma
-``pull_equiv`` states that ``g`` is pointwise equal to ``f``. [#]_ However,
-it may not be possible, in general, to compute ``g`` in a way that
-enables it to be compiled by F*. So, ``pull f`` itself has ghost
-effect, indicating that applications of ``pull`` cannot be used in
-compilable code.
-
-Using ``pull``, one can write ``map (pull factorial) [0;1;2] : GTot
-(list nat)``, thereby reusing ghost functions where total functions
-are expected.
-
-.. [#] F* does not have any built-in support for effect-label
-       polymorphism. That is, one cannot write a type like this: ``map
-       #a #b #e (f: a -> e b) (l:list a) : e (list b)``, where ``e``
-       is an effect variable. However, using F*'s dependent types, one
-       can code up various `ad hoc forms of effect polymorphism
-       <../code/AdHocEffectPolymorphism.fst>`_. Some other languages
-       with effect systems, notably `Koka
-       <https://koka-lang.github.io/koka/doc/index.html>`_, do support
-       effect polymorphism primitively.
-
-.. [#] The ``SMTPat`` annotation on the ``pull_equiv`` lemma instructs
-       F* to allow Z3 to instantiate this lemma automatically. You
-       can learn more :ref:`about SMT patterns and quantifier
-       instantiation in a later chapter <UTH_smt>`.
-       
 Revisiting Vector Concatenation
 -------------------------------
 
