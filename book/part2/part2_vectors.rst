@@ -119,7 +119,7 @@ different indexes (``0`` and ``n + 1``).
    construct the same instance of the type constructor. Further, all
    data constructors take at most one argument. If your datatype
    happens to be simple enough to fit these restrictions, you can use
-   a notation similar to OCaml or F* for those types in F*. For
+   a notation similar to OCaml or F# for those types in F*. For
    example, here's the ``option`` type defined in F* using an
    OCaml-like notation.
 
