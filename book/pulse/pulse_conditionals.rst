@@ -96,7 +96,7 @@ Note, one might consider defining it this way:
         (x:nullable_ref a) 
         (#[default_arg (`1.0R)] p:perm)
         (v:option a)
-   : vprop
+   : slprop
    = match x with
      | None -> pure (v == None)
      | Some x -> pure (Some? v) ** pts_to x #p (Some?.v v)
@@ -114,7 +114,7 @@ Another style might be as follows:
         (x:nullable_ref a) 
         (#[default_arg (`1.0R)] p:perm)
         (v:option a)
-   : vprop
+   : slprop
    = match x, v with
      | None, None -> emp
      | Some x, Some w -> pts_to x #p w
@@ -186,7 +186,7 @@ path conditions.
 Helpers
 +++++++
 
-When a ``vprop`` is defined by cases (like ``pts_to_or_null``) it is
+When a ``slprop`` is defined by cases (like ``pts_to_or_null``) it is
 very common to have to reason according to those cases when pattern
 matching. Instead of rewriting, unfolding, folding, and rewriting
 every time, one can define helper functions to handle these cases.

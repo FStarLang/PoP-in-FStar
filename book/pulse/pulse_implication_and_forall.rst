@@ -27,7 +27,7 @@ what ``p @==> q`` means:
   .. code-block:: pulse    
    
      ghost
-     fn I.elim (p q:vprop)
+     fn I.elim (p q:slprop)
      requires p ** (p @==> q)
      ensures q
    
@@ -44,7 +44,7 @@ introduction form, shown below:
   .. code-block:: pulse
 
      ghost
-     fn I.intro (p q r:vprop)
+     fn I.intro (p q r:slprop)
                 (elim: unit -> stt_ghost unit emp_inames (r ** p) (fun _ -> q))
      requires r
      ensures p @==> q
@@ -91,7 +91,7 @@ corresponds to the eliminator for ``pts_to x #one_half 'v @==> pts_to x
 halves, call ``I.intro`` passing the eliminator, and the fold it into
 a ``regain_half``. All ``regain_half`` has done is to package the
 ghost function ``aux``, together the half permission on ``x``, and put
-it into a ``vprop``.
+it into a ``slprop``.
 
 Later on, if want to use ``regain_half``, we can call its
 eliminator---which, effectively, calls ``aux`` with the needed
@@ -152,7 +152,7 @@ have a similar shape to what we saw earlier for ``@==>``:
   .. code-block:: pulse
 
      ghost
-     fn FA.elim (#a:Type) (#p:a->vprop) (v:a)
+     fn FA.elim (#a:Type) (#p:a->slprop) (v:a)
      requires (forall* x. p x)
      ensures p v
 
@@ -162,8 +162,8 @@ bound ``x`` to ``v``.
   .. code-block:: pulse
 
      ghost
-     fn FA.intro (#a:Type) (#p:a->vprop)
-          (v:vprop)
+     fn FA.intro (#a:Type) (#p:a->slprop)
+          (v:slprop)
           (f_elim : (x:a -> stt_ghost unit emp_inames v (fun _ -> p x)))
      requires v
      ensures (forall* x. p x)
@@ -177,7 +177,7 @@ together, so the library also provides the following combined forms:
   .. code-block:: pulse
 
      ghost
-     fn elim_forall_imp (#a:Type0) (p q: a -> vprop) (x:a)
+     fn elim_forall_imp (#a:Type0) (p q: a -> slprop) (x:a)
      requires (forall* x. p x @==> q x) ** p x
      ensures q x
      
@@ -186,7 +186,7 @@ and
   .. code-block:: pulse
                   
      ghost
-     fn intro_forall_imp (#a:Type0) (p q: a -> vprop) (r:vprop)
+     fn intro_forall_imp (#a:Type0) (p q: a -> slprop) (r:slprop)
               (elim: (u:a -> stt_ghost unit emp_inames 
                                (r ** p u)
                                (fun _ -> q u)))

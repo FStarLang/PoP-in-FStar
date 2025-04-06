@@ -73,7 +73,7 @@ computations described by the computation type below:
 
 .. code-block:: fstar
 
-   val stt_atomic (t:Type) (i:inames) (pre:vprop) (post:t -> vprop)
+   val stt_atomic (t:Type) (i:inames) (pre:slprop) (post:t -> slprop)
      : Type u#4
 
 Like ``stt_ghost``, atomic computations are total and live in universe
@@ -93,7 +93,7 @@ In ``Pulse.Lib.Core``, we have the following types:
 
    [@@erasable]
    val iref : Type0
-   val inv (i:iref) (p:vprop) : vprop
+   val inv (i:iref) (p:slprop) : slprop
 
 Think of ``inv i p`` as a predicate asserting that ``p`` is true in
 the current state and all future states of the program. Every
@@ -116,22 +116,22 @@ below:
 
 .. code-block:: fstar
 		    
-    val dup_inv (i:iref) (p:vprop)
+    val dup_inv (i:iref) (p:slprop)
       : stt_ghost unit emp_inames (inv i p) (fun _ -> inv i p ** inv i p)
 
 
 Boxable predicates
 ++++++++++++++++++
 
-Pulse's language of predicates, i.e., the type ``vprop``, is
-stratified. The type ``boxable`` is a refinement of ``vprop``, defined
+Pulse's language of predicates, i.e., the type ``slprop``, is
+stratified. The type ``boxable`` is a refinement of ``slprop``, defined
 as shown below in ``Pulse.Lib.Core``
 
 .. code-block:: fstar
 
-   let boxable = v:vprop { is_big v }
+   let boxable = v:slprop { is_big v }
 
-That is, certain ``vprops``, i.e., those that satisfy ``is_big``, are
+That is, certain ``slprops``, i.e., those that satisfy ``is_big``, are
 ``boxable`` predicates. All the predicates that we have encountered so
 far are boxable, except for the ``inv i p`` predicate. For example,
 ``pts_to x v`` is boxable; ``exists* x. p x`` is boxable if ``p x`` is
@@ -223,7 +223,7 @@ an instance of ``inv i p`` is by provable that ``p`` is
 ``boxable``. This design is convenient since the onus of proving that
 a predicate is boxable is only placed at the allocation site of the
 invariant---uses of invariants do not need to worry about the
-distinction between ``boxable`` and general ``vprops``.
+distinction between ``boxable`` and general ``slprops``.
 
 Opening an invariant
 ++++++++++++++++++++
@@ -268,7 +268,7 @@ Here's the rule for opening a single invariant ``inv i p`` using
 ``with_invariant i { e }`` is as follows:
 
 * ``i`` must have type ``iref`` and ``inv i p`` must be provable in
-  the current context, for some ``p:vprop``
+  the current context, for some ``p:slprop``
    
 * ``e`` must have the type ``stt_atomic t j (p ** r) (fun x -> p ** s
   x)``. [#]_ That is, ``e`` requires and restores the invariant ``p``,

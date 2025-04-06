@@ -125,8 +125,8 @@ Inspecting the proof state
 ..........................
 
 A Pulse program is checked one stateful operation at a time, "pushing
-through" the ``vprop`` assertions starting with the precondition,
-until the end of function's body. The inferred ``vprop`` at the exit
+through" the ``slprop`` assertions starting with the precondition,
+until the end of function's body. The inferred ``slprop`` at the exit
 of a function must match the annotated postcondition. Along the way,
 the Pulse checker will make several calls to the SMT solver to prove
 that, say, ``pts_to x (v + v)`` is equal to ``pts_to x (2 * v)``.
@@ -139,7 +139,7 @@ state, which has two components:
     those variables in scope, e.g., ``x:int; y:erased int; _:squash (x == reveal y)``.
 
   * A separation logic context, called just "the context", or
-    sometimes "the ``vprop`` context". The context contains all known
+    sometimes "the ``slprop`` context". The context contains all known
     facts about the current state of the program.
 
 Pulse provides a command called ``show_proof_state`` that allows the
@@ -189,7 +189,7 @@ The comments show how the proof state evolves after each command.
     automatically, e.g., at the second call to ``add``, Pulse
     automatically instantiates ``'v`` to ``v2``.
 
-  * Pulse automatically moves any ``pure p`` property in the ``vprop``
+  * Pulse automatically moves any ``pure p`` property in the ``slprop``
     context to a ``squash p`` hypothesis in the typing
     environment. Pulse also proves ``pure`` properties automatically,
     by sending queries to the SMT solver, which can make use of the
@@ -247,7 +247,7 @@ The full type of the ``pts_to`` predicate is shown below:
 
 .. code-block:: fstar
 
-   val pts_to (#a:Type u#0) (r:ref a) (#p:perm) (v:a) : vprop
+   val pts_to (#a:Type u#0) (r:ref a) (#p:perm) (v:a) : slprop
 
 We have so far been writing ``pts_to r v`` instead of ``pts_to #a r #p
 v``. Usually, one does not need to write the first argument ``#a``
@@ -353,7 +353,7 @@ A few additional points to note here:
   * Pulse proves ``pure`` properties automatically, by sending queries
     to the SMT solver.
 
-  * Pulse simplifies ``vprop`` implicitly, e.g., Pulse will
+  * Pulse simplifies ``slprop`` implicitly, e.g., Pulse will
     automatically rewrite ``emp ** p`` to ``p``.
 
   * Like F*, Pulse tries to instantiate implicit arguments

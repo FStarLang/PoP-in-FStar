@@ -15,10 +15,10 @@ erased by the F* compiler.
 As we've seen already, F* lemmas and ghost functions can be directly
 used in Pulse code. But, these are only useful for describing
 properties about the pure values in scope. Often, in Pulse, one needs
-to write lemmas that speak about the state, manipulate ``vprops``,
+to write lemmas that speak about the state, manipulate ``slprops``,
 etc. For this purpose, Pulse provides its own notion of *ghost
 computations* (think of these as the analog of F* lemmas and ghost
-functions, except they are specified using ``vprops``); and *ghost
+functions, except they are specified using ``slprops``); and *ghost
 state* (think of these as the analog of F* erased types, except ghost
 state is mutable, though still computationally irrelevant). Ghost
 computations are used everywhere in Pulse---we've already seen a few
@@ -136,7 +136,7 @@ postconditions are not that interesting---such functions can usually
 be written with regular F* ghost functions.
 
 Ghost functions are often used as proof steps to prove equivalences
-among ``vprops``. We saw a few :ref:`examples of ghost functions
+among ``slprops``. We saw a few :ref:`examples of ghost functions
 before <Pulse_nullable_ref_helpers>`---they are ghost since their
 implementations are compositions of ``ghost`` functions from the Pulse
 library.
@@ -170,8 +170,8 @@ Recursive Predicates and Ghost Lemmas
 
 We previously saw how to :ref:`define custom predicates
 <Pulse_DefinedVProps>`, e.g., for representation predicates on data
-structures. Since a ``vprop`` is just a regular type, one can also
-define ``vprops`` by recursion in F*. Working with these recursive
+structures. Since a ``slprop`` is just a regular type, one can also
+define ``slprops`` by recursion in F*. Working with these recursive
 predicates in Pulse usually involves writing recursive ghost functions
 as lemmas. We'll look at a simple example of this here and revisit in
 subsequent chapters as look at programming unbounded structures, like
@@ -249,7 +249,7 @@ similar to ``Pulse.Lib.Reference``, in that it provides:
   * ``GR.ref a``: The main type of ghost references. ``GR.ref`` is an
     erasable type and is hence considered non-informative.
 
-  * ``GR.pts_to (#a:Type0) (r:GR.ref a) (#p:perm) (v:a) : vprop`` is
+  * ``GR.pts_to (#a:Type0) (r:GR.ref a) (#p:perm) (v:a) : slprop`` is
     the main predicate provided by the library. Similar to the regular
     ``pts_to``, the permission index defaults to ``1.0R``.
 

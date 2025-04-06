@@ -76,10 +76,10 @@ below:
 
 .. code-block:: fstar
 
-   val stt (a:Type u#a) (i:inames) (pre:vprop) (post: a -> vprop)
+   val stt (a:Type u#a) (i:inames) (pre:slprop) (post: a -> slprop)
      : Type u#0
    
-   val stt_ghost (a:Type u#a) (i:inames) (pre:vprop) (post: a -> vprop)
+   val stt_ghost (a:Type u#a) (i:inames) (pre:slprop) (post: a -> slprop)
      : Type u#4
 
 A point to note is that ``stt`` computations live in universe

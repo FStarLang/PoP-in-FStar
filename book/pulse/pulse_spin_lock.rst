@@ -105,7 +105,7 @@ Pulse.Lib.Reference:
 
 .. code-block:: fstar
 
-   let cond b (p q:vprop) = if b then p else q
+   let cond b (p q:slprop) = if b then p else q
 
 .. code-block:: pulse
 

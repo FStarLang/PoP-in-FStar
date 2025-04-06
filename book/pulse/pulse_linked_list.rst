@@ -301,9 +301,9 @@ There are few interesting points to note.
 
       ghost
       fn trans_compose (#a #b #c:Type0)
-                       (p: a -> vprop)
-                       (q: b -> vprop)
-                       (r: c -> vprop)
+                       (p: a -> slprop)
+                       (q: b -> slprop)
+                       (r: c -> slprop)
                        (f: a -> GTot b)
                        (g: b -> GTot c)
       requires

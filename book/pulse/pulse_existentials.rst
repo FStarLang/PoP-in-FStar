@@ -12,7 +12,7 @@ As mentioned in the :ref:`introduction to Pulse <Pulse_Basics>`, one
 of the connectives of Pulse's separation logic is the existential
 quantifier. Its syntax is similar to F*'s existential quantifier,
 except it is written ``exists*`` instead of just ``exists``, and its
-body is a ``vprop``, as in the examples shown below.
+body is a ``slprop``, as in the examples shown below.
 
 .. code-block:: pulse
 
@@ -53,7 +53,7 @@ value ``w``.
 Usually, however, the postcondition of a function *relates* the
 initial state prior to the call to the state after the call and
 existential variables are only in scope as far to the right as
-possible of the enclosing ``vprop``. So, existential quantifiers in
+possible of the enclosing ``slprop``. So, existential quantifiers in
 the precondition of a function are not so common.
 
 To illustrate, the following attempted specification of ``incr`` does
@@ -151,7 +151,7 @@ Introducing existentials
 The Pulse checker will automatically introduce existential formulas by
 introduces new unification variables for each existentially bound
 variable, and then trying to find solutions for those variables by
-matching ``vprops`` in the goal with those in the context.
+matching ``slprops`` in the goal with those in the context.
 
 However, one can also introduce existential formulas explicitly, using
 the ``introduce exists*`` syntax, as seen in the two examples

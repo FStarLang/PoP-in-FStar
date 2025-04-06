@@ -379,12 +379,12 @@ do.
 .. code-block:: pulse
 		
    ghost
-   fn unpack_cinv_vp (#p:perm) (#v:vprop) (c:cinv)
+   fn unpack_cinv_vp (#p:perm) (#v:slprop) (c:cinv)
    requires cinv_vp c v ** active c p
    ensures v ** unpacked c ** active c p
 
    ghost
-   fn pack_cinv_vp (#v:vprop) (c:cinv)
+   fn pack_cinv_vp (#v:slprop) (c:cinv)
    requires v ** unpacked c
    ensures cinv_vp c v
 
@@ -395,7 +395,7 @@ obtained as postcondition.
 .. code-block:: pulse
 
    ghost
-   fn cancel (#v:vprop) (c:cinv)
+   fn cancel (#v:slprop) (c:cinv)
    requires inv (iref_of c) (cinv_vp c v) ** active c 1.0R
    ensures v
    opens add_inv emp_inames (iref_of c)

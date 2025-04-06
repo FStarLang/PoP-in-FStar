@@ -42,7 +42,7 @@ Arrays can be read and written-to using indexes of type
 the index is within the array bounds---the refinement ``SZ.v i <
 Seq.length s`` enforces that the index is in bounds, where ``module SZ
 = FStar.SizeT``. The function returns the ``i``-th element of the
-array, the asserted by the postcondition vprop ``pure (x == Seq.index
+array, the asserted by the postcondition slprop ``pure (x == Seq.index
 s (SZ.v i))``. The body of the function uses the array read operator
 ``arr.(i)``.
 

@@ -41,19 +41,18 @@ etc.
 Much like other Hoare Logics, which we reviewed in :ref:`an earlier
 section <Part4_Floyd_Hoare>`, separation logic comes in two parts.
 
-**Separation Logic Propositions** First, we have a language of
-propositions that describe properties about program resources, e.g.,
-the heap. These propositions have the type ``vprop`` in Pulse, [#]_
-and, under the covers in the PulselCore semantics of Pulse, a ``vprop =
-state -> prop``, where ``state`` represents the state of a program,
-e.g., the contents of memory. It is useful (at least at first) to think
-of a ``vprop`` as a memory property, though we will eventually treat
-it more abstractly and use it to model many other kinds of resources.
+**Separation Logic Propositions** First, we have a language of propositions that
+describe properties about program resources, e.g., the heap. These propositions
+have the type ``slprop`` in Pulse, and, under the covers in the PulselCore
+semantics of Pulse, a ``slprop = state -> prop``, where ``state`` represents the
+state of a program, e.g., the contents of memory. It is useful (at least at
+first) to think of a ``slprop`` as a memory property, though we will eventually
+treat it more abstractly and use it to model many other kinds of resources.
 
 .. I'm calling it a hmem to not confuse things with heap vs stack
    later.
 
-**Separation Logic Hoare Triples** To connect ``vprop``'s to programs,
+**Separation Logic Hoare Triples** To connect ``slprop``'s to programs,
 separation logics use Hoare triples to describe the action of a
 program on its state. For example, the Hoare triple ``{ p } c { n. q
 }`` describes a program ``c`` which when run in an initial state
@@ -63,15 +62,15 @@ satisfying ``q n s1`` (i.e., ``q`` is a postcondition). Pulse's
 program logic is a partial-correctness logic, meaning that ``c`` may
 also loop forever, deadlock with other threads, etc.
 
-**Some simple vprops and triples**: Here are two of the simplest
- ``vprops`` (defined in ``Pulse.Lib.Pervasives``):
+**Some simple slprops and triples**: Here are two of the simplest
+ ``slprops`` (defined in ``Pulse.Lib.Pervasives``):
 
   * ``emp``, the trivial proposition (equivalent to ``fun s -> True``).
 
   * ``pure p``, heap-independent predicate ``fun s -> p``. ``emp`` is
     equivalent to ``pure True``.
 
-The type of the program ``five`` illustrates how these ``vprop``'s are
+The type of the program ``five`` illustrates how these ``slprop``'s are
 used in program specifications:
 
   * It is a function with a single unit argument---Pulse functions use
@@ -113,12 +112,12 @@ observable way.
 **Separating Conjunction and the Frame Rule** Let's go back to
 ``incr`` and ``par_incr`` that we saw in the previous section and look
 at their types closely. We'll need to introduce two more common
-``vprop``'s, starting with the "points-to" predicate:
+``slprop``'s, starting with the "points-to" predicate:
 
   * ``pts_to x v`` asserts that the reference ``x`` points to a cell
     in the current state that holds the value ``v``.
 
-``vprop``'s can also be combined in various ways, the most common one
+``slprop``'s can also be combined in various ways, the most common one
 being the "separating conjunction", written ``**`` in Pulse. [#]_
     
   * ``p ** q``, means that the state can be split into two *disjoint*
@@ -138,7 +137,7 @@ being the "separating conjunction", written ``**`` in Pulse. [#]_
 Now, perhaps the defining characteristic of separation logic is how
 the ``**`` operator works in the program logic, via a key rule known
 as the *frame* rule. The rule says that if you can prove the Hoare
-triple ``{ p } c { n. q }``, then, for any other ``f : vprop``, you
+triple ``{ p } c { n. q }``, then, for any other ``f : slprop``, you
 can also prove ``{ p ** f } c { n. q ** f }``---``f`` is often called
 the "frame". It might take some time to appreciate, but the frame rule
 captures the essence of local, modular reasoning. Roughly, it states
@@ -164,7 +163,7 @@ that ``y`` is unchanged.
    :start-after: //incr_frame$
    :end-before: //end incr_frame$
 
-In fact, Pulse lets us use the frame rule with any ``f:vprop``, and we
+In fact, Pulse lets us use the frame rule with any ``f:slprop``, and we
 get, for free, that ``incr x`` does not disturb ``f``.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Intro.fst
@@ -184,9 +183,9 @@ this is equivalent:
    :start-after: //incr_explicit_i$
    :end-before: //end incr_explicit_i$
    
-**Other vprop connectives** In addition the separating conjunction,
+**Other slprop connectives** In addition the separating conjunction,
 Pulse, like other separation logics, provides other ways to combine
-``vprops``. We'll look at these in detail in the subsequent chapters,
+``slprops``. We'll look at these in detail in the subsequent chapters,
 but we list the most common other connectives below just to give you a
 taste of the logic.
 
@@ -196,7 +195,7 @@ taste of the logic.
     is valid in a state ``s`` if there is a witness ``w`` such that
     ``p [w/x]`` is valid in ``s``. For experts, existential
     quantification is impredicative, in the sense that one can quantify
-    over ``vprops`` themselves, i.e., ``exists* (p:vprop). q`` is
+    over ``slprops`` themselves, i.e., ``exists* (p:slprop). q`` is
     allowed.
 
   * ``forall* (x1:t1) ... (xn:tn). p``: Universal quantification is
@@ -209,18 +208,10 @@ taste of the logic.
     separation logics. 
 
 Pulse does not yet provide libraries for conjunction or
-disjunction. However, since Pulse is embedded in F*, new vprops can
+disjunction. However, since Pulse is embedded in F*, new slprops can
 also be defined by the user and it is common to do so, e.g.,
 recursively defined predicates, or variants of the connectives
 described above.
-
-.. [#] They are called ``vprop`` for mostly historical reasons. A
-       version of the Steel separation logic from which Pulse grew is
-       based allows associating a *value* with a separation logic
-       proposition, so these came to be known as "value"
-       propositions. However, Pulse does not make use of this
-       feature---perhaps a better name in Pulse would be ``slprop``,
-       for separation logic proposition.
 
 .. [#] For experts, Pulse's separation logic is *affine*.
    

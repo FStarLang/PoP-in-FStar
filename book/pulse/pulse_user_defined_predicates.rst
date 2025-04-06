@@ -3,8 +3,8 @@
 User-defined Predicates
 =======================
 
-In addition to the vprop predicates and connectives that the Pulse
-libraries provide, users very commonly define their own ``vprops``. We
+In addition to the slprop predicates and connectives that the Pulse
+libraries provide, users very commonly define their own ``slprops``. We
 show a few simple examples here---subsequent examples will make heavy
 use of user-defined predicates. For example, see this section for
 :ref:`recursively defined predicates <Pulse_recursive_predicates>`.
@@ -21,7 +21,7 @@ A simple example of a user-defined abstraction is show below.
    :start-after: //pts_to_diag$
    :end-before: //end pts_to_diag$
 
-``pts_to_diag r v`` is a ``vprop`` defined in F* representing a
+``pts_to_diag r v`` is a ``slprop`` defined in F* representing a
 reference to a pair whose components are equal.
 
 We can use this abstraction in a Pulse program, though we have to be
@@ -50,7 +50,7 @@ common cases (such as the ones here) can be easily automated. We are
 currently investigating adding support for this.
 
 Some initial support for this is already available, inasmuch as Pulse
-can sometimes figure out the arguments to the vprops that need to be
+can sometimes figure out the arguments to the slprops that need to be
 folded/unfolded. For instance, in the code below, we just mention the
 name of the predicate to be unfolded/folded, without needing to
 provide all the arguments.
@@ -74,7 +74,7 @@ structure with two mutable integer fields, representing a
    :end-before: //end point$
 
 A ``point`` is just an F* record containing two
-references. Additionally, we define ``is_point``, a ``vprop``,
+references. Additionally, we define ``is_point``, a ``slprop``,
 sometimes called a "representation predicate", for a
 ``point``. ``is_point p xy`` says that ``p`` is a representation of
 the logical point ``xy``, where ``xy`` is pure, mathematical pair.
@@ -207,7 +207,7 @@ Finally, one can also write:
    rewrite each e1 as e1', ..., en as en'
 
 omitting the ``goal`` term. In this case, the ``goal`` is taken to be
-the entire current ``vprop`` context.
+the entire current ``slprop`` context.
   
 Using ``rewrite each ...`` makes the code somewhat shorter:
 
