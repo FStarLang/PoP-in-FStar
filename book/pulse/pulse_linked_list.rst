@@ -16,7 +16,7 @@ Let's start by defining the type of a singly linked list:
 .. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
    :language: fstar
    :start-after: //llist$
-   :end-before: //llist$
+   :end-before: //end llist$
 
 A ``node t`` contains a ``head:t`` and a ``tail:llist t``, a nullable
 reference pointing to the rest of the list. Nullable references are
@@ -29,7 +29,7 @@ representation of the list, for use in specifications.
 .. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
    :language: fstar
    :start-after: //is_list$
-   :end-before: //is_list$
+   :end-before: //end is_list$
 
 The predicate ``is_list x l`` is a recursive predicate:
 
@@ -52,7 +52,7 @@ but, for now, we are forced to write them by hand.
 .. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
    :language: pulse
    :start-after: //boilerplate$
-   :end-before: //boilerplate$
+   :end-before: //end boilerplate$
 
 
 
@@ -70,14 +70,14 @@ based on whether or not ``x`` is null.
 .. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
    :language: fstar
    :start-after: //is_list_cases$
-   :end-before: //is_list_cases$
+   :end-before: //end is_list_cases$
 
 Next, we define a ghost function to invert ``is_list`` into ``is_list_cases``.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
    :language: pulse
    :start-after: //cases_of_is_list$
-   :end-before: ```
+   :end-before: //end cases_of_is_list$
 
 We also define two more ghost functions that package up the call to
 ``cases_of_is_list``.
@@ -85,12 +85,12 @@ We also define two more ghost functions that package up the call to
 .. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
    :language: pulse
    :start-after: //is_list_case_none$
-   :end-before: ```
+   :end-before: //end is_list_case_none$
 
 .. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
    :language: pulse
    :start-after: //is_list_case_some$
-   :end-before: ```
+   :end-before: //end is_list_case_some$
 
 Length, Recursively
 ...................
@@ -101,7 +101,7 @@ code, starting with a function to compute the length of an ``llist``.
 .. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
    :language: pulse
    :start-after: //length$
-   :end-before: ```
+   :end-before: //end length$
 
 The ``None`` case is simple.
 
@@ -150,7 +150,7 @@ cell starting at the given node.
 .. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
    :language: pulse
    :start-after: //tail_for_cons$
-   :end-before: ```
+   :end-before: //end tail_for_cons$
 
 
 Tail of a list
@@ -194,7 +194,7 @@ can get back the original permission on ``x``.
 .. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
    :language: pulse
    :start-after: //tail$
-   :end-before: ```
+   :end-before: //end tail$
 
 ``length_iter``
 +++++++++++++++
@@ -208,7 +208,7 @@ the tail and increment ``ctr``. Finally, we return the ``!ctr``.
 .. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
    :language: pulse
    :start-after: //length_iter$
-   :end-before: ```
+   :end-before: //end length_iter$
 
 Now, for the proof. The main part is the loop invariant, which says:
 
@@ -255,7 +255,7 @@ to point to ``y``.
 .. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
    :language: pulse
    :start-after: //append$
-   :end-before: ```
+   :end-before: //end append$
 
 The code is tail recursive in the ``Some _`` case, but notice that we
 have a ghost function call *after* the recursive call. Like we did for
@@ -275,7 +275,7 @@ recovered by instantiating ``tl'`` to ``tl``.
 .. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
    :language: pulse
    :start-after: //tail_alt$
-   :end-before: ```
+   :end-before: //end tail_alt$
 
 We'll use these quantified trades in our invariant of ``append_iter``,
 shown below. The main idea of the implementation is to use a while
@@ -285,7 +285,7 @@ to set ``y`` as the ``next`` pointer of this last element.
 .. literalinclude:: ../code/pulse/PulseTutorial.LinkedList.fst
    :language: pulse
    :start-after: //append_iter$
-   :end-before: ```
+   :end-before: //end append_iter$
 
 There are few interesting points to note.
 

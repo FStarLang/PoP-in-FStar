@@ -3,9 +3,9 @@
 Pulse Basics
 ============
 
-A Pulse program is embedded in an F* program, where the Pulse parts
-are delimited by a syntax extension marker "\`\`\`pulse ... \`\`\`", as
-shown in the program below.
+A Pulse program is embedded in an F* program by including the
+directive ``#lang-pulse`` in an F* file. The rest of the file can 
+then use a mixture of Pulse and F* syntax, as shown below. 
 
 .. literalinclude:: ../code/pulse/PulseByExample.fst
    :language: pulse
@@ -19,11 +19,9 @@ definition and proves that it always returns the constant
 defined in Pulse. This is a really simple program, but it already
 illustrates how Pulse and F* interact in both directions.
 
-In what follows, unless we really want to emphasize that a fragment of
-code is Pulse embedded in a larger F* context, when showing Pulse
-code, we'll just show the Pulse part, omitting the "\`\`\`pulse
-... \`\`\`" delimiters.
-
+In what follows, unless we really want to emphasize that a fragment of code is
+Pulse embedded in a larger F* context, we just assume that we're working in a
+context where ``#lang-pulse`` is enabled.
 
 A Separation Logic Primer
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -154,8 +152,8 @@ requires permission only to ``x`` and increments it:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Intro.fst
    :language: pulse
-   :start-after: ```pulse //incr
-   :end-before: ```
+   :start-after: //incr$
+   :end-before: //end incr$
 
 Because of the frame rule, we can also call ``incr`` in a context like
 ``incr_frame`` below, and we can prove without any additional work
@@ -163,16 +161,16 @@ that ``y`` is unchanged.
                                                           
 .. literalinclude:: ../code/pulse/PulseTutorial.Intro.fst
    :language: pulse
-   :start-after: ```pulse //incr_frame
-   :end-before: ```
+   :start-after: //incr_frame$
+   :end-before: //end incr_frame$
 
 In fact, Pulse lets us use the frame rule with any ``f:vprop``, and we
 get, for free, that ``incr x`` does not disturb ``f``.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Intro.fst
    :language: pulse
-   :start-after: ```pulse //incr_frame_any
-   :end-before: ```
+   :start-after: //incr_frame_any$
+   :end-before: //end incr_frame_any$
 
 A point about the notation: The variable ``'i`` is an implicitly bound
 logical variable, representing the value held in the ref-cell ``x`` in
@@ -183,8 +181,8 @@ this is equivalent:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Intro.fst
    :language: pulse
-   :start-after: ```pulse //incr_explicit_i
-   :end-before: ```
+   :start-after: //incr_explicit_i$
+   :end-before: //end incr_explicit_i$
    
 **Other vprop connectives** In addition the separating conjunction,
 Pulse, like other separation logics, provides other ways to combine

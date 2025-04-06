@@ -35,16 +35,16 @@ never actually used in any other predicate.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
-   :start-after: ```pulse //assign$
-   :end-before: ```
+   :start-after: //assign$
+   :end-before: //end assign$
 
 And indeed, another way to write the specification of ``assign``, without
 the logical variable argument, is shown below.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Existentials.fst
    :language: pulse
-   :start-after: ```pulse //assign$
-   :end-before: ```
+   :start-after: //assign$
+   :end-before: //end assign$
 
 This time, in the precondition, we use an existential quantifier to
 say that ``assign`` is callable in a context where ``x`` points to any
@@ -62,8 +62,8 @@ postcondition.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Existentials.fst
    :language: pulse
-   :start-after: //SNIPPET_START: incr_fail$
-   :end-before: //SNIPPET_END: incr_fail$
+   :start-after: //incr_fail$
+   :end-before: //end incr_fail$
 
 However, existential quantification often appears in postconditions,
 e.g., in order to abstract the behavior of function by underspecifying
@@ -75,8 +75,8 @@ depend on the initial value of ``x``.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Existentials.fst
    :language: pulse
-   :start-after: ```pulse //make_even$
-   :end-before: ```
+   :start-after: //make_even$
+   :end-before: //end make_even$
 
 Manipulating existentials
 .........................
@@ -92,8 +92,8 @@ useful, and we show a first example of how they work below
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Existentials.fst
    :language: pulse
-   :start-after: ```pulse //make_even_explicit$
-   :end-before: ```
+   :start-after: //make_even_explicit$
+   :end-before: //end make_even_explicit$
 
 Eliminating existentials
 ++++++++++++++++++++++++
@@ -123,8 +123,8 @@ binders.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Existentials.fst
    :language: pulse
-   :start-after: ```pulse //make_even_explicit_alt$
-   :end-before: ```
+   :start-after: //make_even_explicit_alt$
+   :end-before: //end make_even_explicit_alt$
 
 When there is a single existential formula in the context, one can
 write ``with x1..xn. _`` to "open" the formula, binding its witnesses

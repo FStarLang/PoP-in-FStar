@@ -31,7 +31,7 @@ invariant:
 .. literalinclude:: ../code/pulse/PulseTutorial.SpinLock.fst
    :language: fstar
    :start-after: //lock$
-   :end-before: //lock$
+   :end-before: //end lock$
 
 The predicate ``lock_inv r p`` states:
 
@@ -54,7 +54,7 @@ allocated ``l:lock``
 .. literalinclude:: ../code/pulse/PulseTutorial.SpinLock.fst
    :language: pulse
    :start-after: //new_lock$
-   :end-before: ```
+   :end-before: //end new_lock$
 
 Importantly, since allocating a lock involves allocating an invariant
 that protects the predicate ``p``, we need ``p`` to be ``boxable``.
@@ -79,7 +79,7 @@ duplicate ``lock_alive``.
 .. literalinclude:: ../code/pulse/PulseTutorial.SpinLock.fst
    :language: pulse
    :start-after: //dup_lock_alive$
-   :end-before: ```
+   :end-before: //end dup_lock_alive$
 
 
 Acquiring a lock
@@ -92,7 +92,7 @@ i.e., the precondition is ``emp``.
 .. literalinclude:: ../code/pulse/PulseTutorial.SpinLock.fst
    :language: pulse
    :start-after: //acquire_sig$
-   :end-before: //acquire_sig$
+   :end-before: //end acquire_sig$
 
 This may be seem surprising at first. But, recall that we've stashed
 ``p`` inside the invariant stored in the lock, and ``acquire`` is
@@ -114,7 +114,7 @@ Pulse.Lib.Reference:
    requires Box.pts_to r i
    returns b:bool
    ensures cond b (Box.pts_to r v ** pure (reveal i == u)) 
-                  (Box.pts_to r i))
+                  (Box.pts_to r i)
 
 
 The specification of ``cas_box r u v`` says that we can try to atomically
@@ -127,7 +127,7 @@ function:
 .. literalinclude:: ../code/pulse/PulseTutorial.SpinLock.fst
    :language: pulse
    :start-after: //acquire_body$
-   :end-before: ```
+   :end-before: //end acquire_body$
 
 The main part of the implementation is the ``with_invariants`` block.
 
@@ -166,7 +166,7 @@ The signature is the dual of ``acquire``: the caller has to give up
 .. literalinclude:: ../code/pulse/PulseTutorial.SpinLock.fst
    :language: pulse
    :start-after: //release$
-   :end-before: ```
+   :end-before: //end release$
 
 In this implementation, ``release`` unconditionally sets the reference
 to ``0ul`` and reproves the ``lock_inv``, since we have ``p`` in

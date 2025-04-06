@@ -36,20 +36,19 @@ function to swap the contents of two references:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
-   :start-after: ```pulse //swap$
-   :end-before: ```
+   :start-after: //swap$
+   :end-before: //end swap$
 
 Reading a reference
 ...................
-
 
 Let's start by taking a closer look at how dereferencing works in the
 function ``value_of`` below:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
-   :start-after: ```pulse //value_of$
-   :end-before: ```
+   :start-after: //value_of$
+   :end-before: //end value_of$
 
 Its slightly more explicit form is shown below, where ``w:erased a``
 is an erased value witnessing the current contents referenced by
@@ -57,8 +56,8 @@ is an erased value witnessing the current contents referenced by
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
-   :start-after: ```pulse //value_of_explicit$
-   :end-before: ```
+   :start-after: //value_of_explicit$
+   :end-before: //end value_of_explicit$
 
 Notice how the precondition requires ``pts_to r w`` while the
 postcondition retains ``pts_to r w``, along with the property that ``v
@@ -76,8 +75,8 @@ code fails to check with the error shown below.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
-   :start-after: ```pulse //value_of_explicit_fail$
-   :end-before: ```
+   :start-after: //value_of_explicit_fail$
+   :end-before: //end value_of_explicit_fail$
 
 .. code-block::
 
@@ -92,8 +91,8 @@ reference---the specification shows that when the function returns,
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
-   :start-after: ```pulse //assign$
-   :end-before: ```
+   :start-after: //assign$
+   :end-before: //end assign$
                     
                 
 Dereferencing is explicit
@@ -101,7 +100,7 @@ Dereferencing is explicit
 
 Unlike languages like C or Rust which make a distinction between
 l-values and r-values and implicitly read the content of references,
-in Pulse (like in OCaml), references are explicitly dereferenced. [#]_
+in Pulse (like in OCaml), references are explicitly dereferenced.
 As the program below illustrates, references themselves can be passed
 to other functions (e.g., as in/out-parameters) while their current
 values must be passed explicitly.
@@ -111,16 +110,16 @@ The function ``add`` takes both a reference ``r:ref int`` and a value
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
-   :start-after: ```pulse //add$
-   :end-before: ```
+   :start-after: //add$
+   :end-before: //end add$
 
 Meanwhile, the function ``quadruple`` calls ``add`` twice to double
 the value stored in ``r`` each time.
                 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
-   :start-after: ```pulse //quadruple$
-   :end-before: ```
+   :start-after: //quadruple$
+   :end-before: //end quadruple$
 
 Inspecting the proof state
 ..........................
@@ -159,8 +158,8 @@ middle.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
-   :start-after: ```pulse //quadruple_show_proof_state$
-   :end-before: ```
+   :start-after: //quadruple_show_proof_state$
+   :end-before: //end quadruple_show_proof_state$
 
 The output from ``show_proof_state`` is shown below:
 
@@ -198,7 +197,6 @@ The comments show how the proof state evolves after each command.
 
   * Pulse also uses the SMT solver to convert ``pts_to r (v2 + v2)``
     to ``pts_to r (4 * 'v)``.
-    
 
 Stateful commands are explicitly sequenced
 ..........................................
@@ -208,8 +206,8 @@ Pulse expects the results of all stateful operations to be explicitly
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
-   :start-after: ```pulse //quad FAIL$
-   :end-before: ```
+   :start-after: //quad FAIL$
+   :end-before: //end quad FAIL$
                
 
 .. code-block::
@@ -265,16 +263,16 @@ previously, we can write down the permissions explicitly.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
-   :start-after: ```pulse //assign_1.0R$
-   :end-before: ```
+   :start-after: //assign_1.0R$
+   :end-before: //end assign_1.0R$
    
 In contrast, when reading a reference, any permission ``p`` will do,
 as shown below:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
-   :start-after: ```pulse //value_of_perm$
-   :end-before: ```
+   :start-after: //value_of_perm$
+   :end-before: //end value_of_perm$
 
 If we try to write to a reference without holding full permission on
 it, Pulse rejects the program, as shown below.
@@ -296,16 +294,15 @@ The full error message requires the F* option ``--print_implicits``.
 The functions ``share`` and ``gather`` allow one to divide and combine
 permissions on references, as shown below.
 
+.. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
+   :language: pulse
+   :start-after: //share_ref$
+   :end-before: //end share_ref$
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
-   :start-after: ```pulse //share_ref$
-   :end-before: ```
-
-.. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
-   :language: pulse
-   :start-after: ```pulse //gather_ref$
-   :end-before: ```
+   :start-after: //gather_ref$
+   :end-before: //end gather_ref$
 
 The type of ``gather_ref`` has an additional interesting element: its
 postcondition proves that ``'v0 == 'v1``. That is, since ``x`` can
@@ -313,10 +310,8 @@ point to at most one value, given two separate points-to assertions
 about ``x``, allows one to conclude that the pointed-to witnesses are
 identical.
 
-    
 Stack references
 ^^^^^^^^^^^^^^^^
-
 
 ``let mut`` creates a new stack ref
 ...................................
@@ -326,8 +321,8 @@ Pulse, as shown below.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
-   :start-after: ```pulse //one
-   :end-before: ```
+   :start-after: //one
+   :end-before: //end one
 
 The body of the program is annotated to show program assertions that
 are true after each command.
@@ -351,7 +346,7 @@ are true after each command.
     memory it points to is reclaimed, and the ``pts_to x #1.0R
     _v`` is consumed.
 
-    
+
 
 A few additional points to note here:
 
@@ -373,8 +368,8 @@ scoped, let's look at the program below that Pulse refuses to check:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
    :language: pulse
-   :start-after: ```pulse //refs_as_scoped FAIL
-   :end-before: ```
+   :start-after: //refs_as_scoped FAIL
+   :end-before: //end refs_as_scoped FAIL
 
 The error points to the location of ``s`` with the message below,
 meaning that the current assertion on the heap is only ``emp``, while
@@ -389,7 +384,7 @@ scope.
   - In the context:
       emp
 
-    
+
 Heap references
 ^^^^^^^^^^^^^^^
 
@@ -409,8 +404,8 @@ as shown below.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Box.fst
    :language: pulse
-   :start-after: ```pulse //new_heap_ref$
-   :end-before: ```
+   :start-after: //new_heap_ref$
+   :end-before: //end new_heap_ref$
                 
 Note, we can return a freshly allocated heap reference from a
 function, unlike a ``let mut`` scoped, stack-allocated reference.
@@ -420,8 +415,8 @@ In the following example, we use ``open Box;`` to open the namespace
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Box.fst
    :language: pulse
-   :start-after: ```pulse //last_value_of$
-   :end-before: ```
+   :start-after: //last_value_of$
+   :end-before: //end last_value_of$
 
 ``box t`` references can be demoted to regular ``ref t`` references
 for code reuse. For example, in the code below, we increment the
@@ -432,8 +427,8 @@ then calling ``incr (box_to_ref r)``; and then converting back to a
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Box.fst
    :language: pulse
-   :start-after: ```pulse //incr_box$
-   :end-before: ```
+   :start-after: //incr_box$
+   :end-before: //end incr_box$
 
 Finally, unlike Rust's ``Box<T>`` type, which is always treated
 linearly (i.e., in Rust, one always holds exclusive read/write
@@ -442,8 +437,3 @@ implicit fractional permission as with regular references.
 
 Ghost references
 ^^^^^^^^^^^^^^^^
-
-
-.. [#] We are considering switching this convention and the Pulse
-       option ``--ext 'pulse:rvalues'`` can be enabled to add implicit
-       dereferencing; however, it is not yet recommended for use. 

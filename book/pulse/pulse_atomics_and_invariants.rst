@@ -167,7 +167,7 @@ full-permission on ``x``.
 .. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
    :language: fstar
    :start-after: //owns$
-   :end-before: //owns$
+   :end-before: //end owns$
 
 Notice the type annotation on ``owns`` claims that it is ``boxable``,
 and indeed F*'s refinement type checker automatically proves that it
@@ -179,7 +179,7 @@ an invariant ``inv i (owns r)``, as shown below.
 .. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
    :language: pulse
    :start-after: //create_invariant$
-   :end-before: ```
+   :end-before: //end create_invariant$
 
 Importantly, when we turn ``pts_to r x`` into ``inv i (owns r)``, **we
 lose** ownership of ``pts_to r x``. Remember, once we have ``inv i
@@ -206,7 +206,7 @@ typechecking fails, as shown in the example below:
 .. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
    :language: pulse
    :start-after: //create_non_boxable$
-   :end-before: ```
+   :end-before: //end create_non_boxable$
 
 failing with an error pointing to the source location of the
 refinement precondition, ``is_big``, at the call to ``new_invariant``.
@@ -306,7 +306,7 @@ update a reference with a pre- and postcondition of ``emp``.
 .. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
    :language: pulse
    :start-after: //update_ref_atomic$
-   :end-before: ```
+   :end-before: //end update_ref_atomic$
 
 * At the start of the ``with_invariants`` scope, we have ``owns r`` in
   the context.
@@ -337,7 +337,7 @@ within the same scope, then it's easy to prove ``False``:
 .. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
    :language: pulse
    :start-after: //double_open_bad$
-   :end-before: //double_open_bad$
+   :end-before: //end double_open_bad$
 
 Here, we open the invariants ``i`` twice and get ``owns r ** owns r``,
 or more than full permission to ``r``---from this, it is easy to build
@@ -355,7 +355,7 @@ doesn't record which invariants were opened internally.
 .. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
    :language: pulse
    :start-after: //update_ref$
-   :end-before: ```
+   :end-before: //end update_ref$
 
 This is okay, since a non-atomic computation can never appear within a
 ``with_invariants`` block---so, there's no fear of an ``stt``
@@ -367,7 +367,7 @@ error, as shown below.
 .. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
    :language: pulse
    :start-after: //update_ref_fail$
-   :end-before: //update_ref_fail$
+   :end-before: //end update_ref_fail$
 
 .. code-block::
 

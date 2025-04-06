@@ -27,15 +27,15 @@ integer reference.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Intro.fst
    :language: pulse
-   :start-after: ```pulse //incr
-   :end-before: ```
+   :start-after: //incr
+   :end-before: //end incr
 
 And here's a function to increment two references in parallel.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Intro.fst
    :language: pulse
-   :start-after: ```pulse //par_incr
-   :end-before: ```
+   :start-after: //par_incr
+   :end-before: //end par_incr
 
 You may not have heard about separation logic before---but perhaps
 these specifications already make intuitive sense to you. The type of

@@ -16,7 +16,7 @@ function application.
 .. literalinclude:: ../code/pulse/PulseTutorial.HigherOrder.fst
    :language: pulse
    :start-after: //apply$
-   :end-before: ```
+   :end-before: //end apply$
                     
 This function is polymorphic in the argument, result type, pre, and
 post-condition of a function ``f``, which it applies to an argument
@@ -50,7 +50,7 @@ functions.
 .. literalinclude:: ../code/pulse/PulseTutorial.HigherOrder.fst
    :language: pulse
    :start-after: //apply_ghost$
-   :end-before: ```
+   :end-before: //end apply_ghost$
 
 The type of ``f`` is similar to what we had before, but this time we
 have:
@@ -105,7 +105,7 @@ type ``ctr`` of a counter.
 .. literalinclude:: ../code/pulse/PulseTutorial.HigherOrder.fst
    :language: fstar
    :start-after: //ctr$
-   :end-before: //ctr$
+   :end-before: //end ctr$
 
 A counter packages the following:
 
@@ -125,7 +125,7 @@ heap-allocated reference. This is what ``new_counter`` does below:
 .. literalinclude:: ../code/pulse/PulseTutorial.HigherOrder.fst
    :language: pulse
    :start-after: //new_counter$
-   :end-before: ```
+   :end-before: //end new_counter$
 
 Here's how it works.
 
@@ -147,7 +147,7 @@ completely hidden.
 .. literalinclude:: ../code/pulse/PulseTutorial.HigherOrder.fst
    :language: pulse
    :start-after: //test_counter$
-   :end-before: ```
+   :end-before: //end test_counter$
 
                 
 

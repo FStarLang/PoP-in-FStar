@@ -18,8 +18,8 @@ A simple example of a user-defined abstraction is show below.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.UserDefinedPredicates.fst
    :language: pulse
-   :start-after: //SNIPPET_START: pts_to_diag$
-   :end-before: //SNIPPET_END: pts_to_diag$
+   :start-after: //pts_to_diag$
+   :end-before: //end pts_to_diag$
 
 ``pts_to_diag r v`` is a ``vprop`` defined in F* representing a
 reference to a pair whose components are equal.
@@ -29,8 +29,8 @@ explicit about folding and unfolding the predicate.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.UserDefinedPredicates.fst
    :language: pulse
-   :start-after: ```pulse //double$
-   :end-before: ```
+   :start-after: //double$
+   :end-before: //end double$
 
 The ``unfold p`` command checks that ``p`` is provable in the current
 context by some term ``q``, and then rewrites the context by replacing
@@ -57,8 +57,8 @@ provide all the arguments.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.UserDefinedPredicates.fst
    :language: pulse
-   :start-after: ```pulse //double_alt$
-   :end-before: ```
+   :start-after: //double_alt$
+   :end-before: //end double_alt$
 
 Mutable Points
 ..............
@@ -70,8 +70,8 @@ structure with two mutable integer fields, representing a
 
 .. literalinclude:: ../code/pulse/PulseTutorial.UserDefinedPredicates.fst
    :language: fstar
-   :start-after: //SNIPPET_START: point$
-   :end-before: //SNIPPET_END: point$
+   :start-after: //point$
+   :end-before: //end point$
 
 A ``point`` is just an F* record containing two
 references. Additionally, we define ``is_point``, a ``vprop``,
@@ -84,8 +84,8 @@ offset ``dx, dy``.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.UserDefinedPredicates.fst
    :language: pulse
-   :start-after: ```pulse //move$
-   :end-before: ```
+   :start-after: //move$
+   :end-before: //end move$
 
 Implementing ``move`` is straightforward, but like before, we have to
 ``unfold`` the ``is_point`` predicate first, and then fold it back up
@@ -114,8 +114,8 @@ define a helper function to fold the predicate, as shown below.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.UserDefinedPredicates.fst
    :language: pulse
-   :start-after: ```pulse //fold_is_point$
-   :end-before: ```
+   :start-after: //fold_is_point$
+   :end-before: //end fold_is_point$
 
 .. note::
 
@@ -126,8 +126,8 @@ This allows  type inference to work better, as shown below.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.UserDefinedPredicates.fst
    :language: pulse
-   :start-after: ```pulse //move_alt$
-   :end-before: ```
+   :start-after: //move_alt$
+   :end-before: //end move_alt$
 
 .. _Pulse_rewriting:
 
@@ -153,8 +153,8 @@ To illustrate this at work, consider the program below:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.UserDefinedPredicates.fst
    :language: pulse
-   :start-after: ```pulse //create_and_move$
-   :end-before: ```
+   :start-after: //create_and_move$
+   :end-before: //end create_and_move$
 
 We allocate two references and put them in the structure ``p``. Now,
 to call ``fold_is_point``, we need ``pts_to p.x _`` and ``pts_to p.y
@@ -213,8 +213,8 @@ Using ``rewrite each ...`` makes the code somewhat shorter:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.UserDefinedPredicates.fst
    :language: pulse
-   :start-after: ```pulse //create_and_move_alt$
-   :end-before: ```
+   :start-after: //create_and_move_alt$
+   :end-before: //end create_and_move_alt$
 
 
 

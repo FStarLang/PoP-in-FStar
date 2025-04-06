@@ -24,8 +24,8 @@ that reads an array:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Array.fst
    :language: pulse
-   :start-after: ```pulse //readi$
-   :end-before: ```
+   :start-after: //readi$
+   :end-before: //end readi$
 
 The library provides a points-to predicate ``pts_to arr #p s`` with
 the interpretation that in the current memory, the contents of ``arr``
@@ -50,8 +50,8 @@ As another example, let's write to the ``i``-th element of an array:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Array.fst
    :language: pulse
-   :start-after: ```pulse //writei$
-   :end-before: ```
+   :start-after: //writei$
+   :end-before: //end writei$
 
 The function uses the array write operator ``arr(i) <- x`` and the postcondition
 asserts that in the state when the function returns, the contents of the array
@@ -121,7 +121,7 @@ of the array ``a2`` to ``a1``.
 .. literalinclude:: ../code/pulse/PulseTutorial.Array.fst
    :language: pulse
    :start-after: //copy$
-   :end-before: ```
+   :end-before: //end copy$
 
 The loop invariant existentially abstracts over the contents of ``a1``, and maintains
 that up to the current loop counter, the contents of the two arrays are equal. Rest of
@@ -162,8 +162,8 @@ above.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Array.fst
    :language: pulse
-   :start-after: ```pulse //compare_stack_arrays$
-   :end-before: ```
+   :start-after: //compare_stack_arrays$
+   :end-before: //end compare_stack_arrays$
 
 As with the stack references, stack arrays don't need to be deallocated or
 dropped, they are reclaimed automatically when the function returns. As a result,
@@ -201,8 +201,8 @@ using the ``copy2`` function we wrote above.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Array.fst
    :language: pulse
-   :start-after: ```pulse //copyuse$
-   :end-before: ```
+   :start-after: //copyuse$
+   :end-before: //end copyuse$
 
 Note how the assertion for ``v`` transforms from ``V.pts_to`` to ``pts_to`` (the points-to assertion
 for arrays) and back. It means that array algorithms and routines can be implemented with the

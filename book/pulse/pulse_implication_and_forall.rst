@@ -12,12 +12,12 @@ connectives.
 Trades, or Separating Ghost Implication
 ........................................
 
-The library ``module I = Pulse.Lib.Stick.Util`` defines the operator
-*trade* ``(@==>)`` and utilities for using it. In the literature, the
-operator ``p --* q`` is pronounced "p magic-wand q"; ``p @==> q`` is
-similar, though there are some important technical differences, as
-we'll see. We'll just pronounce it ``p for q``, or ``p trades for q``.
-Here's an informal description of what ``p @==> q`` means:
+The library ``module I = Pulse.Lib.Trade.Util`` defines the operator *trade*
+``(@==>)`` and utilities for using it. In the literature, the operator ``p --*
+q`` is pronounced "p magic-wand q"; ``p @==> q`` is similar, though there are
+some important technical differences, as we'll see. We'll just pronounce it ``p
+for q``, ``p trade q``, or ``p trades for q``. Here's an informal description of
+what ``p @==> q`` means:
 
   ``p @==> q`` says that if you have ``p`` then you can *trade* it for
   ``q``. In other words, from ``p ** (p @==> q)``, you can derive
@@ -61,7 +61,7 @@ Here's a small example to see ``p @==> q`` at work.
 .. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
    :language: fstar
    :start-after: //regain_half$
-   :end-before: //regain_half$
+   :end-before: //end regain_half$
 
 The predicate ``regain_half`` says that you can trade a
 half-permission ``pts_to x #one_half v`` for a full permission
@@ -77,7 +77,7 @@ Let's look at how to introduce ``regain_half``:
 .. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
    :language: pulse
    :start-after: //intro_regain_half$
-   :end-before: ```
+   :end-before: //end intro_regain_half$
 
 The specification says that if we start out with ``pts_to x 'v`` then
 we can split it into ``pts_to x #one_half v`` and a ``regain_half x
@@ -100,7 +100,7 @@ permission, as shown below.
 .. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
    :language: pulse
    :start-after: //use_regain_half$
-   :end-before: ```
+   :end-before: //end use_regain_half$
 
 At this point, you may be wondering why we bother to use a
 ``regain_half x 'v`` in the first place, since one might as well have
@@ -116,7 +116,7 @@ Let's look at our ``regain_half`` predicate again:
 .. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
    :language: fstar
    :start-after: //regain_half$
-   :end-before: //regain_half$
+   :end-before: //end regain_half$
 
 This predicate is not as general as it could be: to eliminate it, it
 requires the caller to prove that they holds ``pts_to x #one_half v``,
@@ -138,7 +138,7 @@ Here's the right version of ``regain_half``:
 .. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
    :language: fstar
    :start-after: //regain_half_q$
-   :end-before: //regain_half_q$
+   :end-before: //end regain_half_q$
 
 This says that no matter what ``pts_to x #one_half u`` the context
 has, they can recover full permission to it, *with the same witness*
@@ -202,7 +202,7 @@ Here's how one introduces ``regain_half_q``:
 .. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
    :language: pulse
    :start-after: //intro_regain_half_q$
-   :end-before: ```
+   :end-before: //end intro_regain_half_q$
 
 Now, when we want to use it, we can trade in any half-permission on
 ``pts_to x #one_half u``, for a full permission with the same ``u``.
@@ -210,7 +210,7 @@ Now, when we want to use it, we can trade in any half-permission on
 .. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
    :language: pulse
    :start-after: //use_regain_half_q$
-   :end-before: ```
+   :end-before: //end use_regain_half_q$
 
 Note using the eliminator for ``FA.elim`` is quite verbose: we need to
 specify the quantifier term again. The way Pulse uses F*'s unifier
@@ -233,7 +233,7 @@ permission to ``pts_to x #one_half u`` for a full permission to a
 .. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
    :language: fstar
    :start-after: //can_update$
-   :end-before: //can_update$
+   :end-before: //end can_update$
 
 In ``make_can_update``, we package a ghost-state update function into
 a binary quantifier ``forall* u v. ...``.
@@ -241,7 +241,7 @@ a binary quantifier ``forall* u v. ...``.
 .. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
    :language: pulse
    :start-after: //make_can_update$
-   :end-before: ```
+   :end-before: //end make_can_update$
 
 And in ``update``, below, we instantiate it to update the reference
 ``x`` from ``'u`` to ``k``, and also return back a ``can_update``
@@ -250,5 +250,5 @@ predicate to the caller, for further use.
 .. literalinclude:: ../code/pulse/PulseTutorial.ImplicationAndForall.fst
    :language: pulse
    :start-after: //update$
-   :end-before: ```
+   :end-before: //end update$
                 

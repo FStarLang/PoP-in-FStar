@@ -71,8 +71,8 @@ decrements a reference until it reaches ``0``.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
    :language: pulse
-   :start-after: ```pulse //count_down$
-   :end-before: ```
+   :start-after: //count_down$
+   :end-before: //end count_down$
 
 While loops in Pulse are perhaps a bit more general than in other
 languages. The ``guard`` is an arbitrary Pulse program, not just a
@@ -83,8 +83,8 @@ variable.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
    :language: pulse
-   :start-after: ```pulse //count_down2$
-   :end-before: ```
+   :start-after: //count_down3$
+   :end-before: //end count_down3$
                 
 
 Partial correctness
@@ -95,8 +95,8 @@ infinitely looping variant of our program is also accepted:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
    :language: pulse
-   :start-after: ```pulse //count_down_loopy$
-   :end-before: ```
+   :start-after: //count_down_loopy$
+   :end-before: //end count_down_loopy$
 
 This program increments instead of decrement ``x``, but it still
 satisfies the same invariant as before, since it always loops forever.
@@ -121,8 +121,8 @@ implements multiplication by repeated addition.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
    :language: pulse
-   :start-after: ```pulse //multiply_by_repeated_addition$
-   :end-before: ```
+   :start-after: //multiply_by_repeated_addition$
+   :end-before: //end multiply_by_repeated_addition$
 
 A few noteworthy points:
 
@@ -149,8 +149,8 @@ this sum.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
    :language: fstar
-   :start-after: //SNIPPET_START: sum$
-   :end-before: //SNIPPET_END: sum$
+   :start-after: //sum$
+   :end-before: //end sum$
 
 Now, let's say we want to implement ``isum``, an iterative version of
 ``sum``, and prove that it satisfies the identity proven by
@@ -158,8 +158,8 @@ Now, let's say we want to implement ``isum``, an iterative version of
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
    :language: pulse
-   :start-after: //SNIPPET_START: isum$
-   :end-before: //SNIPPET_END: isum$
+   :start-after: //isum$
+   :end-before: //end isum$
 
 This program is quite similar to ``multiply_by_repeated_addition``,
 but with a couple of differences:
@@ -192,7 +192,7 @@ computes the nth Fibonacci number.
 .. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
    :language: fstar
    :start-after: //fib$
-   :end-before: //fib$
+   :end-before: //end fib$
 
 One can also implement it in Pulse, as ``fib_rec`` while using an
 out-parameter to hold that values of the last two Fibonacci numbers in
@@ -201,7 +201,7 @@ the sequence.
 .. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
    :language: pulse
    :start-after: //fib_rec$
-   :end-before: ```
+   :end-before: //end fib_rec$
 
 Some points to note here:
 
@@ -220,7 +220,7 @@ loop, as shown below.
 .. literalinclude:: ../code/pulse/PulseTutorial.Loops.fst
    :language: pulse
    :start-after: //fib_loop$
-   :end-before: ```
+   :end-before: //end fib_loop$
 
 
 

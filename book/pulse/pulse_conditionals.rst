@@ -16,8 +16,8 @@ references.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: pulse
-   :start-after: //SNIPPET_START: max$
-   :end-before: //SNIPPET_END: max$
+   :start-after: //max$
+   :end-before: //end max$
 
 This program illustrates a very common specification style.
 
@@ -42,8 +42,8 @@ fails, with the error message shown below.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: pulse
-   :start-after: ```pulse //max_alt_fail$
-   :end-before: ```
+   :start-after: //max_alt_fail$
+   :end-before: //end max_alt_fail$
 
 .. code-block::                 
 
@@ -54,8 +54,8 @@ Here's an annotated version of ``max_alt`` that succeeds.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: pulse
-   :start-after: ```pulse //max_alt$
-   :end-before: ```
+   :start-after: //max_alt$
+   :end-before: //end max_alt$
 
 We are working on adding inference for non-tail conditionals.
 
@@ -67,8 +67,8 @@ representation of a possibly null reference.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: fstar
-   :start-after: //SNIPPET_START: nullable_ref$
-   :end-before: //SNIPPET_END: nullable_ref$
+   :start-after: //nullable_ref$
+   :end-before: //end nullable_ref$
 
 Representation predicate
 ++++++++++++++++++++++++
@@ -130,8 +130,8 @@ Let's try our first pattern match in Pulse:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: pulse
-   :start-after: ```pulse //read_nullable$
-   :end-before: ```
+   :start-after: //read_nullable$
+   :end-before: //end read_nullable$
 
 The syntax of pattern matching in Pulse is more imperative and
 Rust-like than what F* uses.
@@ -175,8 +175,8 @@ condition hypothesis for the preceding branches not taken.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: pulse
-   :start-after: //SNIPPET_START: read_nullable_alt_fail$
-   :end-before: //SNIPPET_END: read_nullable_alt_fail$
+   :start-after: //read_nullable_alt_fail$
+   :end-before: //end read_nullable_alt_fail$
 
 We plan to enhance the Pulse checker to also provide these negated
 path conditions.
@@ -194,8 +194,8 @@ every time, one can define helper functions to handle these cases.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: pulse
-   :start-after: //SNIPPET_START: pts_to_or_null_helpers$
-   :end-before: //SNIPPET_END: pts_to_or_null_helpers$
+   :start-after: //pts_to_or_null_helpers$
+   :end-before: //end pts_to_or_null_helpers$
 
 These functions are all marked ``ghost``, indicating that they are
 purely for proof purposes only.
@@ -211,8 +211,8 @@ easier:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: pulse
-   :start-after: ```pulse //read_nullable_alt$
-   :end-before: ```
+   :start-after: //read_nullable_alt$
+   :end-before: //end read_nullable_alt$
 
 
 Writing a nullable reference
@@ -223,8 +223,8 @@ here is a  function to write a nullable reference.
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Conditionals.fst
    :language: pulse
-   :start-after: ```pulse //write_nullable$
-   :end-before: ```
+   :start-after: //write_nullable$
+   :end-before: //end write_nullable$
 
 
 

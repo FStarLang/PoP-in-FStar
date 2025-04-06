@@ -35,7 +35,7 @@ below.
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: pulse
    :start-after: //incr_erased_non_ghost$
-   :end-before: //incr_erased_non_ghost$
+   :end-before: //end incr_erased_non_ghost$
 
 .. code-block::
 
@@ -53,7 +53,7 @@ works:
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: pulse
    :start-after: //incr_erased$
-   :end-before: ```
+   :end-before: //end incr_erased$
 
 The ``ghost`` qualifier indicates the the Pulse checker that the
 function is to be erased at runtime, so ``ghost`` functions are
@@ -67,7 +67,7 @@ fails with the error below:
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: pulse
    :start-after: //try_use_incr_erased$
-   :end-before: //try_use_incr_erased$
+   :end-before: //end try_use_incr_erased$
 
 .. code-block::
 
@@ -89,7 +89,7 @@ function to wrap the call to ``incr_erased``.
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: pulse
    :start-after: //use_incr_erased$
-   :end-before: //use_incr_erased$
+   :end-before: //end use_incr_erased$
 
 The library also contains ``Pulse.Lib.Pervasives.call_ghost`` that is
 a higher-order combinator to erase the result of a ghost call.
@@ -97,7 +97,7 @@ a higher-order combinator to erase the result of a ghost call.
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: pulse
    :start-after: //use_incr_erased_alt$
-   :end-before: ```
+   :end-before: //end use_incr_erased_alt$
 
 The ``call_ghost`` combinator can be used with ghost functions of
 different arities, though it requires the applications to be curried
@@ -108,14 +108,14 @@ Suppose we have a binary ghost function, like ``add_erased``:
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: pulse
    :start-after: //add_erased$
-   :end-before: ```
+   :end-before: //end add_erased$
 
 To call it in a non-ghost context, one can do the following:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: pulse
    :start-after: //use_add_erased$
-   :end-before: ```
+   :end-before: //end use_add_erased$
 
 That said, since ``ghost`` functions must have non-informative return
 types to be usable in non-ghost contexts, it's usually best to define
@@ -125,7 +125,7 @@ call site, as shown below:
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: pulse
    :start-after: //add_erased_erased$
-   :end-before: ```
+   :end-before: //end add_erased_erased$
 
 
 Some Primitive Ghost Functions
@@ -148,7 +148,7 @@ library. Its signature looks like this:
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: pulse
    :start-after: //__rewrite_sig$
-   :end-before:  //__rewrite_sig$
+   :end-before:  //end __rewrite_sig$
 
 Many of the other primitives like ``fold``, ``unfold``, etc. are
 defined in terms of ``rewrite`` and are ``ghost`` computations.
@@ -160,7 +160,7 @@ below:
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: pulse
    :start-after: //intro_exists_sig$
-   :end-before:  //intro_exists_sig$
+   :end-before:  //end intro_exists_sig$
 
 
 .. _Pulse_recursive_predicates:
@@ -184,7 +184,7 @@ contain integers whose value is at most ``n``. The recursive predicate
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: fstar
    :start-after: //all_at_most$
-   :end-before:  //all_at_most$
+   :end-before:  //end all_at_most$
 
 As we did when working with :ref:`nullable references
 <Pulse_nullable_ref_helpers>`, it's useful to define a few helper
@@ -206,7 +206,7 @@ m``.
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: pulse
    :start-after: //weaken_at_most$
-   :end-before: ```                
+   :end-before: //end weaken_at_most$               
 
 A few points to note:
 
@@ -296,7 +296,7 @@ to hold the same value.
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: pulse
    :start-after: //correlated$
-   :end-before: //correlated$
+   :end-before: //end correlated$
 
 Now, here's the signature of a function ``use_temp``: at first glance,
 from its signature alone, one might think that the witness ``v0``
@@ -306,7 +306,7 @@ postcondition.
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: pulse
    :start-after: //use_temp_sig$
-   :end-before: //use_temp_sig$
+   :end-before: //end use_temp_sig$
 
 But, ``use_temp`` only has half-permission to the ghost reference and
 cannot mutate it. So, although it can mutate the reference itself, in
@@ -316,7 +316,7 @@ initial value.
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: pulse
    :start-after: //use_temp_body$
-   :end-before: //use_temp_body$
+   :end-before: //end use_temp_body$
 
 This property can be exploited by a caller to pass a reference to
 ``use_temp`` and be assured that the value is unchanged when it
@@ -325,5 +325,5 @@ returns.
 .. literalinclude:: ../code/pulse/PulseTutorial.Ghost.fst
    :language: pulse
    :start-after: //use_correlated$
-   :end-before: ```
+   :end-before: //end use_correlated$
 
