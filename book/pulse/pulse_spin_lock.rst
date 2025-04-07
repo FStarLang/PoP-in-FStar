@@ -42,7 +42,6 @@ The predicate ``lock_inv r p`` states:
 The lock itself pairs the concrete mutable state ``box U32.t`` with an
 invariant reference ``i:iref``, where the ``lock_alive l p`` predicate
 states that ``l.i`` names an invariant for ``lock_alive l.r p``.
-   
 
 Creating a lock
 ...............
@@ -56,8 +55,6 @@ allocated ``l:lock``
    :start-after: //new_lock$
    :end-before: //end new_lock$
 
-Importantly, since allocating a lock involves allocating an invariant
-that protects the predicate ``p``, we need ``p`` to be ``boxable``.
 
 Some notes on the implementation:
 
