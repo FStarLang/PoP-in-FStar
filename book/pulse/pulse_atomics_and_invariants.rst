@@ -60,7 +60,7 @@ computation.
 This is an assumption about the target architecture on which a Pulse
 program is executed. It may be that on some machines, 32-bit values
 cannot be read or written atomically. So, when using atomic
-operations, you should be careful to check that its safe to assume
+operations, you should be careful to check that it is safe to assume
 that these operations truly are atomic.
 
 Pulse also provides a way for you to declare that other operations are
@@ -111,53 +111,17 @@ Every ``iref`` can be turned into an ``iname``, with the function
 ``iname_of (i:iref): GTot iname``.
 
 Invariants are duplicable, i.e., from ``inv i p`` one can prove ``inv
-i p ** inv i p``, as shown by type of ``Pulse.Lib.Core.dup_inv``
+i p ** inv i p``, as shown by the type of ``Pulse.Lib.Core.dup_inv``
 below:
 
-.. code-block:: fstar
+.. code-block:: pulse
 		    
-    val dup_inv (i:iref) (p:slprop)
-      : stt_ghost unit emp_inames (inv i p) (fun _ -> inv i p ** inv i p)
+    ghost fn dup_inv (i:iref) (p:slprop)
+    requires inv i p
+    ensures inv i p ** inv i p
 
-
-Boxable predicates
-++++++++++++++++++
-
-Pulse's language of predicates, i.e., the type ``slprop``, is
-stratified. The type ``boxable`` is a refinement of ``slprop``, defined
-as shown below in ``Pulse.Lib.Core``
-
-.. code-block:: fstar
-
-   let boxable = v:slprop { is_big v }
-
-That is, certain ``slprops``, i.e., those that satisfy ``is_big``, are
-``boxable`` predicates. All the predicates that we have encountered so
-far are boxable, except for the ``inv i p`` predicate. For example,
-``pts_to x v`` is boxable; ``exists* x. p x`` is boxable if ``p x`` is
-boxable; etc. However ``inv i p`` is not boxable.
-
-Why does this matter? It turns out that PulseCore, the logic on which
-Pulse is built, only allows turning boxable predicates into
-invariants. That is, while one can build an invariant such as ``inv i
-(exists* v. pts_to x v)``, one **cannot** nest invariants, i.e., there
-is no meaningful way to construct an instance of ``inv i (inv j p)``.
-
-This restriction is a fundamental limitation of PulseCore: invariants
-cannot mention other invariants. In more technical terms, *invariants
-are predicative*. One might wonder whether this limitation is
-significant: after all, why might one want to construct an invariant
-that states that some ``p`` is already an invariant? It turns out that
-such predicates, although not very common, are useful and the
-inability to nest invariants in Pulse makes some styles of proofs
-awkward or perhaps even impossible. Nevertheless, forcing invariants
-to be predicative gives Pulse a simple foundational model in PulseCore
-in terms of a standard, predicative, dependently typed logic.
-
-Let's look next at how to turn a boxable predicate into an invariant.
-
-Creating an invariant and boxable predicates
-++++++++++++++++++++++++++++++++++++++++++++
+Creating an invariant 
++++++++++++++++++++++
 
 Let's start by looking at how to create an invariant.
 
@@ -169,9 +133,6 @@ full-permission on ``x``.
    :start-after: //owns$
    :end-before: //end owns$
 
-Notice the type annotation on ``owns`` claims that it is ``boxable``,
-and indeed F*'s refinement type checker automatically proves that it
-is.
 
 Now, if we can currently prove ``pts_to r x`` then we can turn it into
 an invariant ``inv i (owns r)``, as shown below.
@@ -200,38 +161,55 @@ e.g., by freeing ``r``.
    we're working to improve. In the meantime, use an auxiliary
    predicate.
 
-Note, if one were to try to allocate an invariant for a non-boxable predicate,
-typechecking fails, as shown in the example below:
+Impredicativity and the ``later`` modality
++++++++++++++++++++++++++++++++++++++++++++
 
-.. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
-   :language: pulse
-   :start-after: //create_non_boxable$
-   :end-before: //end create_non_boxable$
+Pulse allows *any* predicate ``p:slprop`` to be turned into an invariant ``inv i
+p : slprop``. Importantly, ``inv i p`` is itself an ``slprop``, so one can even
+turn an invariant into another invariant, ``inv i (inv j p)``, etc. This ability
+to turn any predicate into an invariant, including invariants themselves, makes
+Pulse an *impredicative* separation logic.
 
-failing with an error pointing to the source location of the
-refinement precondition, ``is_big``, at the call to ``new_invariant``.
+Impredicativity turns out to be useful for a number of reasons, e.g., one could
+create a lock to protect access to a data structure that may itself contain
+further locks. However, soundly implementing impredicativity in a separation
+logic is challenging, since it involves resolving a kind of circularity in the
+definitions of heaps and heap predicates. PulseCore resolves this circularity
+using something called *indirection theory*, using it to provide a foundational
+model for impredicative invariants, together with all the constructs of Pulse.
+The details of this construction is out of scope here, but one doesn't really
+need to know how the construction of the model works to use the resulting logic.
 
-.. code-block::
+We provide a bit of intuition about the model below, but for now, just keep in
+mind that Pulse includes the following abstract predicates:
 
-   - Assertion failed
-   - The SMT solver could not prove the query. Use --query_stats for more details.
-   - See also ../../../lib/pulse/lib/Pulse.Lib.Core.fsti(536,29-536,37)
+.. code-block:: fstar
 
-As you can see, although the language does not prevent you from
-writing ``inv i p`` for any predicate ``p``, the only way to allocate
-an instance of ``inv i p`` is by provable that ``p`` is
-``boxable``. This design is convenient since the onus of proving that
-a predicate is boxable is only placed at the allocation site of the
-invariant---uses of invariants do not need to worry about the
-distinction between ``boxable`` and general ``slprops``.
+   val later (p:slprop) : slprop
+   val later_credit (i:nat) : slprop
 
-Opening an invariant
-++++++++++++++++++++
+with the following forms to introduce and eliminate them:
 
-Now that we've allocated an ``inv i (owns r)``, what can we do with it?
-As we said earlier, one can make use of the ``owns r`` in an atomic
-computation, so long as we restore it at the end of the atomic
-step.
+.. code-block:: pulse
+
+   ghost fn later_intro (p: slprop)
+   requires p
+   ensures later p
+
+   ghost fn later_elim (p: slprop)
+   requires later p ** later_credit 1
+   ensures p
+
+   fn later_credit_buy (amt:nat)
+   requires emp
+   ensures later_credit n
+
+Opening Invariants
+++++++++++++++++++++++++++++++++++++++++++++++
+
+Once we've allocated an invariant, ``inv i (owns r)``, what can we do with it?
+As we said earlier, one can make use of the ``owns r`` in an atomic computation,
+so long as we restore it at the end of the atomic step.
 
 The ``with_invariants`` construct gives us access to the invariant
 within the scope of at most one atomic step, preceded or succeeded by
@@ -246,7 +224,6 @@ invariants ``i_1`` to ``i_k`` in the scope of ``e``.
    returns x:t
    ensures post
    { e }
-
 
 In many cases, the ``returns`` and ``ensures`` annotations are
 omitted, since it can be inferred.
@@ -270,10 +247,10 @@ Here's the rule for opening a single invariant ``inv i p`` using
 * ``i`` must have type ``iref`` and ``inv i p`` must be provable in
   the current context, for some ``p:slprop``
    
-* ``e`` must have the type ``stt_atomic t j (p ** r) (fun x -> p ** s
-  x)``. [#]_ That is, ``e`` requires and restores the invariant ``p``,
-  while also transforming ``r`` to ``s x``, all in at most one atomic
-  step. Further, the ``name_of_inv i`` must not be in the set ``j``.
+* ``e`` must have the type ``stt_atomic t j (later p ** r) (fun x -> later p **
+  s x)``. [#]_ That is, ``e`` requires and restores ``later p``, while also
+  transforming ``r`` to ``s x``, all in at most one atomic step. Further, the
+  ``name_of_inv i`` must not be in the set ``j``.
 
 * ``with_invariants i { e }`` has type ``stt_atomic t (add_inv i j)
   (inv i p ** r) (fun x -> inv i p ** s x)``. That is, ``e`` gets to
@@ -290,26 +267,44 @@ Let's look at a few examples to see how ``with_invariants`` works.
 
 .. [#]
 
-    Alternatively ``e`` may have type ``stt_ghost t j (p ** r) (fun x
-    -> p ** s x)``, in which case the entire ``with_invariants i { e
-    }`` block has type ``stt_ghost t (add_inv i j) (inv i p ** r) (fun
-    x -> inv i p ** s x)``, i.e., one can open an invariant and use it
-    in either an atomic or ghost context.
+    Alternatively ``e`` may have type ``stt_ghost t j (later p ** r) (fun x ->
+    later p ** s x)``, in which case the entire ``with_invariants i { e }``
+    block has type ``stt_ghost t (add_inv i j) (inv i p ** r) (fun x -> inv i p
+    ** s x)``, i.e., one can open an invariant and use it in either an atomic or
+    ghost context.
     
     
 Updating a reference
 ~~~~~~~~~~~~~~~~~~~~
 
-In the example below, given ``inv i (owns r)``, we can atomically
-update a reference with a pre- and postcondition of ``emp``.
+Let's try do update a reference, given ``inv i (owns r)``. Our first attempt is
+shown below:
+
+.. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
+   :language: pulse
+   :start-after: //update_ref_atomic0$
+   :end-before: //end update_ref_atomic0$
+
+We use ``with_invariants i { ... }`` to open the invariant, and in the scope of
+the block, we have ``later (owns r)``.  Now, we're stuck: we need ``later (owns
+r)``, but we only have ``later (owns r)``. In order to eliminate the later, we
+can use the ``later_elim`` combinator shown earlier, but to call it, we need to
+also have a ``later_credit 1``.
+
+So, let's try again:
 
 .. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
    :language: pulse
    :start-after: //update_ref_atomic$
    :end-before: //end update_ref_atomic$
 
-* At the start of the ``with_invariants`` scope, we have ``owns r`` in
+* The precondition of the function also includes a ``later_credit 1``.
+
+* At the start of the ``with_invariants`` scope, we have ``later (owns r)`` in
   the context.
+
+* The ghost step ``later_elim _`` uses up the later credit and eliminates
+  ``later (owns r)`` into ``owns r``.
 
 * The ghost step ``unfold owns`` unfolds it to its definition.
 
@@ -317,18 +312,186 @@ update a reference with a pre- and postcondition of ``emp``.
 
 * And follow it up with a ``fold owns``, another ghost step.
 
-* The block within ``with_invariants i`` has type ``stt_atomic unit
-  emp_inames (owns r ** emp) (fun _ -> owns r ** emp)``
+* To finish the block, we need to restore ``later (owns r)``, but we have ``owns
+  r``, so the ghost step ``later_intro`` does the job.
 
-* Since we opened the invariant ``i``, the type of
-  ``update_ref_atomic`` records this in the ``opens (singleton i)``
-  annotation; equivalently, the type is ``stt_atomic unit
-  (singleton i) (inv i (owns r)) (fun _ -> inv i (owns r))``. When the
-  ``opens`` annotation is omitted, it defaults to ``emp_inames``, the
-  empty set of invariant names.
+* The block within ``with_invariants i`` has type ``stt_atomic unit
+  emp_inames (later (owns r) ** later_credit 1) (fun _ -> later (owns r) ** emp)``
+
+* Since we opened the invariant ``i``, the type of ``update_ref_atomic`` records
+  this in the ``opens (singleton i)`` annotation; equivalently, the type is
+  ``stt_atomic unit (singleton i) (inv i (owns r) ** later_credit 1) (fun _ ->
+  inv i (owns r))``. When the ``opens`` annotation is omitted, it defaults to
+  ``emp_inames``, the empty set of invariant names.
+
+Finally, to call ``update_ref_atomic``, we need to buy a later credit first.
+This is easily done before we call the atomic computation, as shown below:
+
+
+.. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
+   :language: pulse
+   :start-after: //update_ref$
+   :end-before: //end update_ref$
+
+The later modality and later credits
+++++++++++++++++++++++++++++++++++++
+
+Having seen an example with later modality at work, we provide a bit of
+intuition for the underlying model.
+
+The semantics of PulseCore is defined with respect to memory with an abstract
+notion of a "ticker", a natural number counter, initialized at the start of a
+program's execution. In other logics, this is sometimes called a "step index",
+but in PulseCore, the ticker is unrelated to the number of actual steps a
+computation takes. Instead, at specific points in the program, the programmer
+can issue a specific *ghost* instruction to "tick" the ticker, decreasing its
+value by one unit. The decreasing counter provides a way to define an
+approximate fixed point between the otherwise-circular heaps and heap
+predicates. The logic is defined in such a way that it is always possible to
+pick a high enough initial value for the ticker so that any finite number of
+programs steps can be executed before the ticker is exhausted. 
+
+Now, rather than explicitly working with the ticker, PulseCore encapsulates all
+reasoning about the ticker using two logical constructs: the *later* modality
+and *later credits*, features found in Iris and other separation logics that
+feature impredicativity.
+
+The Later Modality and Later Credits
+-------------------------------------
+
+The predicate ``later p`` states that the ``p:slprop`` is true after one tick.
+
+.. code-block:: pulse
+
+   val later (p: slprop) : slprop
+
+All predicates ``p:slprop`` are "hereditary", meaning that if they are true in a
+given memory, then they are also true after that memory is ticked. The ghost
+function ``later_intro`` embodies this principle: from ``p`` one can prove
+``later p``.
+
+.. code-block:: pulse
+
+   ghost fn later_intro (p: slprop)
+   requires p
+   ensures later p
+
+Given a ``later p``, one can prove ``p`` by using ``later_elim``. This ghost
+function effectively "ticks" the memory (since ``later p`` says that ``p`` is
+true after a tick), but in order to do so, it needs a precondition that the
+ticker has not already reached zero: ``later_credit 1`` says just that, i.e.,
+that the memory can be ticked at least once.
+
+.. code-block:: pulse
+
+   ghost fn later_elim (p: slprop)
+   requires later p ** later_credit 1
+   ensures p
+
+The only way to get a ``later_credit 1`` is to *buy* a credit with the operation
+below---this is a concrete operation that ensures that the memory can be ticked
+at least ``n`` times. 
+
+.. code-block:: pulse
+
+   fn later_credit_buy (amt:nat)
+   requires emp
+   ensures later_credit n
+
+At an abstract level, if the ticker cannot be ticked further, the program loops
+indefinitely---programs that use later credits (and more generally in step
+indexed logics) are inherently proven only partially correct and are allowed to
+loop infinitely. At a meta-level, we show that one can always set the initial
+ticker value high enough that ``later_credit_buy`` will never actually loop
+indefinitely. In fact, when compiling a program, Pulse extracts
+``later_credit_buy n`` to a noop ``()``.
+
+Note, later credits can also be split and combined additively:
+
+.. code-block:: fstar
+
+   val later_credit_zero ()
+   : Lemma (later_credit 0 == emp)
+
+   val later_credit_add (a b: nat)
+   : Lemma (later_credit (a + b) == later_credit a ** later_credit b)
+
+Timeless Predicates
+-------------------
+
+All predicates ``p:slprop`` are hereditary, meaning that ``p`` implies ``later
+p``. Some predicates, including many common predicates like ``pts_to`` are also
+**timeless**, meaning that ``later p`` implies ``p``. Combining timeless
+predicates with ``**`` or exisentially quantifying over timeless predicates
+yields a timeless predicate.
+
+All of the following are available in Pulse.Lib.Core:
+
+.. code-block:: fstar
+
+   val timeless (p: slprop) : prop
+   let timeless_slprop = v:slprop { timeless v }
+   val timeless_emp : squash (timeless emp)
+   val timeless_pure  (p:prop) : Lemma (timeless (pure p))
+   val timeless_star (p q : slprop) : Lemma
+      (requires timeless p /\ timeless q)
+      (ensures timeless (p ** q))
+   val timeless_exists (#a:Type u#a) (p: a -> slprop) : Lemma
+    (requires forall x. timeless (p x))
+    (ensures timeless (op_exists_Star p))
+
+And in Pulse.Lib.Reference, we have:
+
+.. code-block:: fstar
+
+   val pts_to_timeless (#a:Type) (r:ref a) (p:perm) (x:a) 
+   : Lemma (timeless (pts_to r #p x))
+           [SMTPat (timeless (pts_to r #p x))]
+
+For timeless predicates, the ``later`` modality can be eliminated trivially
+without requiring a credit.
+
+.. code-block:: pulse
+
+   ghost fn later_elim_timeless (p: timeless_slprop)
+   requires later p
+   ensures p
+
+Updating a reference, with timeless predicates
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Since ``pts_to`` is timeless, we can actually eliminate ``later (owns r)``
+without a later credit, as shown below.
+
+First, we prove that ``owns`` is timeless:
+
+
+.. literalinclude:: ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
+   :language: pulse
+   :start-after: //owns_timeless$
+   :end-before: //end owns_timeless$
+
+.. note::
+   
+   It's usually easier to prove a predicate timeless by just annotating its
+   definition, rather than writing an explicit lemma. For example, 
+   this would have worked:
+
+   .. code-block:: fstar
+
+      let owns (x:ref U32.t) : timeless_slprop = exists* v. pts_to x v
+
+Next, we can revise ``update_ref_atomic`` to use ``later_elim_timeless``, rather
+than requiring a later credit.
+
+.. literalinclude::  ../code/pulse/PulseTutorial.AtomicsAndInvariants.fst
+   :language: pulse
+   :start-after: //update_ref_atomic_alt$
+   :end-before: //end update_ref_atomic_alt$
+
 
 Double opening is unsound
-~~~~~~~~~~~~~~~~~~~~~~~~~
+++++++++++++++++++++++++++
 
 To see why we have to track the names of the opened invariants,
 consider the example below. If we opened the same invariant twice
@@ -345,7 +508,7 @@ a contradiction.
 
 
 Subsuming atomic computations
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+++++++++++++++++++++++++++++++
 
 Atomic computations can be silently converted to regular, ``stt``
 computations, while forgetting which invariants they opened. For

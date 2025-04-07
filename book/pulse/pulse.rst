@@ -44,19 +44,20 @@ returns, "x points to 'i + 1"; while ``par_incr`` increments the
 contents of ``x`` and ``y`` in parallel by using the ``par``
 combinator.
 
-Concurrent separation logic is an active research area and there are
-many such logics out there, all with different tradeoffs. Pulse's
-logic is based on a logic called PulseCore, formalized entirely within
-F*---you can find the formalization `here
-<https://github.com/FStarLang/pulse/tree/main/lib/pulse/core>`_. Proofs
-of programs in Pulse's surface language correspond to proofs of
-correctness in the PulseCore program logic. But, you should not need
-to know much about how the logic is formalized to use Pulse
-effectively. We'll start from the basics and explain what you need to
-know about concurrent separation logic to start programming and
-proving in Pulse. Additionally, Pulse is an extension of F*, so all
-you've learned about F*, lemmas, dependent types, refinement types,
-etc. will be of use again.
+Concurrent separation logic is an active research area and there are many such
+logics to use, all with different tradeoffs. The state of the art in concurrent
+separation logic is `Iris <https://iris-project.org/>`_, a higher-order,
+impredicative separation logic. Drawing inspiration from Iris, Pulse's logic is
+similar in many ways to Iris, but is based on a logic called PulseCore,
+formalized entirely within F*---you can find the formalization `here
+<https://github.com/FStarLang/pulse/tree/main/lib/pulse/core>`_. Proofs of
+programs in Pulse's surface language correspond to proofs of correctness in the
+PulseCore program logic. But, you should not need to know much about how the
+logic is formalized to use Pulse effectively. We'll start from the basics and
+explain what you need to know about concurrent separation logic to start
+programming and proving in Pulse. Additionally, Pulse is an extension of F*, so
+all you've learned about F*, lemmas, dependent types, refinement types, etc.
+will be of use again.
 
 
 .. note::
