@@ -37,11 +37,11 @@ This design has many important consequences, including, briefly:
 
 * Undecidability: Since Z3 can check the validity of formulas in the
   entirety of its logic, including things like quantifying universally
-  and existentially over infinite ranges, F* does not restrict the the
+  and existentially over infinite ranges, F* does not restrict the
   formulas checked for validity by Z3 to be boolean, or even
   decidable. Yes, typechecking in F* is undecidable.
 
-In this chapter, we'll learn about the the classical logic parts of
+In this chapter, we'll learn about the classical logic parts of
 F*, i.e., the parts that allow it to interface with an SMT solver.
 
 .. note::
@@ -49,10 +49,10 @@ F*, i.e., the parts that allow it to interface with an SMT solver.
    The beginning of this chapter is a little technical, even though
    we're not telling the full story behind F*'s classical logic
    yet. If parts of it are hard to understand right now, here's what
-   you need to know to before you :ref:`jump ahead
+   you need to know before you :ref:`jump ahead
    <Part1_ch2_assertions>`.
 
-   F* let's you write quantified formulas, called propositions, like
+   F* lets you write quantified formulas, called propositions, like
    so
 
    .. code-block:: fstar
@@ -179,7 +179,7 @@ the two propositions below.
    exists (x:nat). x < 0
 
 The first formula is valid by considering ``x = -1``, while the second
-one is not—there is not natural number less than zero.
+one is not—there is no natural number less than zero.
 
 It is possible to quantify over any F* type. This makes the
 quantifiers higher order and dependent. For example, one can write
@@ -281,7 +281,7 @@ proposition.
 
 Propositional equality provides a convenient way to turn a boolean
 into a proposition. For any boolean ``b``, then term ``b == true`` is
-a ``prop``. One seldom needs to do write this manually (although it
+a ``prop``. One seldom needs to write this manually (although it
 does come up occasionally), since F* will automatically insert a
 ``b==true`` if you're using a ``b:bool`` in a context where a ``prop``
 was expected.
@@ -382,7 +382,7 @@ for those ``x`` that also validate the preceding assumption.
 Just like an ``assert``, the type of ``assume p`` is ``unit``.
 
 There's a more powerful form of assumption, called an ``admit``. The
-term ``admit()`` can given any type you like. For example,
+term ``admit()`` can be given any type you like. For example,
 
 .. code-block:: fstar
 
