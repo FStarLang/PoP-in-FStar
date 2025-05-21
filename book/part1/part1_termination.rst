@@ -17,7 +17,7 @@ to :ref:`compute the length of list <Part1_inductives_length>` and to
 :ref:`append two lists <Part1_inductives_append>`. We also said
 :ref:`earlier <Part1_ch1_arrows>` that all functions in F*'s core are
 *total*, i.e., they always return in a finite amount of time. So, you
-may be wondering, what is it that guarantees that recursive function
+may be wondering, what is it that guarantees that recursive functions
 like ``length`` and ``append`` actually terminate on all inputs?
 
 The full details of how F* ensures termination of all functions in its
@@ -116,7 +116,7 @@ the result type of ``length``, in full detail, we write
   returning a ``nat``, just as the ``nat`` did before.
 
 * The additional ``(decreases l)`` specifying a *measure*, i.e., the
-  quantity that decreases at each recursive call according the
+  quantity that decreases at each recursive call according to the
   well-founded relation ``<<``.
 
 To check the definition, F* gives the recursively bound name

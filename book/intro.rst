@@ -108,7 +108,7 @@ inductively defined definitions of types.
    :start-after: SNIPPET_START: vec
    :end-before: SNIPPET_END: vec
 
-Operations on a vectors can be given types that describe their
+Operations on vectors can be given types that describe their
 behavior in terms of vector lengths.
 
 For example, here's a recursive function ``append`` to concatenate two
@@ -381,7 +381,7 @@ some of the following:
     in Idris.
 
   * `Theorem Proving in Lean
-    <https://leanprover.github.io/theorem_proving_in_lean/>`_: This is
+    <https://lean-lang.org/theorem_proving_in_lean4/>`_: This is
     the standard reference for learning about the Lean theorem prover,
     though there are several other `resources
     <https://leanprover-community.github.io/learn.html>`_ too.
@@ -432,12 +432,12 @@ tactics are the primary way of conducting proofs.
 
 Other dependently typed languages shine in their usage in formalizing
 mathematics---Lean's `mathlib
-<https://github.com/leanprover-community/mathlib>`_ and Coq's
+<https://github.com/leanprover-community/mathlib4>`_ and Coq's
 `Mathematical Components <https://math-comp.github.io/>`_ are two
 great examples. In comparison, to date, relatively little pure
 mathematics has been formalized in F*. Rather, F*, with its focus on
 effectful programming and compilation to mainstream languages like C,
-has been used to it produce industrial-grade high-assurance software,
+has been used to produce industrial-grade high-assurance software,
 deployed in settings like the `Windows
 <https://www.microsoft.com/en-us/research/blog/everparse-hardening-critical-attack-surfaces-with-formally-proven-message-parsers/>`_
 and `Linux <https://lwn.net/Articles/770750/>`_ kernels, among `many

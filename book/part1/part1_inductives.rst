@@ -63,7 +63,7 @@ of type ``three``.
    :start-after: //SNIPPET_START: assert
    :end-before: //SNIPPET_END: assert
 
-To write functions that case analyze these new types, one uses the
+To write functions that can analyze these new types, one uses the
 ``match`` construct. The syntax of ``match`` in F* is very similar to
 OCaml or F#. We'll assume that you're familiar with its basics. As we
 go, we'll learn about more advanced ways to use ``match``.
@@ -208,7 +208,7 @@ Records
 .......
 
 A record is just a tuple with user-chosen names for its fields and
-with special syntax for constructing then and projecting their
+with special syntax for constructing them and projecting their
 fields. Here's an example.
 
 .. literalinclude:: ../code/Part1.Inductives.fst
