@@ -54,4 +54,5 @@ most of F*'s typeclass system.
    :caption: Contents:
 
    part3_interfaces
-   part3_typeclasses   
+   part3_typeclasses
+   part3_alacarte

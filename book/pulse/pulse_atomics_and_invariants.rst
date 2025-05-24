@@ -357,7 +357,7 @@ and *later credits*, features found in Iris and other separation logics that
 feature impredicativity.
 
 The Later Modality and Later Credits
--------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The predicate ``later p`` states that the ``p:slprop`` is true after one tick.
 
@@ -417,7 +417,7 @@ Note, later credits can also be split and combined additively:
    : Lemma (later_credit (a + b) == later_credit a ** later_credit b)
 
 Timeless Predicates
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 All predicates ``p:slprop`` are hereditary, meaning that ``p`` implies ``later
 p``. Some predicates, including many common predicates like ``pts_to`` are also

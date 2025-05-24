@@ -479,6 +479,8 @@ sufficient.
    :start-after: //SNIPPET_START: try_sub$
    :end-before: //SNIPPET_END: try_sub$
 
+.. _Part3_monadic_syntax:
+
 Overloading Monadic Syntax
 --------------------------
 
