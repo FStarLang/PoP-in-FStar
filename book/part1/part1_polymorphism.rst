@@ -38,7 +38,7 @@ here's a polymorphic identity function::
 
   let id : a:Type -> a -> a = fun a x -> x
 
-There are a several things to note here:
+There are several things to note here:
 
 * The type of ``id`` is an arrow type, with two arguments. The first
   argument is ``a : Type``; the second argument is a term of type
@@ -129,7 +129,7 @@ leave out type annotations (e.g., on variables, or when using
 type-polymorphic (aka generic) functions) and the compiler determines
 an appropriate type based on the surrounding program context. F*'s
 type inference includes such a feature, but is considerably more
-powerful. Like in other dependently typed language, F*'s inference
+powerful. Like in other dependently typed languages, F*'s inference
 engine is based on `higher-order unification
 <https://en.wikipedia.org/wiki/Unification_(computer_science)#Higher-order_unification>`_
 and can be used to infer arbitrary fragments of program text, not just
@@ -157,7 +157,7 @@ with an underscore ``_``.
    :start-after: //SNIPPET_START: implicit id applications
    :end-before: //SNIPPET_END: implicit id applications
 
-The underscore symbols is a wildcard, or a hole in program, and it's
+The underscore symbol is a wildcard, or a hole in program, and it's
 the job of the F* typechecker to fill in the hole.
 
 .. note::

@@ -16,7 +16,7 @@ F* can be used as a command line tool with any text editor. If you're
 viewing this in the interactive online tutorial, you can use the
 `Ace-based <https://ace.c9.io/>`_ text editor alongside, which
 provides some basic conveniences like syntax highlighting. However,
-beyond casual use, most users of F* rely on one of the follwing IDE
+beyond casual use, most users of F* rely on one of the following IDE
 plugins.
 
   * `fstar-mode.el <https://github.com/FStarLang/fstar-mode.el>`_,
@@ -304,7 +304,7 @@ provides several ways to define functions, the most basic form is the
 :math:`\lambda` term, also called a function literal, an anonymous function, or a
 simply a *lambda*. The syntax is largely inherited from OCaml, and
 this `OCaml tutorial
-<https://ocaml.org/learn/tutorials/basics.html#Defining-a-function>`_
+<https://ocaml.org/docs/tour-of-ocaml#functions>`_
 provides more details for those unfamiliar with the language. We'll
 assume a basic familiarity with OCaml-like syntax.
 
@@ -541,9 +541,9 @@ In response ``fstar`` should output::
   All verification conditions discharged successfully
 
 This means that F* attempted to verify the module named ``Sample``. In
-doing so, it generated a some "verification conditions", or proof
+doing so, it generated some "verification conditions", or proof
 obligations, necessary to prove that the module is type correct, and
-that is discharged, or proved, all of them successfully.
+it discharged, or proved, all of them successfully.
 
 **F\* in emacs**
 
