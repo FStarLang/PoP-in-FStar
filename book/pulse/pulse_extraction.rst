@@ -82,7 +82,7 @@ and then the second command extracts the Rust code to ``voting.rs``. (These comm
   $ fstar.exe --include lib/pulse/ --include lib/pulse/lib
     --include share/pulse/examples/by-example/ --include share/pulse/examples/_output/cache/
     --load_cmxs pulse  --odir . PulseTutorial.Algorithms.fst
-    --extract 'PulseTutorial.Algorithms' --codegen Extension
+    --codegen Extension
   
   $ ./pulse2rust/main.exe PulseTutorial_Algorithms.ast -o voting.rs
 
@@ -188,7 +188,7 @@ For the Boyer-Moore example, we can extract the program to OCaml as follows:
   $ fstar.exe --include lib/pulse/ --include lib/pulse/lib
     --include share/pulse/examples/by-example/ --include share/pulse/examples/_output/cache/
     --load_cmxs pulse  --odir . PulseTutorial.Algorithms.fst
-    --extract 'PulseTutorial.Algorithms' --codegen OCaml
+    --codegen OCaml
 
 and the extracted ``majority`` function looks like:
 
