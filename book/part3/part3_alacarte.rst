@@ -388,8 +388,9 @@ preserves its semantics.
 This is the one part of this development where the definition is not completely
 generic in the type of expression nodes. Instead, this is proof for the specific
 case of expressions that contain values, additions, and multiplications. I
-haven't found a way to make this more generic. If you know a way, please let me
-know!
+haven't found a way to make this more generic. One would likely need to define a
+generic induction principle similar in structure to ``fold_expr``---but that's
+for another day's head scratching. If you know an easy way, please let me know!
 
 That said, the proof is quite straightforward and pleasant: We simply match on
 the cases, use the induction hypothesis on the subtrees if any, and then apply
@@ -444,3 +445,38 @@ print any expression of type ``expr f``.
        :language: fstar
        :start-after: //SNIPPET_START: to_string$
        :end-before: //SNIPPET_END: to_string$
+
+Exercise 3
+++++++++++
+
+Write a function ``lift`` with the following signature
+
+.. code-block:: fstar
+
+   let lift #f #g
+      {| ff: functor f |} 
+      {| fg: leq f g |}
+      (x: expr f)
+   : expr g
+
+Use it to reuse an expression defined for one type to another, so that the
+assertion below success
+
+.. code-block:: fstar
+
+   let ex3 : expr (value ++ add ++ mul) = lift addExample *^ v 2
+   
+   [@@expect_failure]
+   let test_e3 = assert_norm (eval_expr ex3 == (1337 * 2))
+
+.. container:: toggle
+
+    .. container:: header
+
+       **Answer**
+
+    .. literalinclude:: ../code/Part3.DataTypesALaCarte.fst
+       :language: fstar
+       :start-after: //SNIPPET_START: lift$
+       :end-before: //SNIPPET_END: lift$
+
