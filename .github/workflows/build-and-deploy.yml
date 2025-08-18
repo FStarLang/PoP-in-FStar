@@ -1,0 +1,106 @@
+name: Build book and deploy
+on:
+  push:
+    branches-ignore:
+    - _**
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Deploy the book'
+        required: true
+        default: 'false'
+  schedule:
+    - cron: '0 0 * * *'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Sphinx and LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install python3-sphinx python3-sphinx-rtd-theme
+          sudo apt-get -y install texlive-full
+          # ^ this takes really long, but figuring out exactly what
+          # packages are needed seems difficult.
+
+      - uses: actions/checkout@master
+        with:
+          repository: FStarLang/FStar
+          path: FStar
+      - run: echo "FSTAR_HOME=$(pwd)/FStar" >> $GITHUB_ENV
+
+      - uses: actions/checkout@master
+        with:
+          repository: FStarLang/pulse
+          path: pulse
+      - run: echo "PULSE_HOME=$(pwd)/pulse" >> $GITHUB_ENV
+
+      - uses: actions/checkout@master
+        with:
+          path: this
+
+      - name: Build book
+        working-directory: this/book
+        run: |
+          make -skj$(nproc) prep
+          make -skj$(nproc) html
+          make -skj$(nproc) pdf
+
+      - name: Upload book artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: this/book/_build
+          name: book
+
+  deploy:
+    runs-on: ubuntu-latest
+    # if: ${{ github.ref == 'refs/heads/master' || inputs.deploy == 'true' }}
+    needs: build
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/download-artifact@v4
+        with:
+          path: this/book/_build
+          name: book
+
+      - name: Configure git
+        run: |
+          git config --global user.name "Dzomo, the Everest Yak"
+          git config --global user.email "24394600+dzomo@users.noreply.github.com"
+          git config --unset-all http.https://github.com/.extraheader
+          # ^ https://stackoverflow.com/questions/64374179/how-to-push-to-another-repository-in-github-actions
+
+      # Checkout fstar-priv
+      - run: |
+          git clone https://${{secrets.DZOMO_GITHUB_TOKEN}}@github.com/FStarLang/fstar-priv
+        env:
+          GH_TOKEN: ${{ secrets.DZOMO_GITHUB_TOKEN }}
+
+      - run: echo "FSTARLANG_ORG_ROOT=$(pwd)/fstar-priv/website" >> $GITHUB_ENV
+
+      - run: make deploy
+        working-directory: this/book
+
+      - run: |
+          if ! git diff --quiet; then
+            echo DIFF=1 >>$GITHUB_ENV
+          else
+            echo DIFF=0 >>$GITHUB_ENV
+          fi
+        working-directory: fstar-priv
+
+      - if: ${{ env.DIFF == '1' }}
+        working-directory: fstar-priv
+        run: |
+          git add website/tutorial
+          git commit -m 'Automatic book update'
+          git push
+
+        env:
+          GH_TOKEN: ${{ secrets.DZOMO_GITHUB_TOKEN }}
