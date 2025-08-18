@@ -555,7 +555,7 @@ Raising universes and the lack of cumulativity
 ----------------------------------------------
 
 In some type theories, notably in Coq, the universe system is
-*cumulative*, meaning that ``Type u#i : Type u#(max (i + i) j)``;
+*cumulative*, meaning that ``Type u#i : Type u#(max (i + 1) j)``;
 or, that ``Type u#i`` inhabits all universes greater than
 ``i``. In contrast, in F*, as in Agda and Lean, ``Type u#i : Type
 u#(i + 1)``, i.e., a type resides only in the universe immediately
@@ -757,3 +757,4 @@ detect and fix such problems.
      :language: fstar
      :start-after: //SNIPPET_START: crazy_index$
      :end-before: //SNIPPET_END: crazy_index$
+
