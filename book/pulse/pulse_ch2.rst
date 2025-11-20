@@ -198,32 +198,6 @@ The comments show how the proof state evolves after each command.
   * Pulse also uses the SMT solver to convert ``pts_to r (v2 + v2)``
     to ``pts_to r (4 * 'v)``.
 
-
-Stateful commands are explicitly sequenced
-..........................................
-
-Pulse expects the results of all stateful operations to be explicitly
-``let``-bound. For example, the following code fails to type check:
-
-.. literalinclude:: ../code/pulse/PulseTutorial.Ref.fst
-   :language: pulse
-   :start-after: //quad FAIL$
-   :end-before: //end quad FAIL$
-
-
-.. code-block::
-
-  - Expected type "int"; but "!r" has type
-    "stt int
-         (pts_to r (reveal (*?u93*) _))
-         (fun x -> pts_to r x ** pure (reveal (*?u93*) _ == x))"
-
-The error points to the first occurrence of ``(!r)``. The message is
-admittedly cryptic and should be improved. As we'll see in a later
-chapter, the type ``stt _ _ _`` is the type of an unevaluated Pulse
-computation---this error complains that ``add`` expected an argument
-of type ``int`` but instead got an unevaluated computation.
-
 Fractional Permissions
 ......................
 
