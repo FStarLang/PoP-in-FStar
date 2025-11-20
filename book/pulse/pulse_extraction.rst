@@ -79,9 +79,9 @@ and then the second command extracts the Rust code to ``voting.rs``. (These comm
 
 .. code-block:: shell
 
-  $ fstar.exe --include lib/pulse/ --include lib/pulse/lib
-    --include share/pulse/examples/by-example/ --include share/pulse/examples/_output/cache/
-    --load_cmxs pulse  --odir . PulseTutorial.Algorithms.fst
+  $ fstar.exe --include out/lib/pulse/
+    --include share/pulse/examples/by-example/ --include share/pulse/examples/_cache/
+    --cmi --load_cmxs pulse  --odir . PulseTutorial.Algorithms.fst
     --codegen Extension
   
   $ ./pulse2rust/main.exe PulseTutorial_Algorithms.ast -o voting.rs
@@ -141,9 +141,9 @@ Then we extract it to C as follows (the commands are run in the ``pulse`` root d
 
 .. code-block:: shell
 
-  $ fstar.exe --include lib/pulse/ --include lib/pulse/lib
-    --include share/pulse/examples/by-example/ --include share/pulse/examples/_output/cache/
-    --load_cmxs pulse  --odir . PulseTutorial.Algorithms.fst
+  $ fstar.exe --include out/lib/pulse/
+    --include share/pulse/examples/by-example/ --include share/pulse/examples/_cache/
+    --cmi --load_cmxs pulse  --odir . PulseTutorial.Algorithms.fst
     --extract 'FStar.Pervasives.Native PulseTutorial.Algorithms' --codegen krml
 
   $ ../karamel/krml -skip-compilation out.krml
@@ -185,9 +185,9 @@ For the Boyer-Moore example, we can extract the program to OCaml as follows:
 
 .. code-block:: shell
 
-  $ fstar.exe --include lib/pulse/ --include lib/pulse/lib
-    --include share/pulse/examples/by-example/ --include share/pulse/examples/_output/cache/
-    --load_cmxs pulse  --odir . PulseTutorial.Algorithms.fst
+  $ fstar.exe --include out/lib/pulse/
+    --include share/pulse/examples/by-example/ --include share/pulse/examples/_cache/
+    --cmi --load_cmxs pulse  --odir . PulseTutorial.Algorithms.fst
     --codegen OCaml
 
 and the extracted ``majority`` function looks like:
